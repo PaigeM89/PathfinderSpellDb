@@ -6,32 +6,36 @@
   let spells = data.spells;
 
   let name : string = "";
+  let wasSearch = false;
 
   const headers = [
     "Name", "School", "Description"
   ];
 
   async function search(name : string) {
-    if (name.trim() === "") {
-      const json = await getJson(fetch, "/spells");
+    if (name.trim() === "" && wasSearch === true) {
+      const json = await getJson(data.fetch, "/spells");
       spells = json;
+      wasSearch = false;
+      console.log('resetting search');
       return;
+    } else if (name.trim() !== "") {
+      console.log('search', name);
+
+      const payload = {
+        Name : name,
+        School : ""
+      }
+
+      const res = await fetch(`${baseUrl}/spells`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      const json = await res.json();
+      spells = json;
+      wasSearch = true;
     }
-    
-    console.log('search', name);
-
-    const payload = {
-      Name : name,
-      School : ""
-    }
-
-    const res = await fetch(`${baseUrl}/spells`, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-
-    const json = await res.json();
-    spells = json;
   }
 
   $: search(name);

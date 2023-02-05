@@ -11,5 +11,5 @@ export interface Spell {
 
 export const load =( async ({ fetch, params}) => {
   const spells : Spell[] = await getJson(fetch, "/spells");
-  return {spells: spells};
+  return {spells: spells, fetch: fetch};
 });;null as any as PageLoad;
