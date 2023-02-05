@@ -5,7 +5,7 @@ open System.IO
 open FSharp.Data
 
 module Types =
-  open FSharp.Data.GraphQL.Types
+  
 
   type Spell = {
     Id: int
@@ -13,18 +13,6 @@ module Types =
     School : string
     Description: string
   }
-
-  /// GraphQL type
-  let SpellType : ObjectDef<Spell> =
-    Define.Object<Spell>(
-      name = "Spell",
-      description = "A magical effect created by a character when cast.",
-      fields = [
-        Define.Field("name", String, "The name of the spell", fun _ (s : Spell) -> s.Name)
-        Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
-        Define.Field("description", String, "The description of the spell", fun _ (s: Spell) -> s.Description)
-      ]
-    )
 
 module SpellParsing = 
   open Types
@@ -49,3 +37,30 @@ module SpellParsing =
     |> Seq.toList
 
   printfn "Loaded %i spells" (List.length spells)
+
+module GraphQL =
+  open Types
+  open FSharp.Data.GraphQL.Types
+
+  let findSpellByName (name : string) = 
+    SpellParsing.spells |> List.tryFind (fun s -> s.Name.ToLowerInvariant() = name)
+
+  let spellNameSearch (str : string) =
+    if (str.Length > 1) then
+      let str : string = str.ToLowerInvariant()
+      SpellParsing.spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
+    else
+      SpellParsing.spells
+
+  /// GraphQL type
+  let SpellType : ObjectDef<Spell> =
+    Define.Object<Spell>(
+      name = "Spell",
+      description = "A magical effect created by a character when cast.",
+      fields = [
+        Define.Field("id", Int, "The id of the spell. Used for querying. Generated on data load", fun _ (s : Spell) -> s.Id)
+        Define.Field("name", String, "The name of the spell", fun _ (s : Spell) -> s.Name)
+        Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
+        Define.Field("description", String, "The description of the spell", fun _ (s: Spell) -> s.Description)
+      ]
+    )

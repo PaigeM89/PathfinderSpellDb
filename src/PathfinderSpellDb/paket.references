@@ -6,3 +6,5 @@ FsToolkit.ErrorHandling
 FSharp.Data
 FSharp.Data.GraphQL.Server
 Newtonsoft.Json
+
+File: FsLibLog.fs

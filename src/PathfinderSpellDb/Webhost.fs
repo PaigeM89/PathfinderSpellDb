@@ -11,7 +11,16 @@ module Webhost =
   open Microsoft.AspNetCore.Cors.Infrastructure
   open Microsoft.AspNetCore.Server.Kestrel.Core
 
-  let configureLogging(log: ILoggingBuilder) = log.ClearProviders().AddConsole()
+  let microsoftLoggerFactory = LoggerFactory.Create(fun builder ->
+    builder
+      .SetMinimumLevel(LogLevel.Debug)
+      .AddSimpleConsole(fun opts -> opts.IncludeScopes <- true)
+    |> ignore
+  )
+
+  let configureLogging(log: ILoggingBuilder) = 
+    FsLibLog.Providers.MicrosoftExtensionsLoggingProvider.setMicrosoftLoggerFactory microsoftLoggerFactory
+    log.ClearProviders().AddConsole()
 
   let configureCors (builder : CorsPolicyBuilder) =
     builder.WithOrigins("http://localhost:5173")

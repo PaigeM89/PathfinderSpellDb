@@ -14,9 +14,16 @@ open FSharp.Data.GraphQL
 open FSharp.Data.GraphQL.Types
 open PathfinderSpellDb
 open PathfinderSpellDb.Types
+open PathfinderSpellDb.GraphQL
 open PathfinderSpellDb.JsonConverters
 
+open FsLibLog
+open FsLibLog.Types
+open FsLibLog.Operators
+
 module GraphQLHandler =
+
+  let logger = LogProvider.getLoggerByName "GraphQLHandler"
 
   type Root = {
     RequestId : System.Guid
@@ -36,10 +43,12 @@ module GraphQLHandler =
   let spells : Spell list = SpellParsing.spells |> Seq.toList
 
   let Query =
+    let inputs = [ Define.Input ("name", String) ]
     Define.Object<Root>(
       name = "Query",
       fields = [
-        Define.Field("spells", ListOf SpellType, "Gets skills", fun _ _ -> spells)
+        Define.Field("spells", ListOf SpellType, "Gets spells", inputs, fun ctx _ -> ctx.Arg "name" |> spellNameSearch)
+        Define.Field("spell", Nullable SpellType, "Gets a specific spell", inputs, fun ctx _ -> findSpellByName (ctx.Arg "name"))
       ]
     )
 
@@ -122,13 +131,15 @@ module GraphQLHandler =
 
     match query, variables with
     | Some query, Some variables ->
-        // printfn "Received query: %s" query
-        // printfn "Received variables: %A" variables
+        Log.setMessage "Received query and variables for graphql query"
+        >> Log.addContextDestructured "query" query
+        >> Log.addContextDestructured "variables" variables
+        |> logger.info
         let query = removeWhitespacesAndLineBreaks query
         let root = Root.Create()
         let result = executor.AsyncExecute (query, root, variables) |> Async.RunSynchronously
-        // printfn "Result content: %A" result.Content
-        // printfn "Result metadata: %A" result.Metadata
+        printfn "Result content: %A" result.Content
+        printfn "Result metadata: %A" result.Metadata
         okWithStr (json result) ctx
     | Some query, None ->
         // printfn "Received query: %s" query
