@@ -2,6 +2,12 @@
 
 [Enter useful description for PathfinderSpellDb]
 
+Commonly referenced links:
+
+https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/routes/index.svelte
+
+https://github.com/fsprojects/FSharp.Data.GraphQL/blob/dev/samples/star-wars-api/Schema.fs
+
 ---
 
 ## Builds

@@ -58,9 +58,8 @@
   }
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-
+<h1>Pathfinder Spell Database</h1>
+<p>A database of all the spells in Pathfinder 1E.</p>
 <h2>Search by name: </h2><input value={name} on:input={debounce} />
 
 {#if $spells.loading}

@@ -70,5 +70,6 @@
   {#if $spell.data && $spell.data.spell}
     <h1>{$spell.data.spell.name}</h1>
     <h2>{schoolStr($spell.data.spell)}</h2>
+    <p>{@html $spell.data.spell.description}</p>
   {/if}
 {/if}
