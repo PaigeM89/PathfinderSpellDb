@@ -43,3 +43,8 @@ module Handlers =
       | None ->
         getAllSpells()
     Request.mapJson handleOk
+
+
+  let getSpell (id : int) =
+    SpellParsing.findSpellByIndex id
+    |> Response.ofJson

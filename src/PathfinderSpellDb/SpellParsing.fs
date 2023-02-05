@@ -52,6 +52,9 @@ module SpellParsing =
     else
       spells
 
+  let findSpellByIndex (index: int) =
+    spells |> List.tryItem index
+
 module GraphQL =
   open Types
   open FSharp.Data.GraphQL.Types

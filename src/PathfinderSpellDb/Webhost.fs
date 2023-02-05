@@ -49,6 +49,11 @@ module Webhost =
       endpoints [
         post "/" (Endpoints.GraphQLHandler.handle)
         get "/spells" (Handlers.getAllSpells())
+        get "/spells/{id:int}" (fun ctx ->
+          let route = Request.getRoute ctx
+          let spellId = route.GetInt "id"
+          Handlers.getSpell spellId ctx
+        )
         post "/spells" Handlers.handleSpellSearch
       ]
     }
