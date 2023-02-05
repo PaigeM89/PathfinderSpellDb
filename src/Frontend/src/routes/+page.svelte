@@ -2,16 +2,38 @@
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
   import { setClient, query } from "svelte-apollo";
   import type { ReadableQuery } from "svelte-apollo";
-  import { capitalizeFirstLetter } from "../Shared";
+  import { baseUrl, capitalizeFirstLetter } from "../Shared";
   import type { PageData } from "./$types";
 
   export let data: PageData;
+  let spells = data.spells;
 
   let name : string = "";
 
   const headers = [
     "Name", "School", "Description"
   ];
+
+  async function search(name : string) {
+    if (name.trim() === "") return;
+    
+    console.log('search', name);
+
+    const payload = {
+      Name : name,
+      School : ""
+    }
+
+    const res = await fetch(`${baseUrl}/spells`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    const json = await res.json();
+    spells = json;
+  }
+
+  $: search(name);
 
   // const client = new ApolloClient({
   //   uri: 'http://localhost:5000/',
@@ -58,7 +80,7 @@
 <p>A database of all the spells in Pathfinder 1E.</p>
 <h2>Search by name: </h2><input value={name} on:input={debounce} />
 
-{#if data.spells}
+{#if spells}
   <h1>Spells</h1>
   <table>
     <thead>
@@ -69,7 +91,7 @@
       </tr>
     </thead>
     <tbody>
-        {#each data.spells as spell}
+        {#each spells as spell}
           <tr>
             <td>
               <a href="/spell/{spell.Id}">{spell.Name}</a>

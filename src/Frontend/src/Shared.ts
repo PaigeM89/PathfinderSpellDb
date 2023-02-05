@@ -9,7 +9,7 @@ export function capitalizeFirstLetter(str : string) {
   return f.toUpperCase() + rest;
 }
 
-const baseUrl = "http://localhost:5000";
+export const baseUrl = "http://localhost:5000";
 
 export function getJson(fetch: (arg0: string) => Promise<any>, route: string) {
   return fetch(baseUrl + route)

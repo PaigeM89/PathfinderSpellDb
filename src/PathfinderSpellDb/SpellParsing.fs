@@ -45,6 +45,13 @@ module SpellParsing =
 
   printfn "Loaded %i spells" (List.length spells)
 
+  let spellNameSearch (str : string) =
+    if (str.Length > 1) then
+      let str : string = str.ToLowerInvariant()
+      spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
+    else
+      spells
+
 module GraphQL =
   open Types
   open FSharp.Data.GraphQL.Types

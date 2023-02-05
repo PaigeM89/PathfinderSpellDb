@@ -5,11 +5,6 @@ open System.Text.Json
 
 module Handlers =
 
-  type SpellSearchInputDto = {
-    Name : string option
-    School : string option
-  }
-
   type SpellListRowDto = {
     Id : int
     Name : string
@@ -23,17 +18,30 @@ module Handlers =
       ShortDescription = desc
     }
 
-  let handleSpellSearch : HttpHandler =
-    let handleOk (search : SpellSearchInputDto) : HttpHandler =
-      let message = sprintf "You searched on name %A and/or school %A" search.Name search.School
-      Response.ofPlainText message
-    Request.mapJson handleOk
-
-  let allSpells() =
-    SpellParsing.spells
+  let mapSpellsToListDto (spells : Types.Spell list) =
+    spells
     |> List.map (fun spell ->
       SpellListRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription
     )
 
+  let allSpells() = SpellParsing.spells |> mapSpellsToListDto
+
+
   let getAllSpells() =
     allSpells() |> Response.ofJson
+
+  type SpellSearchInputDto = {
+    Name : string option
+    School : string option
+  }
+
+  let handleSpellSearch : HttpHandler =
+    let handleOk (search : SpellSearchInputDto) : HttpHandler =
+      match search.Name with
+      | Some name ->
+        SpellParsing.spellNameSearch name
+        |> mapSpellsToListDto
+        |> Response.ofJson
+      | None ->
+        getAllSpells()
+    Request.mapJson handleOk

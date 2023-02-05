@@ -2,7 +2,7 @@
 import { getJson } from '../Shared';
 import type { PageLoad } from './$types';
 
-interface Spell {
+export interface Spell {
   Id : number
   Name : string
   School : string
@@ -11,6 +11,5 @@ interface Spell {
 
 export const load =( async ({ fetch, params}) => {
   const spells : Spell[] = await getJson(fetch, "/spells");
-  console.log(spells);
   return {spells: spells};
 });;null as any as PageLoad;

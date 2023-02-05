@@ -49,5 +49,6 @@ module Webhost =
       endpoints [
         post "/" (Endpoints.GraphQLHandler.handle)
         get "/spells" (Handlers.getAllSpells())
+        post "/spells" Handlers.handleSpellSearch
       ]
     }
