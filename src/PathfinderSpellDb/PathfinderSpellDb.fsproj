@@ -17,7 +17,6 @@
     <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
     <Compile Include="Helpers.fs" />
-    <Compile Include="Types.fs" />
     <Compile Include="SpellParsing.fs" />
     <Compile Include="JsonConverters.fs" />
     <Compile Include="GraphQLHandler.fs" />

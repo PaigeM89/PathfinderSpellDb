@@ -18,17 +18,6 @@ open PathfinderSpellDb.JsonConverters
 
 module GraphQLHandler =
 
-  let SpellType : ObjectDef<Types.Spell> =
-    Define.Object<Types.Spell>(
-      name = "Spell",
-      description = "A magical effect created by a character when cast.",
-      fields = [
-        Define.Field("name", String, "The name of the spell", fun _ (s : Spell) -> s.Name)
-        Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
-        Define.Field("description", String, "The description of the spell", fun _ (s: Spell) -> s.Description)
-      ]
-    )
-
   type Root = {
     RequestId : System.Guid
   } with
