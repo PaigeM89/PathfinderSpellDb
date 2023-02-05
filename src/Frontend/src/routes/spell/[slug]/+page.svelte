@@ -4,6 +4,7 @@
   import type { ReadableQuery } from "svelte-apollo";
 
   import type { PageData } from './$types';
+    import { capitalizeFirstLetter } from "../../../Shared";
 
   export let data: PageData;
 
@@ -12,6 +13,8 @@
   interface Spell {
     name : string
     school : string
+    subschool : string
+    descriptors: string []
     description : string
   }
 
@@ -41,17 +44,31 @@
   const spell : ReadableQuery<SpellsResult> = query(SPELLS, {
     variables: { id: data.id }
   });
+
+  function schoolStr(spell : Spell) {
+    var subschool = "";
+    if (spell.subschool) {
+      subschool = ` (${spell.subschool}) `;
+    }
+    var desc = "";
+    if (spell.descriptors && spell.descriptors.length > 0 && spell.descriptors[0] !== "") {
+      console.log('descriptors', spell.descriptors);
+      let joined = spell.descriptors.join(", ");
+      desc = ` [${joined}]`;
+    }
+    const school = capitalizeFirstLetter(spell.school);
+    return `${school}${subschool}${desc}`;
+  }
 </script>
 
 {#if $spell.loading}
   <h2>Loading Spell...</h2>
 {:else if $spell.error}
-  <h2>Error loading Spells</h2>
+  <h2>Error loading Spell</h2>
   <p>{$spell.error.message}</p>
 {:else}
-  {#if $spell.data}
-    {#if $spell.data.spell}
-      <h1>{$spell.data.spell.name}</h1>
-    {/if}
+  {#if $spell.data && $spell.data.spell}
+    <h1>{$spell.data.spell.name}</h1>
+    <h2>{schoolStr($spell.data.spell)}</h2>
   {/if}
 {/if}
