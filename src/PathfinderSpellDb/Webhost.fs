@@ -48,5 +48,6 @@ module Webhost =
       logging configureLogging
       endpoints [
         post "/" (Endpoints.GraphQLHandler.handle)
+        get "/spells" (Handlers.getAllSpells())
       ]
     }

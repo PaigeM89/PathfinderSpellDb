@@ -2,7 +2,10 @@
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
   import { setClient, query } from "svelte-apollo";
   import type { ReadableQuery } from "svelte-apollo";
-    import { capitalizeFirstLetter } from "../Shared";
+  import { capitalizeFirstLetter } from "../Shared";
+  import type { PageData } from "./$types";
+
+  export let data: PageData;
 
   let name : string = "";
 
@@ -10,43 +13,36 @@
     "Name", "School", "Description"
   ];
 
-  interface Spell {
-    id : number
-    name : string
-    school : string
-    description : string
-  }
+  // const client = new ApolloClient({
+  //   uri: 'http://localhost:5000/',
+  //   cache: new InMemoryCache(),
+  // });
+  // setClient(client);
 
-  const client = new ApolloClient({
-    uri: 'http://localhost:5000/',
-    cache: new InMemoryCache(),
-  });
-  setClient(client);
+  // const SPELLS =
+  //   gql`
+  //     query SearchSpellsByName($name: String!) {
+  //       spells(name: $name) {
+  //         id
+  //         name
+  //         school
+  //         description
+  //       }
+  //     }
+  //   `;
 
-  const SPELLS =
-    gql`
-      query SearchSpellsByName($name: String!) {
-        spells(name: $name) {
-          id
-          name
-          school
-          description
-        }
-      }
-    `;
+  // type SpellsResult = {
+  //   spells: Spell[]
+  //   spell: Spell
+  // }
 
-  type SpellsResult = {
-    spells: Spell[]
-    spell: Spell
-  }
+  // const spells : ReadableQuery<SpellsResult> = query(SPELLS, {
+  //   variables: { name: name }
+  // });
 
-  const spells : ReadableQuery<SpellsResult> = query(SPELLS, {
-    variables: { name: name }
-  });
+  // $: spells.refetch({ name: name });
 
-  $: spells.refetch({ name: name });
-
-  // wow typescript is dumb.
+  // // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
   const debounce = (e : Event) => {
     clearTimeout(timer);
@@ -62,7 +58,31 @@
 <p>A database of all the spells in Pathfinder 1E.</p>
 <h2>Search by name: </h2><input value={name} on:input={debounce} />
 
-{#if $spells.loading}
+{#if data.spells}
+  <h1>Spells</h1>
+  <table>
+    <thead>
+      <tr>
+        {#each headers as header}
+          <td>{header}</td>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+        {#each data.spells as spell}
+          <tr>
+            <td>
+              <a href="/spell/{spell.Id}">{spell.Name}</a>
+            </td>
+            <td>{capitalizeFirstLetter(spell.School)}</td>
+            <td>{@html spell.ShortDescription}</td>
+          </tr>
+        {/each}
+    </tbody>
+  </table>
+{/if}
+
+<!-- {#if $spells.loading}
   <h2>Loading Spells...</h2>
 {:else if $spells.error}
   <h2>Error loading Spells</h2>
@@ -93,7 +113,7 @@
     </table>
     {/if}
   {/if}
-{/if}
+{/if} -->
 
 <style>
   p {
