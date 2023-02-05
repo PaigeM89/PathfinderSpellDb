@@ -26,9 +26,7 @@ module Handlers =
 
   let allSpells() = SpellParsing.spells |> mapSpellsToListDto
 
-
-  let getAllSpells() =
-    allSpells() |> Response.ofJson
+  let getAllSpells() = allSpells() |> Response.ofJson
 
   type SpellSearchInputDto = {
     Name : string option

@@ -33,7 +33,7 @@ module SpellParsing =
     |> Seq.mapi (fun index row ->
       {
         Id = index
-        Name = row.["name"]
+        Name = row.["name"].Trim()
         School = row.["school"]
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split

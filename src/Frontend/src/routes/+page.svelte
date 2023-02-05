@@ -35,36 +35,7 @@
 
   $: search(name);
 
-  // const client = new ApolloClient({
-  //   uri: 'http://localhost:5000/',
-  //   cache: new InMemoryCache(),
-  // });
-  // setClient(client);
-
-  // const SPELLS =
-  //   gql`
-  //     query SearchSpellsByName($name: String!) {
-  //       spells(name: $name) {
-  //         id
-  //         name
-  //         school
-  //         description
-  //       }
-  //     }
-  //   `;
-
-  // type SpellsResult = {
-  //   spells: Spell[]
-  //   spell: Spell
-  // }
-
-  // const spells : ReadableQuery<SpellsResult> = query(SPELLS, {
-  //   variables: { name: name }
-  // });
-
-  // $: spells.refetch({ name: name });
-
-  // // wow typescript is dumb.
+  // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
   const debounce = (e : Event) => {
     clearTimeout(timer);
@@ -103,39 +74,6 @@
     </tbody>
   </table>
 {/if}
-
-<!-- {#if $spells.loading}
-  <h2>Loading Spells...</h2>
-{:else if $spells.error}
-  <h2>Error loading Spells</h2>
-  <p>{$spells.error.message}</p>
-{:else}
-  {#if $spells.data}
-    {#if $spells.data.spells}
-    <h1>Spells</h1>
-    <table>
-      <thead>
-        <tr>
-          {#each headers as header}
-            <td>{header}</td>
-          {/each}
-        </tr>
-      </thead>
-      <tbody>
-          {#each $spells.data.spells as spell}
-            <tr>
-              <td>
-                <a href="/spell/{spell.id}">{spell.name}</a>
-              </td>
-              <td>{capitalizeFirstLetter(spell.school)}</td>
-              <td>{@html spell.description}</td>
-            </tr>
-          {/each}
-      </tbody>
-    </table>
-    {/if}
-  {/if}
-{/if} -->
 
 <style>
   p {
