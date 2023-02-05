@@ -1,6 +1,7 @@
 <script lang="ts">
   import { baseUrl, capitalizeFirstLetter, getJson } from "../Shared";
   import type { PageData } from "./$types";
+    import type { Spell } from "./+page";
 
   export let data: PageData;
   let spells = data.spells;
@@ -51,6 +52,15 @@
     }, 500);
   }
 
+  function classListToString(spell : Spell) {
+    if (spell.ClassSpellLevels && spell.ClassSpellLevels.length > 1) {
+      return spell.ClassSpellLevels.map(csl => `${csl.ClassName} ${csl.Level}`).join(", ")
+    } else if (spell.ClassSpellLevels && spell.ClassSpellLevels.length === 1) {
+      return spell.ClassSpellLevels.map(csl => `${csl.ClassName} ${csl.Level}`)[0];
+    }
+    return "";
+  }
+
 </script>
 
 <h1>Pathfinder Spell Database</h1>
@@ -76,9 +86,7 @@
             <td>{capitalizeFirstLetter(spell.School)}</td>
             <td>{@html spell.ShortDescription}</td>
             <td>
-              {#each spell.ClassSpellLevels as csl}
-                <h3>{csl.ClassName} {csl.Level}</h3>
-              {/each}
+              {classListToString(spell)}
             </td>
           </tr>
         {/each}
@@ -91,10 +99,18 @@
     text-align: justify;
   }
 
+  thead {
+    font-size: x-large;
+  }
+
+  tbody{
+    font-size: small;
+  }
+
   table, thead, td {
     border: 1px solid;
     border-collapse: collapse;
-    padding: 15px;
+    padding: 0.25rem;
   }
 
   table {
