@@ -1,12 +1,14 @@
 <script lang="ts">
+  import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { baseUrl, capitalizeFirstLetter, getJson } from "../Shared";
   import type { PageData } from "./$types";
-    import type { Spell } from "./+page";
+  import type { Spell } from "./+page";
 
   export let data: PageData;
   let spells = data.spells;
 
   let name : string = "";
+  let searchBySchools : string[] = [];
   let wasSearch = false;
 
   const headers = [
@@ -39,6 +41,17 @@
     }
   }
 
+  $: filteredSpells =
+    spells.filter(spell => {
+      if (searchBySchools && searchBySchools.length > 0) {
+        if (searchBySchools.find(school => school.toLocaleLowerCase() === spell.School.toLocaleLowerCase())) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    });
+
   $: search(name);
 
   // wow typescript is dumb.
@@ -67,6 +80,12 @@
 <p>A database of all the spells in Pathfinder 1E.</p>
 <h2>Search by name: </h2><input value={name} on:input={debounce} />
 
+<h2>Search by school(s):</h2>
+<div>
+  <SchoolSearch bind:searchBySchools={searchBySchools} />
+</div>
+
+
 {#if spells}
   <h1>Spells</h1>
   <table>
@@ -78,7 +97,7 @@
       </tr>
     </thead>
     <tbody>
-        {#each spells as spell}
+        {#each filteredSpells as spell}
           <tr>
             <td>
               <a href="/spell/{spell.Id}">{spell.Name}</a>

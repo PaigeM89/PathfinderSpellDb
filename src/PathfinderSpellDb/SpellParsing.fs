@@ -125,7 +125,7 @@ module SpellParsing =
       {
         Id = index
         Name = row.["name"].Trim()
-        School = row.["school"]
+        School = row.["school"].Trim().ToLowerInvariant()
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
         ShortDescription = row.["short_description"].Trim()
@@ -136,6 +136,12 @@ module SpellParsing =
     |> Seq.toList
 
   printfn "Loaded %i spells" (List.length spells)
+
+  spells
+  |> List.map(fun s -> s.School)
+  |> List.distinct
+  |> List.sort
+  |> printfn "Schools: %A"
 
   let spellNameSearch (str : string) =
     if (str.Length > 1) then
