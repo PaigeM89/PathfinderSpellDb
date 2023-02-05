@@ -3,7 +3,7 @@
   import { setClient, query } from "svelte-apollo";
   import type { ReadableQuery } from "svelte-apollo";
 
-  let name : string = "fireball";
+  let name : string = "";
 
   const headers = [
     "Name", "School", "Description"
@@ -21,18 +21,7 @@
   });
   setClient(client);
 
-  const ALL_SPELLS =
-    gql`
-      query SpellsList {
-        spells {
-          name
-          school
-          description
-        }
-      }
-    `;
-
-  const SEARCH_SPELL_BY_NAME =
+  const SPELLS =
     gql`
       query SearchSpellsByName($spellName: String!) {
         spells(name: $spellName) {
@@ -48,20 +37,31 @@
     spell: Spell
   }
 
-  const spells : ReadableQuery<SpellsResult> = query(SEARCH_SPELL_BY_NAME, {
+  const spells : ReadableQuery<SpellsResult> = query(SPELLS, {
     variables: { spellName: name }
   });
 
-  $: spells.refetch({ name });
-  $: console.log(name);
+  $: spells.refetch({ spellName: name });
+  $: console.log('name', name);
 
+  // wow typescript is dumb.
+  let timer: string | number | NodeJS.Timeout | undefined;
+  const debounce = (e : Event) => {
+    clearTimeout(timer);
+    timer = setTimeout( () => {
+      console.log(e);
+      if (e && e.target && e.target instanceof HTMLInputElement ) {
+        name = e.target.value;
+      }
+    }, 500);
+  }
 
 </script>
 
 <h1>Welcome to SvelteKit</h1>
 <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 
-<h2>Search by name: </h2><input bind:value={name} />
+<h2>Search by name: </h2><input value={name} on:input={debounce} />
 
 {#if $spells.loading}
   <h2>Loading Spells...</h2>

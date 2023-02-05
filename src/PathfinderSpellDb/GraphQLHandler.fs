@@ -138,8 +138,8 @@ module GraphQLHandler =
         let query = removeWhitespacesAndLineBreaks query
         let root = Root.Create()
         let result = executor.AsyncExecute (query, root, variables) |> Async.RunSynchronously
-        printfn "Result content: %A" result.Content
-        printfn "Result metadata: %A" result.Metadata
+        // printfn "Result content: %A" result.Content
+        // printfn "Result metadata: %A" result.Metadata
         okWithStr (json result) ctx
     | Some query, None ->
         // printfn "Received query: %s" query
