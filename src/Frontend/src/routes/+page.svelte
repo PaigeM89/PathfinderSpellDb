@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-  import { setClient, query } from "svelte-apollo";
-  import type { ReadableQuery } from "svelte-apollo";
-  import { baseUrl, capitalizeFirstLetter } from "../Shared";
+  import { baseUrl, capitalizeFirstLetter, getJson } from "../Shared";
   import type { PageData } from "./$types";
 
   export let data: PageData;
@@ -15,7 +12,11 @@
   ];
 
   async function search(name : string) {
-    if (name.trim() === "") return;
+    if (name.trim() === "") {
+      const json = await getJson(fetch, "/spells");
+      spells = json;
+      return;
+    }
     
     console.log('search', name);
 

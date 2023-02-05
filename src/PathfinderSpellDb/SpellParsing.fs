@@ -42,6 +42,7 @@ module SpellParsing =
       }
     )
     |> Seq.toList
+    |> List.sortBy (fun s -> s.Name)
 
   printfn "Loaded %i spells" (List.length spells)
 

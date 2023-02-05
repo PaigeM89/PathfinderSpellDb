@@ -1,48 +1,10 @@
 <script lang="ts">
-  import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-  import { setClient, query } from "svelte-apollo";
-  import type { ReadableQuery } from "svelte-apollo";
-
   import type { PageData } from './$types';
   import { capitalizeFirstLetter } from "../../../Shared";
   import type { Spell } from "./+page";
 
   export let data: PageData;
   let spell = data.spell;
-  // interface Spell {
-  //   name : string
-  //   school : string
-  //   subschool : string
-  //   descriptors: string []
-  //   fullDescription : string
-  // }
-
-  // const client = new ApolloClient({
-  //   uri: 'http://localhost:5000/',
-  //   cache: new InMemoryCache(),
-  // });
-  // setClient(client);
-
-  // const SPELLS =
-  //   gql`
-  //     query SearchSpellsById($id: Int!) {
-  //       spell(id: $id) {
-  //         name
-  //         school
-  //         subschool
-  //         descriptors
-  //         fullDescription
-  //       }
-  //     }
-  //   `;
-
-  // type SpellsResult = {
-  //   spell: Spell
-  // }
-
-  // const spell : ReadableQuery<SpellsResult> = query(SPELLS, {
-  //   variables: { id: data.id }
-  // });
 
   function schoolStr(spell : Spell) {
     var subschool = "";
