@@ -13,7 +13,8 @@ module Types =
     School : string
     SubSchool : string option
     Descriptors : string list
-    Description: string
+    ShortDescription : string
+    Description : string
   }
 
 module SpellParsing = 
@@ -36,6 +37,7 @@ module SpellParsing =
         School = row.["school"]
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
+        ShortDescription = row.["short_description"]
         Description = row.["description_formatted"]
       }
     )
@@ -71,6 +73,7 @@ module GraphQL =
         Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
         Define.Field("subschool", Nullable String, "The subschool of the spell, if any", fun _ (s : Spell) -> s.SubSchool)
         Define.Field("descriptors", ListOf String, "The descriptors of the spell, if any", fun _ (s: Spell) -> s.Descriptors)
-        Define.Field("description", String, "The description of the spell", fun _ (s: Spell) -> s.Description)
+        Define.Field("description", String, "The short description of the spell", fun _ (s : Spell) -> s.ShortDescription)
+        Define.Field("fullDescription", String, "The full HTML description of the spell", fun _ (s: Spell) -> s.Description)
       ]
     )
