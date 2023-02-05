@@ -15,7 +15,7 @@
     school : string
     subschool : string
     descriptors: string []
-    description : string
+    fullDescription : string
   }
 
   const client = new ApolloClient({
@@ -32,7 +32,7 @@
           school
           subschool
           descriptors
-          description
+          fullDescription
         }
       }
     `;
@@ -69,7 +69,7 @@
   {#if $spell.data && $spell.data.spell}
     <h1>{$spell.data.spell.name}</h1>
     <h2>{schoolStr($spell.data.spell)}</h2>
-    <p>{@html $spell.data.spell.description}</p>
+    <p>{@html $spell.data.spell.fullDescription}</p>
   {/if}
 {/if}
 <a href="/">Back to spell list</a>

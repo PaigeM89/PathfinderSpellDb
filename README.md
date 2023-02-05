@@ -8,6 +8,8 @@ https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/rout
 
 https://github.com/fsprojects/FSharp.Data.GraphQL/blob/dev/samples/star-wars-api/Schema.fs
 
+https://www.apollographql.com/docs/react/pagination/core-api/
+
 further reading:
 
 https://rodneylab.com/sveltekit-graphql-queries-fetch/
