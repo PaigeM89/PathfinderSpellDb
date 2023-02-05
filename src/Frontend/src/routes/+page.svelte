@@ -10,6 +10,7 @@
   ];
 
   interface Spell {
+    id : number
     name : string
     school : string
     description : string
@@ -23,8 +24,9 @@
 
   const SPELLS =
     gql`
-      query SearchSpellsByName($spellName: String!) {
-        spells(name: $spellName) {
+      query SearchSpellsByName($name: String!) {
+        spells(name: $name) {
+          id
           name
           school
           description
@@ -38,18 +40,16 @@
   }
 
   const spells : ReadableQuery<SpellsResult> = query(SPELLS, {
-    variables: { spellName: name }
+    variables: { name: name }
   });
 
-  $: spells.refetch({ spellName: name });
-  $: console.log('name', name);
+  $: spells.refetch({ name: name });
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
   const debounce = (e : Event) => {
     clearTimeout(timer);
     timer = setTimeout( () => {
-      console.log(e);
       if (e && e.target && e.target instanceof HTMLInputElement ) {
         name = e.target.value;
       }
@@ -70,9 +70,6 @@
   <p>{$spells.error.message}</p>
 {:else}
   {#if $spells.data}
-    {#if $spells.data.spell}
-      <h1>{$spells.data.spell.name}</h1>
-    {/if}
     {#if $spells.data.spells}
     <h1>Spells</h1>
     <table>
@@ -86,7 +83,9 @@
       <tbody>
           {#each $spells.data.spells as spell}
             <tr>
-              <td>{spell.name}</td>
+              <td>
+                <a href="/spell/{spell.id}">{spell.name}</a>
+              </td>
               <td>{spell.school}</td>
               <td>{@html spell.description}</td>
             </tr>

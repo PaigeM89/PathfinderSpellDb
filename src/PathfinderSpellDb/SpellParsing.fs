@@ -11,6 +11,8 @@ module Types =
     Id: int
     Name : string
     School : string
+    SubSchool : string option
+    Descriptors : string list
     Description: string
   }
 
@@ -21,17 +23,20 @@ module SpellParsing =
 
   let rawSpells = CsvFile.Load(__SOURCE_DIRECTORY__ + "/spells.csv").Cache()
 
+  let strValueOrNone (s : string) = if s = "" then None else Some s
+
+  let split (s : string) = s.Split(",") |> Array.toList
+
   let spells =
     rawSpells.Rows
     |> Seq.mapi (fun index row ->
-      let name = row.["name"]
-      let school = row.["school"]
-      let description = row.["description_formatted"]
       {
         Id = index
-        Name = name
-        School = school
-        Description = description
+        Name = row.["name"]
+        School = row.["school"]
+        SubSchool = row.["subschool"] |> strValueOrNone
+        Descriptors = row.["descriptor"] |> split
+        Description = row.["description_formatted"]
       }
     )
     |> Seq.toList
@@ -44,6 +49,9 @@ module GraphQL =
 
   let findSpellByName (name : string) = 
     SpellParsing.spells |> List.tryFind (fun s -> s.Name.ToLowerInvariant() = name)
+
+  let findSpellByIndex (index: int) =
+    SpellParsing.spells |> List.tryItem index
 
   let spellNameSearch (str : string) =
     if (str.Length > 1) then
@@ -61,6 +69,8 @@ module GraphQL =
         Define.Field("id", Int, "The id of the spell. Used for querying. Generated on data load", fun _ (s : Spell) -> s.Id)
         Define.Field("name", String, "The name of the spell", fun _ (s : Spell) -> s.Name)
         Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
+        Define.Field("subschool", Nullable String, "The subschool of the spell, if any", fun _ (s : Spell) -> s.SubSchool)
+        Define.Field("descriptors", ListOf String, "The descriptors of the spell, if any", fun _ (s: Spell) -> s.Descriptors)
         Define.Field("description", String, "The description of the spell", fun _ (s: Spell) -> s.Description)
       ]
     )

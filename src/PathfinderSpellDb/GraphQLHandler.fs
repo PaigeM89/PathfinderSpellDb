@@ -43,12 +43,15 @@ module GraphQLHandler =
   let spells : Spell list = SpellParsing.spells |> Seq.toList
 
   let Query =
-    let inputs = [ Define.Input ("name", String) ]
+    let textInputs = [ Define.Input ("name", String ) ]
+    let idInputs = [
+      Define.Input ("id", Int)
+    ]
     Define.Object<Root>(
       name = "Query",
       fields = [
-        Define.Field("spells", ListOf SpellType, "Gets spells", inputs, fun ctx _ -> ctx.Arg "name" |> spellNameSearch)
-        Define.Field("spell", Nullable SpellType, "Gets a specific spell", inputs, fun ctx _ -> findSpellByName (ctx.Arg "name"))
+        Define.Field("spells", ListOf SpellType, "Gets spells", textInputs, fun ctx _ -> ctx.Arg "name" |> spellNameSearch)
+        Define.Field("spell", Nullable SpellType, "Gets a specific spell", idInputs, fun ctx _ -> findSpellByIndex (ctx.Arg "id"))
       ]
     )
 
@@ -135,16 +138,38 @@ module GraphQLHandler =
         >> Log.addContextDestructured "query" query
         >> Log.addContextDestructured "variables" variables
         |> logger.info
+        
         let query = removeWhitespacesAndLineBreaks query
         let root = Root.Create()
         let result = executor.AsyncExecute (query, root, variables) |> Async.RunSynchronously
-        // printfn "Result content: %A" result.Content
-        // printfn "Result metadata: %A" result.Metadata
+
+        // Log.setMessage "Data response for query"
+        // >> Log.addContextDestructured "data" result.Content
+        // |> logger.info
+
+        Log.setMessage "Metadata response for query"
+        >> Log.addContextDestructured "metadata" result.Metadata
+        |> logger.info
+
         okWithStr (json result) ctx
+
     | Some query, None ->
+        Log.setMessage "Received query and variables for graphql query"
+        >> Log.addContextDestructured "query" query
+        |> logger.info
+
         // printfn "Received query: %s" query
         let query = removeWhitespacesAndLineBreaks query
         let result = executor.AsyncExecute (query) |> Async.RunSynchronously
+
+        // Log.setMessage "Data response for query"
+        // >> Log.addContextDestructured "data" result.Content
+        // |> logger.info
+
+        Log.setMessage "Metadata response for query"
+        >> Log.addContextDestructured "metadata" result.Metadata
+        |> logger.info
+
         // printfn "Result content: %A" result.Content
         // printfn "Result metadata: %A" result.Metadata
         okWithStr (json result) ctx
