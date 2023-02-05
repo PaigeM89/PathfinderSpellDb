@@ -1,0 +1,8 @@
+FSharp.Core
+Argu
+Packaging.Targets
+Falco
+FsToolkit.ErrorHandling
+FSharp.Data
+FSharp.Data.GraphQL.Server
+Newtonsoft.Json

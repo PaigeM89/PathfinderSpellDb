@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>PathfinderSpellDb</Title>
+    <Description>PathfinderSpellDb does the thing!</Description>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <None Include="App.config" />
+    <Compile Include="Helpers.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="SpellParsing.fs" />
+    <Compile Include="JsonConverters.fs" />
+    <Compile Include="GraphQLHandler.fs" />
+    <Compile Include="Webhost.fs" />
+    <Compile Include="Main.fs" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>
