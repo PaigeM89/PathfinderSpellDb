@@ -37,7 +37,7 @@ module SpellParsing =
         School = row.["school"]
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
-        ShortDescription = row.["short_description"]
+        ShortDescription = row.["short_description"].Trim()
         Description = row.["description_formatted"]
       }
     )

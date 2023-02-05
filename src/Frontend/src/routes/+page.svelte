@@ -56,6 +56,17 @@
     }, 500);
   }
 
+  function capitalizeFirstLetter(str : string) {
+    if (str === "") {
+      return str;
+    }
+
+    const f = str.charAt(0);
+    const rest = str.slice(1);
+
+    return f.toUpperCase() + rest;
+  }
+
 </script>
 
 <h1>Welcome to SvelteKit</h1>
@@ -86,7 +97,7 @@
               <td>
                 <a href="/spell/{spell.id}">{spell.name}</a>
               </td>
-              <td>{spell.school}</td>
+              <td>{capitalizeFirstLetter(spell.school)}</td>
               <td>{@html spell.description}</td>
             </tr>
           {/each}
@@ -95,3 +106,19 @@
     {/if}
   {/if}
 {/if}
+
+<style>
+  p {
+    text-align: justify;
+  }
+
+  table, thead, td {
+    border: 1px solid;
+    border-collapse: collapse;
+    padding: 15px;
+  }
+
+  table {
+    width: 100%;
+  }
+</style>
