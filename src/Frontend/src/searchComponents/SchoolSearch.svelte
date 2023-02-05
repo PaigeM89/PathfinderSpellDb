@@ -12,7 +12,8 @@
   let necromancy = false;
   let transmuation = false;
   let universal = false;
-  let other = false;
+  // exactly one spell has "other" as a school
+  // let other = false;
 
 
   export let searchBySchools : string[] = [];
@@ -39,7 +40,7 @@
   $: updateSchool("necromancy", necromancy);
   $: updateSchool("transmuation", transmuation);
   $: updateSchool("universal", universal);
-  $: updateSchool("other", other);
+  // $: updateSchool("other", other);
 
 </script>
 
@@ -70,5 +71,5 @@
 <input id="universal-cb" type="checkbox" bind:checked={universal} />
 <label for="universal-cb">Universal</label>
 
-<input id="other-cb" type="checkbox" bind:checked={other} />
-<label for="other-cb">Other (See text)</label>
+<!-- <input id="other-cb" type="checkbox" bind:checked={other} />
+<label for="other-cb">Other (See text)</label> -->

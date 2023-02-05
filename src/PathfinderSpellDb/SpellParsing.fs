@@ -118,6 +118,13 @@ module SpellParsing =
     ]
     |> List.choose id
 
+  let getShortDescription(row : CsvRow) =
+    let desc = row.["short_description"].Trim()
+    if desc = "" then
+      row.["description"].Trim().Split(".")[0] + "."
+    else
+      desc
+
   let spells =
     rawSpells.Rows
     |> Seq.sortBy (fun rawSpell -> rawSpell.["name"].Trim())
@@ -128,7 +135,8 @@ module SpellParsing =
         School = row.["school"].Trim().ToLowerInvariant()
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
-        ShortDescription = row.["short_description"].Trim()
+        ShortDescription = getShortDescription(row)
+        //row.["short_description"].Trim()
         Description = row.["description_formatted"]
         ClassSpellLevels = buildClassSpellLevels row
       }
@@ -136,12 +144,6 @@ module SpellParsing =
     |> Seq.toList
 
   printfn "Loaded %i spells" (List.length spells)
-
-  spells
-  |> List.map(fun s -> s.School)
-  |> List.distinct
-  |> List.sort
-  |> printfn "Schools: %A"
 
   let spellNameSearch (str : string) =
     if (str.Length > 1) then
