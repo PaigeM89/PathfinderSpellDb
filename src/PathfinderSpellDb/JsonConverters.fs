@@ -7,14 +7,14 @@ open Microsoft.FSharp.Reflection
 open FSharp.Data.GraphQL
 open FSharp.Data.GraphQL.Types
 open FSharp.Data.GraphQL.Types.Patterns
+open FsLibLog
+open System
 
 [<Sealed>]
 type OptionConverter () =
     inherit JsonConverter ()
-
     override _.CanConvert (t) =
         t.IsGenericType && t.GetGenericTypeDefinition () = typedefof<option<_>>
-
     override _.WriteJson (writer, value, serializer) =
 
         let value =
@@ -41,6 +41,48 @@ type OptionConverter () =
         then FSharpValue.MakeUnion (cases.[0], [||])
         else FSharpValue.MakeUnion (cases.[1], [| value |])
 
+type DUConverter() =
+  inherit JsonConverter()
+
+  let logger = LogProvider.getLoggerByName "Newtonsoft.Json.FSharp.DUConverter"
+
+  // todo: I copy & pasted this from here: https://github.com/haf/Newtonsoft.Json.FSharp/blob/master/src/JsonNet/Converters/OptionConverter.fs
+  // and did not edit any of it to actually work
+  override x.CanConvert t =
+    Log.setMessage "Checking if can convert type t"
+    >> Log.addContextDestructured "t" t
+    |> logger.info
+    t.IsGenericType
+    && typedefof<option<_>>.Equals (t.GetGenericTypeDefinition())
+
+  override x.WriteJson(writer, value, serializer) =
+    Log.setMessage "Attempting to write JSON for custom DU"
+    >> Log.addContextDestructured "value" value
+    |> logger.info
+    let value =
+      if value = null then
+        null
+      else 
+        let _,fields = FSharpValue.GetUnionFields(value, value.GetType())
+        fields.[0]
+    serializer.Serialize(writer, value)
+
+  override x.ReadJson(reader, t, existingValue, serializer) =
+    let innerType = t.GetGenericArguments().[0]
+
+    let innerType = 
+      if innerType.IsValueType then
+        typedefof<Nullable<_>>.MakeGenericType([| innerType |])
+      else
+        innerType
+
+    let value = serializer.Deserialize(reader, innerType)
+    let cases = FSharpType.GetUnionCases t
+
+    if value = null then
+      FSharpValue.MakeUnion(cases.[0], [||])
+    else
+      FSharpValue.MakeUnion(cases.[1], [|value|])
 
 type GraphQLQuery =
     { ExecutionPlan : ExecutionPlan

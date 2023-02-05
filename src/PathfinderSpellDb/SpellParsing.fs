@@ -5,7 +5,73 @@ open System.IO
 open FSharp.Data
 
 module Types =
-  
+  open FSharp.Reflection
+
+  let GetUnionCaseName (x:'a) = 
+    match FSharpValue.GetUnionFields(x, typeof<'a>) with
+    | case, _ -> case.Name
+
+  [<RequireQualifiedAccess>]
+  type ClassSpellLevel = 
+  | Adept of int
+  | Alchemist of int
+  | Antipaladin of int
+  | Bard of int
+  | Bloodrager of int
+  | Cleric of int
+  | Druid of int
+  | Hunter of int
+  | Inquisitor of int
+  | Investigator of int
+  | Magus of int
+  | Medium of int
+  | Mesmerist of int
+  | Occultist of int
+  | Oracle of int
+  | Paladin of int
+  | Psychic of int
+  | Ranger of int
+  | Shaman of int
+  | Skald of int
+  | Spiritualist of int
+  | Sorcerer of int
+  | Summoner of int
+  | SummonerUnchained of int
+  | Warpriest of int
+  | Witch of int
+  | Wizard of int
+  with
+    member this.ToTuple() =
+      match this with
+      | Adept x -> GetUnionCaseName this, x
+      | Alchemist x -> GetUnionCaseName this, x
+      | Antipaladin x -> GetUnionCaseName this, x
+      | Bard x -> GetUnionCaseName this, x
+      | Bloodrager x -> GetUnionCaseName this, x
+      | Cleric x -> GetUnionCaseName this, x
+      | Druid x -> GetUnionCaseName this, x
+      | Hunter x -> GetUnionCaseName this, x
+      | Inquisitor x -> GetUnionCaseName this, x
+      | Investigator x -> GetUnionCaseName this, x
+      | Magus x -> GetUnionCaseName this, x
+      | Medium x -> GetUnionCaseName this, x
+      | Mesmerist x -> GetUnionCaseName this, x
+      | Occultist x -> GetUnionCaseName this, x
+      | Oracle x -> GetUnionCaseName this, x
+      | Paladin x -> GetUnionCaseName this, x
+      | Psychic x -> GetUnionCaseName this, x
+      | Ranger x -> GetUnionCaseName this, x
+      | Shaman x -> GetUnionCaseName this, x
+      | Skald x -> GetUnionCaseName this, x
+      | Spiritualist x -> GetUnionCaseName this, x
+      | Sorcerer x -> GetUnionCaseName this, x
+      | Summoner x -> GetUnionCaseName this, x
+      | SummonerUnchained x -> GetUnionCaseName this, x
+      | Warpriest x -> GetUnionCaseName this, x
+      | Witch x -> GetUnionCaseName this, x
+      | Wizard x -> GetUnionCaseName this, x
+      
+
 
   type Spell = {
     Id: int
@@ -15,6 +81,7 @@ module Types =
     Descriptors : string list
     ShortDescription : string
     Description : string
+    ClassSpellLevels : ClassSpellLevel list
   }
 
 module SpellParsing = 
@@ -26,10 +93,34 @@ module SpellParsing =
 
   let strValueOrNone (s : string) = if s = "" then None else Some s
 
+  let intValueOrNone (s : string) =
+    match Int32.TryParse s with
+    | true, x -> Some x
+    | false, _ -> None
+
   let split (s : string) = s.Split(",") |> Array.toList
+
+  let buildClassSpellLevels (row : CsvRow) =
+    let tryMapColumn (column: string) toClassSpellLevel =
+      row.[column] |> intValueOrNone |> Option.map toClassSpellLevel
+
+    let sorcLevel = tryMapColumn "sor" ClassSpellLevel.Sorcerer
+    let wizLevel = tryMapColumn "wiz" ClassSpellLevel.Wizard
+    let clericLevel = tryMapColumn "cleric" ClassSpellLevel.Cleric
+    let druidLevel = tryMapColumn "druid" ClassSpellLevel.Druid
+    // todo: the rest
+
+    [
+      sorcLevel
+      wizLevel
+      clericLevel
+      druidLevel
+    ]
+    |> List.choose id
 
   let spells =
     rawSpells.Rows
+    |> Seq.sortBy (fun rawSpell -> rawSpell.["name"].Trim())
     |> Seq.mapi (fun index row ->
       {
         Id = index
@@ -39,10 +130,10 @@ module SpellParsing =
         Descriptors = row.["descriptor"] |> split
         ShortDescription = row.["short_description"].Trim()
         Description = row.["description_formatted"]
+        ClassSpellLevels = buildClassSpellLevels row
       }
     )
     |> Seq.toList
-    |> List.sortBy (fun s -> s.Name)
 
   printfn "Loaded %i spells" (List.length spells)
 

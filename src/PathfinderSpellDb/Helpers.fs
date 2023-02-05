@@ -1,7 +1,5 @@
 namespace PathfinderSpellDb
 
-open System
-open System.Text
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open Newtonsoft.Json.Serialization

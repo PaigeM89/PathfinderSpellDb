@@ -9,7 +9,7 @@
   let wasSearch = false;
 
   const headers = [
-    "Name", "School", "Description"
+    "Name", "School", "Description", "Level"
   ];
 
   async function search(name : string) {
@@ -50,6 +50,7 @@
       }
     }, 500);
   }
+
 </script>
 
 <h1>Pathfinder Spell Database</h1>
@@ -74,6 +75,11 @@
             </td>
             <td>{capitalizeFirstLetter(spell.School)}</td>
             <td>{@html spell.ShortDescription}</td>
+            <td>
+              {#each spell.ClassSpellLevels as csl}
+                <h3>{csl.ClassName} {csl.Level}</h3>
+              {/each}
+            </td>
           </tr>
         {/each}
     </tbody>

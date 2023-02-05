@@ -2,6 +2,12 @@
 
 [Enter useful description for PathfinderSpellDb]
 
+TODO:
+* add additional fields (classes & levels would be a good start)
+* searching by fields other than name
+* sorting
+* styling (get someone to do this?)
+
 Commonly referenced links:
 
 https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/routes/index.svelte
