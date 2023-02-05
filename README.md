@@ -8,6 +8,14 @@ https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/rout
 
 https://github.com/fsprojects/FSharp.Data.GraphQL/blob/dev/samples/star-wars-api/Schema.fs
 
+further reading:
+
+https://rodneylab.com/sveltekit-graphql-queries-fetch/
+
+https://stackoverflow.com/questions/67135169/how-to-initialize-apolloclient-in-sveltekit-to-work-on-both-ssr-and-client-side
+
+https://the-guild.dev/graphql/codegen/docs/guides/svelte
+
 ---
 
 ## Builds

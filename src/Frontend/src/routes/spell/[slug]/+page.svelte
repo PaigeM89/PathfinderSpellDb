@@ -52,7 +52,6 @@
     }
     var desc = "";
     if (spell.descriptors && spell.descriptors.length > 0 && spell.descriptors[0] !== "") {
-      console.log('descriptors', spell.descriptors);
       let joined = spell.descriptors.join(", ");
       desc = ` [${joined}]`;
     }
@@ -73,3 +72,4 @@
     <p>{@html $spell.data.spell.description}</p>
   {/if}
 {/if}
+<a href="/">Back to spell list</a>
