@@ -2,6 +2,7 @@
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
   import { setClient, query } from "svelte-apollo";
   import type { ReadableQuery } from "svelte-apollo";
+    import { capitalizeFirstLetter } from "../Shared";
 
   let name : string = "";
 
@@ -55,18 +56,6 @@
       }
     }, 500);
   }
-
-  function capitalizeFirstLetter(str : string) {
-    if (str === "") {
-      return str;
-    }
-
-    const f = str.charAt(0);
-    const rest = str.slice(1);
-
-    return f.toUpperCase() + rest;
-  }
-
 </script>
 
 <h1>Welcome to SvelteKit</h1>
