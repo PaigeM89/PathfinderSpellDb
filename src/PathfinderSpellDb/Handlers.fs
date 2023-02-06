@@ -60,7 +60,7 @@ module Handlers =
     Id : int
     Name : string
     School : string
-    SubSchool : string option
+    Subschool : string option
     Descriptors : string list
     Description : string
     ClassSpellLevels : ClassSpellLevelDto list
@@ -70,7 +70,7 @@ module Handlers =
         Id = spell.Id
         Name = spell.Name
         School = spell.School
-        SubSchool = spell.SubSchool
+        Subschool = spell.SubSchool
         Descriptors = spell.Descriptors
         Description = spell.Description
         ClassSpellLevels = spell.ClassSpellLevels |> List.map ClassSpellLevelDto.FromClassSpellLevel

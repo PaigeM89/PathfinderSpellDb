@@ -3,7 +3,8 @@
 [Enter useful description for PathfinderSpellDb]
 
 TODO:
-* add additional fields (classes & levels would be a good start)
+* add additional fields
+* paging
 * searching by fields other than name
 * sorting
 * styling (get someone to do this?)
