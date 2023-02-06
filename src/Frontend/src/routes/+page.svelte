@@ -100,7 +100,7 @@
         {#each filteredSpells as spell}
           <tr>
             <td>
-              <a href="/spell/{spell.Id}">{spell.Name}</a>
+              <a href="/spells/{spell.Id}">{spell.Name}</a>
             </td>
             <td>{capitalizeFirstLetter(spell.School)}</td>
             <td>{@html spell.ShortDescription}</td>
