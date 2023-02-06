@@ -15,44 +15,44 @@
     "Name", "School", "Description", "Level"
   ];
 
-  async function search(name : string) {
+  function filterSpells(name : string, schools : string[]) : Spell[] {
+    let searchName = false;
     if (name.trim() === "" && wasSearch === true) {
-      const json = await getJson(data.fetch, "/spells");
-      spells = json;
       wasSearch = false;
       console.log('resetting search');
-      return;
     } else if (name.trim() !== "") {
-      console.log('search', name);
-
-      const payload = {
-        Name : name,
-        School : ""
-      }
-
-      const res = await fetch(`${baseUrl}/spells`, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-
-      const json = await res.json();
-      spells = json;
+      searchName = true;
       wasSearch = true;
     }
+
+    let searchSchool = false;
+    if (schools && schools.length > 0) {
+      searchSchool = true;
+    }
+
+    let filteredSpells =
+      spells
+        .filter(spell => {
+          let namePassFilter = true;
+          if (searchName) {
+            namePassFilter = spell.Name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
+          }
+          let schoolPassFilter = true
+          if (searchSchool) {
+            if (schools.find(school => school.toLocaleLowerCase() === spell.School.toLocaleLowerCase())) {
+              schoolPassFilter = true;
+            } else {
+              schoolPassFilter = false;
+            }
+          }
+
+          return namePassFilter && schoolPassFilter;
+        });
+    
+    return filteredSpells;
   }
 
-  $: filteredSpells =
-    spells.filter(spell => {
-      if (searchBySchools && searchBySchools.length > 0) {
-        if (searchBySchools.find(school => school.toLocaleLowerCase() === spell.School.toLocaleLowerCase())) {
-          return true;
-        }
-        return false;
-      }
-      return true;
-    });
-
-  $: search(name);
+  $: filteredSpells = filterSpells(name, searchBySchools);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
@@ -62,7 +62,7 @@
       if (e && e.target && e.target instanceof HTMLInputElement ) {
         name = e.target.value;
       }
-    }, 500);
+    }, 250);
   }
 
   function classListToString(spell : Spell) {

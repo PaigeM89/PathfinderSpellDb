@@ -7,6 +7,7 @@ TODO:
 * searching by fields other than name
 * sorting
 * styling (get someone to do this?)
+* sqlite for storage & updating (needs auth)
 
 Commonly referenced links:
 

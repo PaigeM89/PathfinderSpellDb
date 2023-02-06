@@ -70,7 +70,6 @@ module Types =
       | Warpriest x -> GetUnionCaseName this, x
       | Witch x -> GetUnionCaseName this, x
       | Wizard x -> GetUnionCaseName this, x
-      
 
 
   type Spell = {
@@ -136,7 +135,6 @@ module SpellParsing =
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
         ShortDescription = getShortDescription(row)
-        //row.["short_description"].Trim()
         Description = row.["description_formatted"]
         ClassSpellLevels = buildClassSpellLevels row
       }

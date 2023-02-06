@@ -10,7 +10,7 @@
   let evocation = false;
   let illusion = false;
   let necromancy = false;
-  let transmuation = false;
+  let transmutation = false;
   let universal = false;
   // exactly one spell has "other" as a school
   // let other = false;
@@ -38,7 +38,7 @@
   $: updateSchool("evocation", evocation);
   $: updateSchool("illusion", illusion);
   $: updateSchool("necromancy", necromancy);
-  $: updateSchool("transmuation", transmuation);
+  $: updateSchool("transmutation", transmutation);
   $: updateSchool("universal", universal);
   // $: updateSchool("other", other);
 
@@ -65,8 +65,8 @@
 <input id="necromancy-cb" type="checkbox" bind:checked={necromancy} />
 <label for="necromancy-cb">Necromancy</label>
 
-<input id="transmuation-cb" type="checkbox" bind:checked={transmuation} />
-<label for="transmuation-cb">Transmuation</label>
+<input id="transmutation-cb" type="checkbox" bind:checked={transmutation} />
+<label for="transmutation-cb">Transmutation</label>
 
 <input id="universal-cb" type="checkbox" bind:checked={universal} />
 <label for="universal-cb">Universal</label>
