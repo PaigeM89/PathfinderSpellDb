@@ -103,17 +103,33 @@ module SpellParsing =
     let tryMapColumn (column: string) toClassSpellLevel =
       row.[column] |> intValueOrNone |> Option.map toClassSpellLevel
 
-    let sorcLevel = tryMapColumn "sor" ClassSpellLevel.Sorcerer
-    let wizLevel = tryMapColumn "wiz" ClassSpellLevel.Wizard
-    let clericLevel = tryMapColumn "cleric" ClassSpellLevel.Cleric
-    let druidLevel = tryMapColumn "druid" ClassSpellLevel.Druid
-    // todo: the rest
-
     [
-      sorcLevel
-      wizLevel
-      clericLevel
-      druidLevel
+      tryMapColumn "sor" ClassSpellLevel.Sorcerer
+      tryMapColumn "wiz" ClassSpellLevel.Wizard
+      tryMapColumn "cleric" ClassSpellLevel.Cleric
+      tryMapColumn "druid" ClassSpellLevel.Druid
+      tryMapColumn "ranger" ClassSpellLevel.Ranger
+      tryMapColumn "bard" ClassSpellLevel.Bard
+      tryMapColumn "paladin" ClassSpellLevel.Paladin
+      tryMapColumn "alchemist" ClassSpellLevel.Alchemist
+      tryMapColumn "summoner" ClassSpellLevel.Summoner
+      tryMapColumn "witch" ClassSpellLevel.Witch
+      tryMapColumn "inquisitor" ClassSpellLevel.Inquisitor
+      tryMapColumn "oracle" ClassSpellLevel.Oracle
+      tryMapColumn "antipaladin" ClassSpellLevel.Antipaladin
+      tryMapColumn "magus" ClassSpellLevel.Magus
+      tryMapColumn "adept" ClassSpellLevel.Adept
+      tryMapColumn "bloodrager" ClassSpellLevel.Bloodrager
+      tryMapColumn "shaman" ClassSpellLevel.Shaman
+      tryMapColumn "psychic" ClassSpellLevel.Psychic
+      tryMapColumn "medium" ClassSpellLevel.Medium
+      tryMapColumn "mesmerist" ClassSpellLevel.Mesmerist
+      tryMapColumn "occultist" ClassSpellLevel.Occultist
+      tryMapColumn "spiritualist" ClassSpellLevel.Spiritualist
+      tryMapColumn "skald" ClassSpellLevel.Skald
+      tryMapColumn "investigator" ClassSpellLevel.Investigator
+      tryMapColumn "hunter" ClassSpellLevel.Hunter
+      tryMapColumn "summoner_unchained" ClassSpellLevel.SummonerUnchained
     ]
     |> List.choose id
 

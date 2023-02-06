@@ -1,6 +1,6 @@
 <script lang="ts">
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
-  import { baseUrl, capitalizeFirstLetter, getJson } from "../Shared";
+  import { capitalizeFirstLetter } from "../Shared";
   import type { PageData } from "./$types";
   import type { Spell } from "./+page";
 
