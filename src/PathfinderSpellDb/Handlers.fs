@@ -51,15 +51,31 @@ module Handlers =
     Paging : PagingDto option
   }
 
-  let handleSpellSearch : HttpHandler =
-    let handleOk (search : SpellSearchInputDto) : HttpHandler =
+  let doSearchAndPaging (search :SpellSearchInputDto) =
+    let spells = allSpells()
+    let spells = 
       match search.Name with
       | Some name ->
-        SpellParsing.spellNameSearch name
-        |> mapSpellsToListDto
-        |> Response.ofJson
-      | None ->
-        getAllSpells()
+        let name = name.ToLowerInvariant()
+        spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(name))
+      | None -> spells
+    let spells =
+      match search.School with
+      | Some school ->
+        let school = school.ToLowerInvariant()
+        spells |> List.filter (fun s -> s.School.ToLowerInvariant() = school)
+      | None -> spells
+    let spells =
+      match search.Paging with
+      | Some paging ->
+        spells |> List.skip paging.Offset |> List.take paging.Limit
+      | None -> spells
+    spells
+
+  let handleSpellSearch : HttpHandler =
+    let handleOk (search : SpellSearchInputDto) : HttpHandler =
+      doSearchAndPaging search
+      |> Response.ofJson
     Request.mapJson handleOk
 
   type SpellDto = {

@@ -24,7 +24,6 @@
     searchBySchools = searchBySchools.filter(s => s !== school);
   }
   function updateSchool(school : string, flag : boolean) {
-    console.log(school, flag);
     if (flag) {
       addSearchSchool(school);
     } else {

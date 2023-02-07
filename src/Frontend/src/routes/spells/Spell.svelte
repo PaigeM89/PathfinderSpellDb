@@ -1,7 +1,7 @@
 <script lang="ts">
   import { schoolStr } from './SpellHelpers';
   import type { Spell } from './SpellHelpers';
-    import { classListToString } from '../../Shared';
+  import { classListToString } from '../../Shared';
 
   export let spell : Spell;
 </script>

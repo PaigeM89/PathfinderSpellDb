@@ -1,11 +1,12 @@
 <script lang="ts">
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
+  import { spellRowsStore } from "../Stores";
+  import type { SpellRow } from "../Types";
   import type { PageData } from "./$types";
-  import type { Spell } from "./+page";
 
   export let data: PageData;
-  let spells = data.spells;
+  spellRowsStore.set(data.spells);
 
   let name : string = "";
   let searchBySchools : string[] = [];
@@ -15,7 +16,7 @@
     "Name", "School", "Description", "Level"
   ];
 
-  function filterSpells(name : string, schools : string[]) : Spell[] {
+  function filterSpells(spells : SpellRow[], name : string, schools : string[]) : SpellRow[] {
     let searchName = false;
     if (name.trim() === "" && wasSearch === true) {
       wasSearch = false;
@@ -52,7 +53,7 @@
     return filteredSpells;
   }
 
-  $: filteredSpells = filterSpells(name, searchBySchools);
+  $: filteredSpells = filterSpells($spellRowsStore, name, searchBySchools);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
@@ -76,7 +77,7 @@
 </div>
 
 
-{#if spells}
+{#if $spellRowsStore}
   <h1>Spells</h1>
   <table>
     <thead>

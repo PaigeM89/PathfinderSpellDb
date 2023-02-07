@@ -1,16 +1,27 @@
 // @ts-nocheck
-import { getJson, type ClassSpellLevel } from '../Shared';
+import { getJson, postJson } from '../Shared';
 import type { PageLoad } from './$types';
+import type { SpellRow } from '../Types';
 
-export interface Spell {
-  Id : number
-  Name : string
-  School : string
-  ShortDescription : string
-  ClassSpellLevels : ClassSpellLevel []
-}
+export const ssr = false;
 
 export const load =( async ({ fetch, params}) => {
-  const spells : Spell[] = await getJson(fetch, "/spells");
-  return {spells: spells, fetch: fetch};
+  // todo: this needs to load the spell rows store & return it
+  // instead of making the call every time anyways
+  // but i'm going to do that after i do paging
+
+  const paging = {
+    Name: null,
+    School: null,
+    Paging: {
+      Offset: 0,
+      Limit: 200
+    }
+  }
+
+  const spells : SpellRow[] = await postJson(fetch, "/spells", paging);
+
+  console.log('spells', spells);
+
+  return {spells: spells};
 });;null as any as PageLoad;

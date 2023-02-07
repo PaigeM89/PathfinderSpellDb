@@ -110,6 +110,7 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const npm_package_version: string;
 	export const QT_ACCESSIBILITY: string;
+	export const NO_AT_BRIDGE: string;
 	export const GDMSESSION: string;
 	export const npm_config_argv: string;
 	export const npm_package_devDependencies_tslib: string;
@@ -248,6 +249,7 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		npm_package_version: string;
 		QT_ACCESSIBILITY: string;
+		NO_AT_BRIDGE: string;
 		GDMSESSION: string;
 		npm_config_argv: string;
 		npm_package_devDependencies_tslib: string;

@@ -1,4 +1,5 @@
-import { capitalizeFirstLetter, type ClassSpellLevel } from "../../Shared"
+import { capitalizeFirstLetter } from "../../Shared"
+import type { ClassSpellLevel } from "../../Types"
 
 export interface Spell {
   Name : string
