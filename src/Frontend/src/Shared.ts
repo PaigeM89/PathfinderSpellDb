@@ -14,6 +14,22 @@ export interface ClassSpellLevel {
   Level : number
 }
 
+function fixSummonerUnchained(str : string) {
+  if (str === "SummonerUnchained") {
+    return "Summoner (Unchained)";
+  }
+  return str;
+}
+
+export function classListToString(csls : ClassSpellLevel []) {
+  if (csls && csls.length > 1) {
+    return csls.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`).join(", ")
+  } else if (csls && csls.length === 1) {
+    return csls.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`)[0];
+  }
+  return "";
+}
+
 export const baseUrl = "http://localhost:5000";
 
 export function getJson(fetch: (arg0: string) => Promise<any>, route: string) {

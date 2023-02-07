@@ -1,6 +1,6 @@
 <script lang="ts">
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
-  import { capitalizeFirstLetter } from "../Shared";
+  import { capitalizeFirstLetter, classListToString } from "../Shared";
   import type { PageData } from "./$types";
   import type { Spell } from "./+page";
 
@@ -64,16 +64,6 @@
       }
     }, 250);
   }
-
-  function classListToString(spell : Spell) {
-    if (spell.ClassSpellLevels && spell.ClassSpellLevels.length > 1) {
-      return spell.ClassSpellLevels.map(csl => `${csl.ClassName} ${csl.Level}`).join(", ")
-    } else if (spell.ClassSpellLevels && spell.ClassSpellLevels.length === 1) {
-      return spell.ClassSpellLevels.map(csl => `${csl.ClassName} ${csl.Level}`)[0];
-    }
-    return "";
-  }
-
 </script>
 
 <h1>Pathfinder Spell Database</h1>
@@ -105,7 +95,7 @@
             <td>{capitalizeFirstLetter(spell.School)}</td>
             <td>{@html spell.ShortDescription}</td>
             <td>
-              {classListToString(spell)}
+              {classListToString(spell.ClassSpellLevels)}
             </td>
           </tr>
         {/each}
