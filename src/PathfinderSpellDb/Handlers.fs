@@ -40,9 +40,15 @@ module Handlers =
 
   let getAllSpells() = allSpells() |> Response.ofJson
 
+  type PagingDto = {
+    Offset: int
+    Limit: int
+  }
+
   type SpellSearchInputDto = {
     Name : string option
     School : string option
+    Paging : PagingDto option
   }
 
   let handleSpellSearch : HttpHandler =

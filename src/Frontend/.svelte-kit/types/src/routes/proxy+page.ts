@@ -1,11 +1,6 @@
 // @ts-nocheck
-import { getJson } from '../Shared';
+import { getJson, type ClassSpellLevel } from '../Shared';
 import type { PageLoad } from './$types';
-
-export interface ClassSpellLevel {
-  ClassName : string
-  Level : number
-}
 
 export interface Spell {
   Id : number

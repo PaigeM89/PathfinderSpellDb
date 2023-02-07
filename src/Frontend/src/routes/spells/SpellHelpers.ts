@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from "../../Shared"
+import { capitalizeFirstLetter, type ClassSpellLevel } from "../../Shared"
 
 export interface Spell {
   Name : string
@@ -6,6 +6,7 @@ export interface Spell {
   Subschool : string
   Descriptors: string []
   Description : string
+  ClassSpellLevels: ClassSpellLevel[]
 }
 
 export function schoolStr(spell : Spell) {

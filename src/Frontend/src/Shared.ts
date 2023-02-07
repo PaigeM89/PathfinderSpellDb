@@ -9,6 +9,11 @@ export function capitalizeFirstLetter(str : string) {
   return f.toUpperCase() + rest;
 }
 
+export interface ClassSpellLevel {
+  ClassName : string
+  Level : number
+}
+
 export const baseUrl = "http://localhost:5000";
 
 export function getJson(fetch: (arg0: string) => Promise<any>, route: string) {
