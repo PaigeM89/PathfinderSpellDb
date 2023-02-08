@@ -1,4 +1,4 @@
-import { getJson, postJson } from '../Shared';
+import { postJson } from '../Shared';
 import type { PageLoad } from './$types';
 import type { SpellRow } from '../Types';
 
@@ -22,5 +22,5 @@ export const load : PageLoad =( async ({ fetch, params}) => {
 
   console.log('spells', spells);
 
-  return {spells: spells};
+  return {spells: spells, fetch: fetch};
 });

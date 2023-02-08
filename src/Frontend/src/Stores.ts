@@ -2,7 +2,7 @@ import { writable, type Writable, get } from "svelte/store";
 import type { SpellRow } from "./Types";
 
 
-const createLocalStorageWritableStore = <T>(key: string, startingValue: T): Writable<T> => {
+export const createLocalStorageWritableStore = <T>(key: string, startingValue: T): Writable<T> => {
   const store = writable(startingValue);
 
   const storedValueStr = localStorage.getItem(key);

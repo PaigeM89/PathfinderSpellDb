@@ -1,15 +1,16 @@
 <script lang="ts">
+  import type { Writable } from "svelte/store";
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
-  import { spellRowsStore } from "../Stores";
+  import { createLocalStorageWritableStore, spellRowsStore } from "../Stores";
   import type { SpellRow } from "../Types";
   import type { PageData } from "./$types";
 
   export let data: PageData;
   spellRowsStore.set(data.spells);
 
-  let name : string = "";
-  let searchBySchools : string[] = [];
+  let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
+  let searchBySchools : string[] = []; //createLocalStorageWritableStore<string[]>("searchSchools", []);
   let wasSearch = false;
 
   const headers = [
@@ -53,15 +54,15 @@
     return filteredSpells;
   }
 
-  $: filteredSpells = filterSpells($spellRowsStore, name, searchBySchools);
+  $: filteredSpells = filterSpells($spellRowsStore, $name, searchBySchools);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
-  const debounce = (e : Event) => {
+  const debounceName = (e : Event) => {
     clearTimeout(timer);
     timer = setTimeout( () => {
       if (e && e.target && e.target instanceof HTMLInputElement ) {
-        name = e.target.value;
+        name.set(e.target.value);
       }
     }, 250);
   }
@@ -69,7 +70,7 @@
 
 <h1>Pathfinder Spell Database</h1>
 <p>A database of all the spells in Pathfinder 1E.</p>
-<h2>Search by name: </h2><input value={name} on:input={debounce} />
+<h2>Search by name: </h2><input value={$name} on:input={debounceName} />
 
 <h2>Search by school(s):</h2>
 <div>

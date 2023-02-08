@@ -1,74 +1,28 @@
 <script lang="ts">
-  const schools = [
-    "Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation", "Universal", "Other (See Spell Text)"
-  ];
+  import SchoolSearchComponent from "./SchoolSearchComponent.svelte";
 
-  let abjuration = false;
-  let conjuration = false;
-  let divination = false;
-  let enchantment = false;
-  let evocation = false;
-  let illusion = false;
-  let necromancy = false;
-  let transmutation = false;
-  let universal = false;
-  // exactly one spell has "other" as a school
-  // let other = false;
+  interface School {
+    Name : string,
+    Selected : boolean
+  }
 
+  const schools : School[] = [
+    { Name: "Abjuration", Selected: false },
+    { Name: "Conjuration", Selected: false },
+    { Name: "Divination", Selected: false },
+    { Name: "Enchantment", Selected: false },
+    { Name: "Evocation", Selected: false },
+    { Name: "Illusion", Selected: false },
+    { Name: "Necromancy", Selected: false },
+    { Name: "Transmutation", Selected: false },
+    { Name: "Universal", Selected: false }
+  ]
 
   export let searchBySchools : string[] = [];
-  function addSearchSchool(school : string) {
-    searchBySchools = [school, ...searchBySchools];
-  }
-  function removeSearchSchool(school : string) {
-    searchBySchools = searchBySchools.filter(s => s !== school);
-  }
-  function updateSchool(school : string, flag : boolean) {
-    if (flag) {
-      addSearchSchool(school);
-    } else {
-      removeSearchSchool(school);
-    }
-  }
-  $: updateSchool("Abjuration", abjuration);
-  $: updateSchool("Conjuration", conjuration);
-  $: updateSchool("Divination", divination);
-  $: updateSchool("enchantment", enchantment);
-  $: updateSchool("evocation", evocation);
-  $: updateSchool("illusion", illusion);
-  $: updateSchool("necromancy", necromancy);
-  $: updateSchool("transmutation", transmutation);
-  $: updateSchool("universal", universal);
-  // $: updateSchool("other", other);
-
+  $: searchBySchools =
+    schools.filter(school => school.Selected).map(school => school.Name);
 </script>
 
-<input id="abjuration-cb" type="checkbox" bind:checked={abjuration} />
-<label for="abjuration-cb">Abjuration</label>
-
-<input id="conjuration-cb" type="checkbox" bind:checked={conjuration} />
-<label for="conjuration-cb">Conjuration</label>
-
-<input id="divination-cb" type="checkbox" bind:checked={divination} />
-<label for="divination-cb">Divination</label>
-
-<input id="enchantment-cb" type="checkbox" bind:checked={enchantment} />
-<label for="enchantment-cb">Enchantment</label>
-
-<input id="evocation-cb" type="checkbox" bind:checked={evocation} />
-<label for="evocation-cb">Evocation</label>
-
-<input id="illusion-cb" type="checkbox" bind:checked={illusion} />
-<label for="illusion-cb">Illusion</label>
-
-<input id="necromancy-cb" type="checkbox" bind:checked={necromancy} />
-<label for="necromancy-cb">Necromancy</label>
-
-<input id="transmutation-cb" type="checkbox" bind:checked={transmutation} />
-<label for="transmutation-cb">Transmutation</label>
-
-<input id="universal-cb" type="checkbox" bind:checked={universal} />
-<label for="universal-cb">Universal</label>
-
-<!-- <input id="other-cb" type="checkbox" bind:checked={other} />
-<label for="other-cb">Other (See text)</label> -->
+{#each schools as school}
+  <SchoolSearchComponent school={school.Name} bind:isChecked={school.Selected} />
+{/each}
