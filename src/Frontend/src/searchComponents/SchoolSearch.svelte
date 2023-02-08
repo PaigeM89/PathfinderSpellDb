@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SchoolSearchComponent from "./SchoolSearchComponent.svelte";
+  import SchoolSearchCheckbox from "./SchoolSearchCheckbox.svelte";
 
   interface School {
     Name : string,
@@ -24,5 +24,5 @@
 </script>
 
 {#each schools as school}
-  <SchoolSearchComponent school={school.Name} bind:isChecked={school.Selected} />
+  <SchoolSearchCheckbox school={school.Name} bind:isChecked={school.Selected} />
 {/each}
