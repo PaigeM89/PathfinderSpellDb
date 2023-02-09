@@ -53,10 +53,12 @@ module Handlers =
 
   type SpellSearchResultDto = {
     SpellRows : SpellListRowDto list
+    ResultCount : int
     TotalCount: int
   } with
     static member Create spells count = {
       SpellRows = spells
+      ResultCount = List.length spells
       TotalCount = count
     }
 

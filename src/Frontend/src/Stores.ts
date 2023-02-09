@@ -23,5 +23,14 @@ export const createLocalStorageWritableStore = <T>(key: string, startingValue: T
   return store;
 }
 
+export const classesStore = createLocalStorageWritableStore<string[]>('classes', []);
 export const spellRowsStore = createLocalStorageWritableStore<SpellRow[]>('spellRows', []);
+export const allSpellRowsStore = createLocalStorageWritableStore<SpellRow[]>('allSpellRows', []);
 
+export function appendDistinct(newSpells: SpellRow[]) {
+  allSpellRowsStore.update(spells => {
+    let allSpells = [...spells, ...newSpells];
+    //let spellsSet = [... new Set(allSpells)];
+    return allSpells;
+  });
+}

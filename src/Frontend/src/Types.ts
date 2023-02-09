@@ -22,6 +22,12 @@ export interface SpellSearch {
   Paging : Paging | null
 }
 
+export interface SpellSearchResult {
+  SpellRows: SpellRow [],
+  ResultCount: number,
+  TotalCount: number
+}
+
 export interface CharacterClass {
   Name : string
 }

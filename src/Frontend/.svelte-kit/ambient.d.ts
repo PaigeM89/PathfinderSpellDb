@@ -28,6 +28,7 @@
 declare module '$env/static/private' {
 	export const GJS_DEBUG_TOPICS: string;
 	export const LESSOPEN: string;
+	export const npm_package_devDependencies_svelte_inview: string;
 	export const USER: string;
 	export const npm_config_version_commit_hooks: string;
 	export const npm_config_user_agent: string;
@@ -111,7 +112,6 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const npm_package_version: string;
 	export const QT_ACCESSIBILITY: string;
-	export const NO_AT_BRIDGE: string;
 	export const GDMSESSION: string;
 	export const npm_config_argv: string;
 	export const npm_package_devDependencies_tslib: string;
@@ -168,6 +168,7 @@ declare module '$env/dynamic/private' {
 	export const env: {
 		GJS_DEBUG_TOPICS: string;
 		LESSOPEN: string;
+		npm_package_devDependencies_svelte_inview: string;
 		USER: string;
 		npm_config_version_commit_hooks: string;
 		npm_config_user_agent: string;
@@ -251,7 +252,6 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		npm_package_version: string;
 		QT_ACCESSIBILITY: string;
-		NO_AT_BRIDGE: string;
 		GDMSESSION: string;
 		npm_config_argv: string;
 		npm_package_devDependencies_tslib: string;

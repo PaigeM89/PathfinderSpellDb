@@ -1,14 +1,18 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
-    import CheckboxList from "../searchComponents/CheckboxList.svelte";
+  import CheckboxList from "../searchComponents/CheckboxList.svelte";
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
-  import { createLocalStorageWritableStore, spellRowsStore } from "../Stores";
+  import { allSpellRowsStore, appendDistinct, createLocalStorageWritableStore } from "../Stores";
   import type { SpellRow } from "../Types";
   import type { PageData } from "./$types";
+  import { inview } from "svelte-inview/dist/index";
+  import { fetchAllSpellRows, fetchSpellRows } from "./SpellRows";
 
   export let data: PageData;
-  spellRowsStore.set(data.spells);
+  let allSpellsFetched = false;
+  let page = 0;
+  allSpellRowsStore.set(data.spells);
 
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
   let searchBySchools : string[] = [];
@@ -72,7 +76,7 @@
     return filteredSpells;
   }
 
-  $: filteredSpells = filterSpells($spellRowsStore, $name, searchBySchools, searchByClasses);
+  $: filteredSpells = filterSpells($allSpellRowsStore, $name, searchBySchools, searchByClasses);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
@@ -83,6 +87,23 @@
         name.set(e.target.value);
       }
     }, 250);
+  }
+
+  const fetchData = async (page: number) => {
+    const spellResults = await fetchSpellRows(data.fetch, page);
+    appendDistinct(spellResults.SpellRows);
+  };
+
+  const loadMore = (e : any) => {
+    console.log('page is', page);
+    if (e.detail.inView) fetchData(page);
+    page += 1;
+  }
+
+  const fetchAllSpells = async() => {
+    const spellResults = await fetchAllSpellRows(data.fetch);
+    allSpellRowsStore.set(spellResults.SpellRows);
+    allSpellsFetched = true;
   }
 </script>
 
@@ -100,7 +121,9 @@
   <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
 </div>
 
-{#if $spellRowsStore}
+<button on:click={fetchAllSpells}>Pre-load all spells</button>
+
+{#if $allSpellRowsStore}
   <h1>Spells</h1>
   <table>
     <thead>
@@ -125,6 +148,10 @@
         {/each}
     </tbody>
   </table>
+
+  {#if !allSpellsFetched}
+  <div use:inview={{}} on:change={loadMore} />
+  {/if}
 {/if}
 
 <style>
