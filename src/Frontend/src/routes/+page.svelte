@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
+    import CheckboxList from "../searchComponents/CheckboxList.svelte";
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
   import { createLocalStorageWritableStore, spellRowsStore } from "../Stores";
@@ -10,14 +11,15 @@
   spellRowsStore.set(data.spells);
 
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
-  let searchBySchools : string[] = []; //createLocalStorageWritableStore<string[]>("searchSchools", []);
+  let searchBySchools : string[] = [];
+  let searchByClasses : string[] = [];
   let wasSearch = false;
 
   const headers = [
     "Name", "School", "Description", "Level"
   ];
 
-  function filterSpells(spells : SpellRow[], name : string, schools : string[]) : SpellRow[] {
+  function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[]) : SpellRow[] {    
     let searchName = false;
     if (name.trim() === "" && wasSearch === true) {
       wasSearch = false;
@@ -32,6 +34,11 @@
       searchSchool = true;
     }
 
+    let searchClasses = false;
+    if (searchByClasses && searchByClasses.length > 0) {
+      searchClasses = true;
+    }
+
     let filteredSpells =
       spells
         .filter(spell => {
@@ -39,7 +46,8 @@
           if (searchName) {
             namePassFilter = spell.Name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
           }
-          let schoolPassFilter = true
+
+          let schoolPassFilter = true;
           if (searchSchool) {
             if (schools.find(school => school.toLocaleLowerCase() === spell.School.toLocaleLowerCase())) {
               schoolPassFilter = true;
@@ -48,13 +56,23 @@
             }
           }
 
-          return namePassFilter && schoolPassFilter;
+          let classesPassFilter = true;
+          if (searchClasses) {
+            const spellClasses = spell.ClassSpellLevels.map(csl => csl.ClassName.toLocaleLowerCase());
+            if (classes.find(className => spellClasses.find(spellClass => spellClass === className.toLocaleLowerCase()))) {
+              classesPassFilter = true;
+            } else {
+              classesPassFilter = false;
+            }
+          }
+
+          return namePassFilter && schoolPassFilter && classesPassFilter;
         });
     
     return filteredSpells;
   }
 
-  $: filteredSpells = filterSpells($spellRowsStore, $name, searchBySchools);
+  $: filteredSpells = filterSpells($spellRowsStore, $name, searchBySchools, searchByClasses);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
@@ -77,6 +95,10 @@
   <SchoolSearch bind:searchBySchools={searchBySchools} />
 </div>
 
+<h2>Search by class(es):</h2>
+<div>
+  <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
+</div>
 
 {#if $spellRowsStore}
   <h1>Spells</h1>
@@ -112,6 +134,7 @@
 
   thead {
     font-size: x-large;
+    background-color: #dab171;
   }
 
   tbody{
@@ -122,6 +145,10 @@
     border: 1px solid;
     border-collapse: collapse;
     padding: 0.25rem;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f5deb3;
   }
 
   table {

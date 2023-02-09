@@ -102,3 +102,14 @@ module Handlers =
     SpellParsing.findSpellByIndex id
     |> Option.map SpellDto.FromSpell
     |> Response.ofJson
+
+  type ClassDto = {
+    Name : string
+  }
+
+  let getClasses : HttpHandler =
+    SpellParsing.allClasses
+    |> List.map (fun className -> {
+      Name = className
+    })
+    |> Response.ofJson

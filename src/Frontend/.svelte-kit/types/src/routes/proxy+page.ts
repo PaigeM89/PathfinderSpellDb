@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { postJson } from '../Shared';
+import { getJson, postJson } from '../Shared';
 import type { PageLoad } from './$types';
-import type { SpellRow } from '../Types';
+import type { CharacterClass, SpellRow } from '../Types';
 
 export const ssr = false;
 
@@ -20,8 +20,7 @@ export const load =( async ({ fetch, params}) => {
   }
 
   const spells : SpellRow[] = await postJson(fetch, "/spells", paging);
+  const classes : CharacterClass[] = await getJson(fetch, "/classes");
 
-  console.log('spells', spells);
-
-  return {spells: spells, fetch: fetch};
+  return {spells: spells, classes: classes, fetch: fetch};
 });;null as any as PageLoad;

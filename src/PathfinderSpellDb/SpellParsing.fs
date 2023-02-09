@@ -169,6 +169,11 @@ module SpellParsing =
   let findSpellByIndex (index: int) =
     spells |> List.tryItem index
 
+  let allClasses =
+    spells
+    |> List.collect (fun spell -> spell.ClassSpellLevels |> List.map (fun csl -> csl.ToTuple() |> fst))
+    |> List.distinct
+
 module GraphQL =
   open Types
   open FSharp.Data.GraphQL.Types

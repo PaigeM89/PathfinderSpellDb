@@ -55,5 +55,6 @@ module Webhost =
           Handlers.getSpell spellId ctx
         )
         post "/spells" Handlers.handleSpellSearch
+        get "/classes" Handlers.getClasses
       ]
     }

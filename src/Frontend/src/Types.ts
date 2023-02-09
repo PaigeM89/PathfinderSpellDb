@@ -21,3 +21,7 @@ export interface SpellSearch {
   School : string | null
   Paging : Paging | null
 }
+
+export interface CharacterClass {
+  Name : string
+}
