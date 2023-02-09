@@ -4,6 +4,11 @@ import type { CharacterClass, SpellRow } from '../Types';
 
 export const ssr = false;
 
+interface SpellSearchResult {
+  SpellRows: SpellRow [],
+  TotalCount: number
+}
+
 export const load : PageLoad =( async ({ fetch, params}) => {
   // todo: this needs to load the spell rows store & return it
   // instead of making the call every time anyways
@@ -18,8 +23,8 @@ export const load : PageLoad =( async ({ fetch, params}) => {
     }
   }
 
-  const spells : SpellRow[] = await postJson(fetch, "/spells", paging);
+  const spells : SpellSearchResult = await postJson(fetch, "/spells", paging);
   const classes : CharacterClass[] = await getJson(fetch, "/classes");
 
-  return {spells: spells, classes: classes, fetch: fetch};
+  return {spells: spells.SpellRows, totalSpells: spells.TotalCount, classes: classes, fetch: fetch};
 });

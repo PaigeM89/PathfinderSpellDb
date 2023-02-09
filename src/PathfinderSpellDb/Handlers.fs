@@ -51,7 +51,16 @@ module Handlers =
     Paging : PagingDto option
   }
 
-  let doSearchAndPaging (search :SpellSearchInputDto) =
+  type SpellSearchResultDto = {
+    SpellRows : SpellListRowDto list
+    TotalCount: int
+  } with
+    static member Create spells count = {
+      SpellRows = spells
+      TotalCount = count
+    }
+
+  let doSearchAndPaging (search : SpellSearchInputDto) =
     let spells = allSpells()
     let spells = 
       match search.Name with
@@ -65,16 +74,19 @@ module Handlers =
         let school = school.ToLowerInvariant()
         spells |> List.filter (fun s -> s.School.ToLowerInvariant() = school)
       | None -> spells
+    // get count before paging
+    let count = List.length spells
     let spells =
       match search.Paging with
       | Some paging ->
         spells |> List.skip paging.Offset |> List.take paging.Limit
       | None -> spells
-    spells
+    spells, count
 
   let handleSpellSearch : HttpHandler =
     let handleOk (search : SpellSearchInputDto) : HttpHandler =
-      doSearchAndPaging search
+      let spells, count = doSearchAndPaging search
+      SpellSearchResultDto.Create spells count
       |> Response.ofJson
     Request.mapJson handleOk
 

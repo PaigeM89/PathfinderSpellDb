@@ -10,6 +10,8 @@ TODO:
 * styling (get someone to do this?)
 * sqlite for storage & updating (needs auth)
 
+https://rodneylab.com/sveltekit-infinite-scroll/
+
 Commonly referenced links:
 
 https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/routes/index.svelte
