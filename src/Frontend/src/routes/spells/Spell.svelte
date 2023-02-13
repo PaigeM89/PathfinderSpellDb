@@ -9,7 +9,7 @@
 {#if spell}
   <h1>{spell.Name}</h1>
   <h2>{schoolStr(spell)}</h2>
-  <h3>{classListToString(spell.ClassSpellLevels)}</h3>
+  <h3>{classListToString(spell.ClassSpellLevels, [])}</h3>
   <p>{@html spell.Description}</p>
 {/if}
 
