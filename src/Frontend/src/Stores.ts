@@ -1,13 +1,18 @@
 import { writable, type Writable, get } from "svelte/store";
 import type { SpellRow } from "./Types";
 
-
 export const createLocalStorageWritableStore = <T>(key: string, startingValue: T): Writable<T> => {
   const store = writable(startingValue);
 
   const storedValueStr = localStorage.getItem(key);
   if (storedValueStr != null) {
-    store.set(JSON.parse(storedValueStr));
+    try {
+      store.set(JSON.parse(storedValueStr));
+    } catch (error) {
+      console.info(storedValueStr);
+      console.error(error);
+      localStorage.removeItem(key);
+    }
   }
 
   store.subscribe( (val) => localStorage.setItem(key, JSON.stringify(val)) );

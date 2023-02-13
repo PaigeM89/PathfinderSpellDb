@@ -11,8 +11,11 @@ nuget Packaging.Targets 0.1.208
 nuget Falco
 nuget FsToolkit.ErrorHandling
 nuget FSharp.Data.GraphQL.Server
-nuget Newtonsoft.Json
+nuget FSharp.SystemTextJson
 nuget FSharp.Data
+
+# used by the graphQL stuff
+nuget Newtonsoft.Json
 
 github TheAngryByrd/FsLibLog src/FsLibLog/FsLibLog.fs
 

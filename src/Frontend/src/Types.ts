@@ -3,12 +3,25 @@ export interface ClassSpellLevel {
   Level : number
 }
 
+export interface DU {
+  Case : string
+  Values: string | null
+}
+
+export interface Component {
+  Name : string
+  Abbr : string
+  Cost : string | null
+}
+
 export interface SpellRow {
   Id : number
   Name : string
   School : string
   ShortDescription : string
   ClassSpellLevels : ClassSpellLevel []
+  CastingTime : string
+  Components : Component []
 }
 
 export interface Paging {

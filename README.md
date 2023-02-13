@@ -10,6 +10,8 @@ TODO:
 * styling (get someone to do this?)
 * sqlite for storage & updating (needs auth)
 
+Honestly, the paging is WAY slower than the `get all` ever was. I should just skip it for now.
+
 https://rodneylab.com/sveltekit-infinite-scroll/
 
 Commonly referenced links:

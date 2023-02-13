@@ -3,6 +3,8 @@ namespace PathfinderSpellDb
 open System
 open System.IO
 open FSharp.Data
+open System.Text.Json
+open System.Text.Json.Serialization
 
 module Types =
   open FSharp.Reflection
@@ -71,6 +73,46 @@ module Types =
       | Witch x -> GetUnionCaseName this, x
       | Wizard x -> GetUnionCaseName this, x
 
+  [<RequireQualifiedAccess>]
+  type CastingTime =
+  | StandardAction
+  | Other of string
+  with
+    override this.ToString() =
+      match this with
+      | StandardAction -> "1 Standard Action"
+      | Other other -> other
+
+  [<JsonFSharpConverter>]
+  [<RequireQualifiedAccess>]
+  type CastingComponent =
+  | Verbal
+  | Somatic
+  | Material of material : string option
+  | CostlyMaterial of material : string * cost : int
+  | Focus of focus: string option
+  | DivineFocus
+
+  [<RequireQualifiedAccess>]
+  type Range =
+  | Personal
+  | Touch
+  | Close
+  | Medium
+  | Long
+  | Unlimited
+  | Other of range: string
+
+  [<RequireQualifiedAccess>]
+  type Duration =
+  | Instantaneous
+  | RoundPerLevel
+  | MinutePerLevel
+  | HourPerLevel
+  | DayPerLevel
+  | Permanent
+  | Other of duration: string
+  | SeeText
 
   type Spell = {
     Id: int
@@ -81,6 +123,15 @@ module Types =
     ShortDescription : string
     Description : string
     ClassSpellLevels : ClassSpellLevel list
+    CastingTime : CastingTime
+    Components: CastingComponent list
+    Range: Range
+    Duration: Duration
+    Dismissible: bool
+    Shapeable: bool
+
+    Effect : string option
+    Targets: string option
   }
 
 module SpellParsing = 
@@ -140,6 +191,51 @@ module SpellParsing =
     else
       desc
 
+  let buildCastingTime (row: CsvRow) =
+    let casting_time = row.["casting_time"].Trim()
+    if casting_time = "" then
+      CastingTime.Other "Unknown"
+    else if casting_time.ToLowerInvariant().Contains("standard action") then
+      CastingTime.StandardAction
+    else
+      CastingTime.Other casting_time
+
+
+  let buildCastingComponents (row : CsvRow) =
+    [
+      if row.["verbal"].Trim() = "1" then yield CastingComponent.Verbal
+      if row.["somatic"].Trim() = "1" then yield CastingComponent.Somatic
+      if row.["material"].Trim() = "1" then 
+        if row.["costly_components"].Trim() = "1" then
+          yield CastingComponent.CostlyMaterial ("", 0) //TODO: get costs. Handle variable costs
+        else
+          yield CastingComponent.Material None //todo: get material
+      if row.["focus"].Trim() = "1" then yield CastingComponent.Focus None //todo: get materials
+      if row.["divine_focus"].Trim() = "1" then yield CastingComponent.DivineFocus
+    ]
+
+  let buildRange (row : CsvRow) =
+    let range = row.["range"].Trim().ToLowerInvariant()
+    if range = "personal" then Range.Personal
+    else if range = "touch" then Range.Touch
+    else if range.Contains "close" then Range.Close
+    else if range.Contains "medium" then Range.Medium
+    else if range.Contains "long" then Range.Long
+    else if range.Contains "unlimited" then Range.Unlimited
+    else Range.Other range
+
+  let buildDuration (row : CsvRow) =
+    let duration = row.["duration"].Trim().ToLowerInvariant()
+    if duration.StartsWith "1 round/level" then Duration.RoundPerLevel
+    elif duration.StartsWith "1 min./level" then Duration.MinutePerLevel
+    elif duration.StartsWith "1 hour/level" then Duration.HourPerLevel
+    elif duration.StartsWith "1 day/level" then Duration.DayPerLevel
+    elif duration.StartsWith "permanent" then Duration.Permanent
+    elif duration.StartsWith "see text" then Duration.SeeText
+    else Duration.Other duration
+
+
+
   let spells =
     rawSpells.Rows
     |> Seq.sortBy (fun rawSpell -> rawSpell.["name"].Trim())
@@ -153,6 +249,15 @@ module SpellParsing =
         ShortDescription = getShortDescription(row)
         Description = row.["description_formatted"]
         ClassSpellLevels = buildClassSpellLevels row
+        CastingTime = buildCastingTime row
+        Components = buildCastingComponents row
+        Range = buildRange row
+        Duration = buildDuration row
+        Dismissible = row.["dismissible"].Trim() = "1"
+        Shapeable = row.["shapeable"].Trim() = "1"
+
+        Effect = row.["effect"] |> strValueOrNone
+        Targets = row.["targets"] |> strValueOrNone
       }
     )
     |> Seq.toList

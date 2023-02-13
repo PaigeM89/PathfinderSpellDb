@@ -4,7 +4,7 @@
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
   import { allSpellRowsStore, appendDistinct, createLocalStorageWritableStore } from "../Stores";
-  import type { SpellRow } from "../Types";
+  import type { Component, SpellRow } from "../Types";
   import type { PageData } from "./$types";
   import { inview } from "svelte-inview/dist/index";
   import { fetchAllSpellRows, fetchSpellRows } from "./SpellRows";
@@ -20,7 +20,7 @@
   let wasSearch = false;
 
   const headers = [
-    "Name", "School", "Description", "Level"
+    "Name", "School", "Description", "Casting Time", "Components", "Level"
   ];
 
   function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[]) : SpellRow[] {    
@@ -105,6 +105,17 @@
     allSpellRowsStore.set(spellResults.SpellRows);
     allSpellsFetched = true;
   }
+
+  function componentsToString(components: Component[]) {
+    if (components && components.length > 0) {
+      if (components.length > 1) {
+        return components.map(x => x.Abbr).join(", ");
+      } else {
+        return components.map(x => x.Abbr)[0];
+      }
+    }
+    return "";
+  }
 </script>
 
 <h1>Pathfinder Spell Database</h1>
@@ -141,6 +152,8 @@
             </td>
             <td>{capitalizeFirstLetter(spell.School)}</td>
             <td>{@html spell.ShortDescription}</td>
+            <td>{spell.CastingTime}</td>
+            <td>{componentsToString(spell.Components)}</td>
             <td>
               {classListToString(spell.ClassSpellLevels)}
             </td>
