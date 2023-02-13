@@ -1,5 +1,5 @@
-import { postJson } from '../Shared';
-import type { SpellSearchResult } from '../Types';
+import { getJson, postJson } from '../Shared';
+import type { SpellRow, SpellSearchResult } from '../Types';
 
 const limit = 200;
 
@@ -20,15 +20,7 @@ export const fetchSpellRows = ( async (fetch: (url: string, body: any) => Promis
   return spells;
 });
 
-export const fetchAllSpellRows = ( async (fetch: (url: string, body: any) => Promise<any>) => {
-  console.log('fetchign all spells');
-  
-  const paging = {
-    Name: null,
-    School: null,
-    Paging: null
-  };
-
-  const spells : SpellSearchResult = await postJson(fetch, "/spells", paging);
+export const fetchAllSpellRows = ( async (fetch: (url: string) => Promise<any>) => {
+  const spells : SpellRow[]  = await getJson(fetch, "/spells");
   return spells;
 });

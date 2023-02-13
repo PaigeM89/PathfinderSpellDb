@@ -18,11 +18,17 @@ function fixSummonerUnchained(str : string) {
   return str;
 }
 
-export function classListToString(csls : ClassSpellLevel []) {
-  if (csls && csls.length > 1) {
-    return csls.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`).join(", ")
-  } else if (csls && csls.length === 1) {
-    return csls.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`)[0];
+export function classListToString(csls : ClassSpellLevel [], searchByClasses: string[]) {
+  let classSpellLevels = csls;
+  if (searchByClasses && searchByClasses.length > 0) {
+    const lowercase = searchByClasses.map(x => x.toLocaleLowerCase());
+    classSpellLevels = csls.filter(csl => lowercase.includes(csl.ClassName.toLocaleLowerCase()));
+  }
+
+  if (classSpellLevels && classSpellLevels.length > 1) {
+    return classSpellLevels.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`).join(", ")
+  } else if (classSpellLevels && classSpellLevels.length === 1) {
+    return classSpellLevels.map(csl => `${fixSummonerUnchained(csl.ClassName)} ${csl.Level}`)[0];
   }
   return "";
 }

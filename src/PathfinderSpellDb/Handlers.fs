@@ -75,7 +75,7 @@ module Handlers =
 
   let allSpells() = SpellParsing.spells |> mapSpellsToListDto
 
-  let getAllSpells() = allSpells() |> fun x -> Response.ofJson(options, x)
+  let getAllSpells() = allSpells() |> Response.ofJson
 
   type PagingDto = {
     Offset: int

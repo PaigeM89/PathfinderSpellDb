@@ -7,11 +7,8 @@
   import type { Component, SpellRow } from "../Types";
   import type { PageData } from "./$types";
   import { inview } from "svelte-inview/dist/index";
-  import { fetchAllSpellRows, fetchSpellRows } from "./SpellRows";
 
   export let data: PageData;
-  let allSpellsFetched = false;
-  let page = 0;
   allSpellRowsStore.set(data.spells);
 
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
@@ -89,23 +86,6 @@
     }, 250);
   }
 
-  const fetchData = async (page: number) => {
-    const spellResults = await fetchSpellRows(data.fetch, page);
-    appendDistinct(spellResults.SpellRows);
-  };
-
-  const loadMore = (e : any) => {
-    console.log('page is', page);
-    if (e.detail.inView) fetchData(page);
-    page += 1;
-  }
-
-  const fetchAllSpells = async() => {
-    const spellResults = await fetchAllSpellRows(data.fetch);
-    allSpellRowsStore.set(spellResults.SpellRows);
-    allSpellsFetched = true;
-  }
-
   function componentsToString(components: Component[]) {
     if (components && components.length > 0) {
       if (components.length > 1) {
@@ -132,8 +112,6 @@
   <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
 </div>
 
-<button on:click={fetchAllSpells}>Pre-load all spells</button>
-
 {#if $allSpellRowsStore}
   <h1>Spells</h1>
   <table>
@@ -155,16 +133,12 @@
             <td>{spell.CastingTime}</td>
             <td>{componentsToString(spell.Components)}</td>
             <td>
-              {classListToString(spell.ClassSpellLevels)}
+              {classListToString(spell.ClassSpellLevels, searchByClasses)}
             </td>
           </tr>
         {/each}
     </tbody>
   </table>
-
-  {#if !allSpellsFetched}
-  <div use:inview={{}} on:change={loadMore} />
-  {/if}
 {/if}
 
 <style>
