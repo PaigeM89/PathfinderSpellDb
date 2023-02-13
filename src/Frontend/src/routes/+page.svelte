@@ -108,7 +108,7 @@
 </div>
 
 <h2>Search by class(es):</h2>
-<div>
+<div class="checkboxes">
   <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
 </div>
 
@@ -159,6 +159,7 @@
     border: 1px solid;
     border-collapse: collapse;
     padding: 0.25rem;
+    margin: 0.25rem;
   }
 
   tr:nth-child(even) {
@@ -167,5 +168,9 @@
 
   table {
     width: 100%;
+  }
+
+  .checkboxes {
+    display: inline-flex;
   }
 </style>
