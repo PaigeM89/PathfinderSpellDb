@@ -4,6 +4,15 @@
 
 TODO:
 * add additional fields
+  * SAVING THROWS
+  * spell resistance
+  * domains
+  * bloodlines
+  * patron
+  * diety
+  * material_cost
+  * mythic text / mythic
+  * SOURCE
 * paging
 * searching by fields other than name
 * sorting

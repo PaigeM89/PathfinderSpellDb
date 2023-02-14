@@ -13,7 +13,7 @@ open FSharp.Data.GraphQL.Execution
 open FSharp.Data.GraphQL
 open FSharp.Data.GraphQL.Types
 open PathfinderSpellDb
-open PathfinderSpellDb.Types
+open PathfinderSpellDb.Parsing.Types
 open PathfinderSpellDb.GraphQL
 open PathfinderSpellDb.JsonConverters
 

@@ -1,6 +1,7 @@
 namespace PathfinderSpellDb
 
 open Falco
+open PathfinderSpellDb.Parsing
 
 module Handlers =
 
