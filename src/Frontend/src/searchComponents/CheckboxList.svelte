@@ -1,20 +1,21 @@
 <script lang="ts">
-    import CheckboxInput from "./CheckboxInput.svelte";
-  import SchoolSearchCheckbox from "./SchoolSearchCheckbox.svelte";
+  import CheckboxInput from "./CheckboxInput.svelte";
 
   interface Checkbox {
     Name : string
+    Label : string
     Selected : boolean
   }
 
-  export let checkboxNames : string[] = [];
+  export let namesAndLabels : [string, string][] = [];
 
-  const checkboxes : Checkbox[] = checkboxNames.map<Checkbox>(name => {
-      return {
-        Name: name,
-        Selected: false
-      }
-    });
+  const checkboxes = namesAndLabels.map<Checkbox>( nameAndLabel => {
+    return {
+      Name: nameAndLabel[0],
+      Label: nameAndLabel[1],
+      Selected: false
+    }
+  });
 
   export let selectedCheckboxNames : string[] = [];
   $: selectedCheckboxNames =
@@ -22,5 +23,5 @@
 </script>
 
 {#each checkboxes as checkbox}
-  <CheckboxInput checkboxName={checkbox.Name} bind:isChecked={checkbox.Selected} />
+  <CheckboxInput checkboxName={checkbox.Name} checkboxLabel={checkbox.Label} bind:isChecked={checkbox.Selected} />
 {/each}

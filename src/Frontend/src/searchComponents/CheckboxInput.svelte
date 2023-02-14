@@ -4,11 +4,13 @@
 
 
   export let checkboxName : string;
-  let label = checkboxName + "-cb";
-  let checked = createLocalStorageWritableStore(label, false);
+  export let checkboxLabel : string;
+
+  let elementId = checkboxName + "-cb";
+  let checked = createLocalStorageWritableStore(elementId, false);
   export let isChecked = false;
   $: isChecked = $checked;
 </script>
 
-<input id="${label}" type="checkbox" bind:checked={$checked} />
-<label for="${label}">{capitalizeFirstLetter(checkboxName)}</label>
+<input id="${elementId}" type="checkbox" bind:checked={$checked} />
+<label for="${elementId}">{capitalizeFirstLetter(checkboxLabel)}</label>

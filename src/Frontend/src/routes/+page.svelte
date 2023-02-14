@@ -2,11 +2,10 @@
   import type { Writable } from "svelte/store";
   import CheckboxList from "../searchComponents/CheckboxList.svelte";
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
-  import { capitalizeFirstLetter, classListToString } from "../Shared";
+  import { capitalizeFirstLetter, classListToString, fixSummonerUnchained } from "../Shared";
   import { allSpellRowsStore, createLocalStorageWritableStore } from "../Stores";
   import type { Component, SpellRow } from "../Types";
   import type { PageData } from "./$types";
-  import { inview } from "svelte-inview/dist/index";
   import { fetchAllSpellRows } from "./SpellRows";
 
   export let data: PageData;
@@ -93,7 +92,7 @@
 
           let rangePassFilter = true;
           if (searchRanges) {
-            rangePassFilter = searchByRanges.map(x => x.toLocaleLowerCase()).includes(spell.Range.toLocaleLowerCase());
+            rangePassFilter = ranges.map(x => x.toLocaleLowerCase()).includes(spell.Range.toLocaleLowerCase());
           }
 
           return namePassFilter && schoolPassFilter && classesPassFilter && rangePassFilter;
@@ -138,12 +137,12 @@
 
 <h2>Search by classes:</h2>
 <div class="checkboxes">
-  <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
+  <CheckboxList namesAndLabels={data.classes.map(cc => [cc.Name, fixSummonerUnchained(cc.Name)])} bind:selectedCheckboxNames={searchByClasses} />
 </div>
 
 <h2>Search by ranges:</h2>
 <div class="checkboxes">
-  <CheckboxList checkboxNames={ranges} bind:selectedCheckboxNames={searchByRanges} />
+  <CheckboxList namesAndLabels={ranges.map(x => [x, x])} bind:selectedCheckboxNames={searchByRanges} />
 </div>
 
 {#if $allSpellRowsStore}

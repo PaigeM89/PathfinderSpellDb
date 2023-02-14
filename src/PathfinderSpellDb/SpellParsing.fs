@@ -80,7 +80,7 @@ module Types =
   with
     override this.ToString() =
       match this with
-      | StandardAction -> "1 Standard Action"
+      | StandardAction -> "1 standard action"
       | Other other -> other
 
   [<JsonFSharpConverter>]

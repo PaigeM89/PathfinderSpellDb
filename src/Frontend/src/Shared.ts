@@ -11,7 +11,7 @@ export function capitalizeFirstLetter(str : string) {
   return f.toUpperCase() + rest;
 }
 
-function fixSummonerUnchained(str : string) {
+export function fixSummonerUnchained(str : string) {
   if (str === "SummonerUnchained") {
     return "Summoner (Unchained)";
   }
