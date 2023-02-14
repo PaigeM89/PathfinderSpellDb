@@ -114,6 +114,16 @@ module Types =
   | Other of duration: string
   | SeeText
 
+  type DomainSpellLevel = {
+    Domain : string
+    Level : int
+  }
+
+  type BloodlineClassLevel = {
+    Bloodline : string
+    ClassLevel : string
+  }
+
   type Spell = {
     Id: int
     Name : string
@@ -129,6 +139,9 @@ module Types =
     Duration: Duration
     Dismissible: bool
     Shapeable: bool
+
+    Domains: DomainSpellLevel list
+    Bloodlines: BloodlineClassLevel list
 
     Effect : string option
     Targets: string option
@@ -228,11 +241,20 @@ module SpellParsing =
     let duration = row.["duration"].Trim().ToLowerInvariant()
     if duration.StartsWith "1 round/level" then Duration.RoundPerLevel
     elif duration.StartsWith "1 min./level" then Duration.MinutePerLevel
+    elif duration.StartsWith "1 minute/level" then Duration.MinutePerLevel
     elif duration.StartsWith "1 hour/level" then Duration.HourPerLevel
     elif duration.StartsWith "1 day/level" then Duration.DayPerLevel
     elif duration.StartsWith "permanent" then Duration.Permanent
     elif duration.StartsWith "see text" then Duration.SeeText
+    elif duration = "instantaneous" then Duration.Instantaneous
     else Duration.Other duration
+
+  let parseDomains (row : CsvRow) =
+    let domainStr = row.["domain"].Trim()
+    if domainStr = "" then
+      []
+    else
+      []
 
   let spells =
     rawSpells.Rows
@@ -253,6 +275,9 @@ module SpellParsing =
         Duration = buildDuration row
         Dismissible = row.["dismissible"].Trim() = "1"
         Shapeable = row.["shapeable"].Trim() = "1"
+
+        Domains = []
+        Bloodlines = []
 
         Effect = row.["effect"] |> strValueOrNone
         Targets = row.["targets"] |> strValueOrNone

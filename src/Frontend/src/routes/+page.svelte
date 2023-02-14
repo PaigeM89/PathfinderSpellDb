@@ -11,6 +11,8 @@
 
   export let data: PageData;
 
+  let ranges = [ "Personal", "Touch", "Close", "Medium", "Long", "Unlimited", "Other" ];
+
   let lastLoadedSpellsStore : Writable<number> = createLocalStorageWritableStore("lastLoadedSpells", Date.now());
 
   function LastLoadedWithinOneHour(lastLoaded: number) {
@@ -30,13 +32,14 @@
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
   let searchBySchools : string[] = [];
   let searchByClasses : string[] = [];
+  let searchByRanges: string[] = [];
   let wasSearch = false;
 
   const headers = [
     "Name", "School", "Description", "Casting Time", "Components", "Range", "Duration", "Level"
   ];
 
-  function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[]) : SpellRow[] {    
+  function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[], ranges: string[]) : SpellRow[] {    
     let searchName = false;
     if (name.trim() === "" && wasSearch === true) {
       wasSearch = false;
@@ -54,6 +57,11 @@
     let searchClasses = false;
     if (searchByClasses && searchByClasses.length > 0) {
       searchClasses = true;
+    }
+
+    let searchRanges = false;
+    if (searchByRanges && searchByRanges.length > 0) {
+      searchRanges = true;
     }
 
     let filteredSpells =
@@ -83,13 +91,18 @@
             }
           }
 
-          return namePassFilter && schoolPassFilter && classesPassFilter;
+          let rangePassFilter = true;
+          if (searchRanges) {
+            rangePassFilter = searchByRanges.map(x => x.toLocaleLowerCase()).includes(spell.Range.toLocaleLowerCase());
+          }
+
+          return namePassFilter && schoolPassFilter && classesPassFilter && rangePassFilter;
         });
     
     return filteredSpells;
   }
 
-  $: filteredSpells = filterSpells($allSpellRowsStore, $name, searchBySchools, searchByClasses);
+  $: filteredSpells = filterSpells($allSpellRowsStore, $name, searchBySchools, searchByClasses, searchByRanges);
 
   // wow typescript is dumb.
   let timer: string | number | NodeJS.Timeout | undefined;
@@ -118,14 +131,19 @@
 <p>A database of all the spells in Pathfinder 1E.</p>
 <h2>Search by name: </h2><input value={$name} on:input={debounceName} />
 
-<h2>Search by school(s):</h2>
+<h2>Search by schools:</h2>
 <div>
   <SchoolSearch bind:searchBySchools={searchBySchools} />
 </div>
 
-<h2>Search by class(es):</h2>
+<h2>Search by classes:</h2>
 <div class="checkboxes">
   <CheckboxList checkboxNames={data.classes.map(cc => cc.Name)} bind:selectedCheckboxNames={searchByClasses} />
+</div>
+
+<h2>Search by ranges:</h2>
+<div class="checkboxes">
+  <CheckboxList checkboxNames={ranges} bind:selectedCheckboxNames={searchByRanges} />
 </div>
 
 {#if $allSpellRowsStore}

@@ -3,11 +3,6 @@ namespace PathfinderSpellDb
 open Falco
 
 module Handlers =
-  open System.Text.Json
-  open System.Text.Json.Serialization
-
-  // https://github.com/Tarmil/FSharp.SystemTextJson/blob/master/docs/Using.md
-  let options = JsonFSharpOptions.Default().ToJsonSerializerOptions()
 
   type ClassSpellLevelDto = {
     ClassName : string

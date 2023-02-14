@@ -9,6 +9,9 @@ TODO:
 * sorting
 * styling (get someone to do this?)
 * sqlite for storage & updating (needs auth)
+* clean up range
+* clean up duration!! big mess here
+* clean up casting time
 
 Honestly, the paging is WAY slower than the `get all` ever was. I should just skip it for now.
 
