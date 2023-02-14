@@ -234,8 +234,6 @@ module SpellParsing =
     elif duration.StartsWith "see text" then Duration.SeeText
     else Duration.Other duration
 
-
-
   let spells =
     rawSpells.Rows
     |> Seq.sortBy (fun rawSpell -> rawSpell.["name"].Trim())

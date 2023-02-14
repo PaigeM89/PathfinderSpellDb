@@ -46,6 +46,16 @@ module Handlers =
         ComponentDto.Create (sprintf "Focus%s" focusStr) "F" None
       | Types.CastingComponent.DivineFocus -> ComponentDto.Create "Divine Focus" "DF" None
 
+  let rangeToString (range: Types.Range) =
+    match range with
+    | Types.Range.Personal -> "Personal"
+    | Types.Range.Touch -> "Touch"
+    | Types.Range.Close -> "25 ft. + 5 ft./2 levels"
+    | Types.Range.Medium -> "100 ft. + 10 ft./level"
+    | Types.Range.Long -> "400 ft. + 40 ft./level"
+    | Types.Range.Unlimited -> "Unlimited"
+    | Types.Range.Other s -> s
+
   type SpellRowDto = {
     Id : int
     Name : string
@@ -54,8 +64,9 @@ module Handlers =
     ClassSpellLevels: ClassSpellLevelDto list
     CastingTime : string
     Components : ComponentDto list
+    Range : string
   } with
-    static member Create id name school desc lvls time comps = {
+    static member Create id name school desc lvls time comps range = {
       Id = id
       Name = name
       School = school
@@ -63,6 +74,7 @@ module Handlers =
       ClassSpellLevels = lvls |> List.map ClassSpellLevelDto.FromClassSpellLevel
       CastingTime = time
       Components = comps
+      Range = range
     }
 
   let mapSpellsToListDto (spells : Types.Spell list) =
@@ -70,7 +82,8 @@ module Handlers =
     |> List.map (fun spell ->
       let time = spell.CastingTime.ToString()
       let componentDtos = spell.Components |> List.map ComponentDto.FromCastingComponent
-      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos
+      let range = rangeToString spell.Range
+      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range
     )
 
   let allSpells() = SpellParsing.spells |> mapSpellsToListDto

@@ -22,6 +22,7 @@ export interface SpellRow {
   ClassSpellLevels : ClassSpellLevel []
   CastingTime : string
   Components : Component []
+  Range : string
 }
 
 export interface Paging {

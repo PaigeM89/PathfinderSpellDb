@@ -3,13 +3,31 @@
   import CheckboxList from "../searchComponents/CheckboxList.svelte";
   import SchoolSearch from "../searchComponents/SchoolSearch.svelte";
   import { capitalizeFirstLetter, classListToString } from "../Shared";
-  import { allSpellRowsStore, appendDistinct, createLocalStorageWritableStore } from "../Stores";
+  import { allSpellRowsStore, createLocalStorageWritableStore } from "../Stores";
   import type { Component, SpellRow } from "../Types";
   import type { PageData } from "./$types";
   import { inview } from "svelte-inview/dist/index";
+  import { fetchAllSpellRows } from "./SpellRows";
 
   export let data: PageData;
-  allSpellRowsStore.set(data.spells);
+
+  let lastLoadedSpellsStore : Writable<number> = createLocalStorageWritableStore("lastLoadedSpells", Date.now());
+
+  function LastLoadedWithinOneHour(lastLoaded: number) {
+    const now = Date.now();
+    const diff = now - lastLoaded;
+    return diff < 3600000;
+  }
+
+  if (!$allSpellRowsStore || $allSpellRowsStore.length === 0 || !LastLoadedWithinOneHour($lastLoadedSpellsStore)) {
+    fetchAllSpellRows(data.fetch)
+      .then(rows => {
+        allSpellRowsStore.set(rows);
+        lastLoadedSpellsStore.set(Date.now());
+      });
+  }
+
+  //allSpellRowsStore.set(data.spells);
 
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
   let searchBySchools : string[] = [];
@@ -17,7 +35,7 @@
   let wasSearch = false;
 
   const headers = [
-    "Name", "School", "Description", "Casting Time", "Components", "Level"
+    "Name", "School", "Description", "Casting Time", "Components", "Range", "Level"
   ];
 
   function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[]) : SpellRow[] {    
@@ -132,6 +150,7 @@
             <td>{@html spell.ShortDescription}</td>
             <td>{spell.CastingTime}</td>
             <td>{componentsToString(spell.Components)}</td>
+            <td>{spell.Range}</td>
             <td>
               {classListToString(spell.ClassSpellLevels, searchByClasses)}
             </td>
