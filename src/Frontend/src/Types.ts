@@ -23,6 +23,7 @@ export interface SpellRow {
   CastingTime : string
   Components : Component []
   Range : string
+  Duration : string
 }
 
 export interface Paging {

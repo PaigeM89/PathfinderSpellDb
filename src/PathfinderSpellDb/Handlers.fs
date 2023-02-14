@@ -56,6 +56,17 @@ module Handlers =
     | Types.Range.Unlimited -> "Unlimited"
     | Types.Range.Other s -> s
 
+  let durationToString (duration : Types.Duration) =
+    match duration with
+    | Types.Duration.Instantaneous -> "Instantaneous"
+    | Types.Duration.RoundPerLevel -> "1 round/level"
+    | Types.Duration.MinutePerLevel -> "1 minute/level"
+    | Types.Duration.HourPerLevel -> "1 hour/level"
+    | Types.Duration.DayPerLevel -> "1 day/level"
+    | Types.Duration.Permanent -> "Permanent"
+    | Types.Duration.Other s -> s
+    | Types.Duration.SeeText -> "See Text"
+
   type SpellRowDto = {
     Id : int
     Name : string
@@ -65,8 +76,9 @@ module Handlers =
     CastingTime : string
     Components : ComponentDto list
     Range : string
+    Duration : string
   } with
-    static member Create id name school desc lvls time comps range = {
+    static member Create id name school desc lvls time comps range duration = {
       Id = id
       Name = name
       School = school
@@ -75,6 +87,7 @@ module Handlers =
       CastingTime = time
       Components = comps
       Range = range
+      Duration = duration
     }
 
   let mapSpellsToListDto (spells : Types.Spell list) =
@@ -83,7 +96,8 @@ module Handlers =
       let time = spell.CastingTime.ToString()
       let componentDtos = spell.Components |> List.map ComponentDto.FromCastingComponent
       let range = rangeToString spell.Range
-      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range
+      let duration = durationToString spell.Duration
+      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range duration
     )
 
   let allSpells() = SpellParsing.spells |> mapSpellsToListDto

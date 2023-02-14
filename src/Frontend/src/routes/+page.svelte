@@ -27,15 +27,13 @@
       });
   }
 
-  //allSpellRowsStore.set(data.spells);
-
   let name : Writable<string> = createLocalStorageWritableStore("searchName", "");
   let searchBySchools : string[] = [];
   let searchByClasses : string[] = [];
   let wasSearch = false;
 
   const headers = [
-    "Name", "School", "Description", "Casting Time", "Components", "Range", "Level"
+    "Name", "School", "Description", "Casting Time", "Components", "Range", "Duration", "Level"
   ];
 
   function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[]) : SpellRow[] {    
@@ -151,6 +149,7 @@
             <td>{spell.CastingTime}</td>
             <td>{componentsToString(spell.Components)}</td>
             <td>{spell.Range}</td>
+            <td>{spell.Duration}</td>
             <td>
               {classListToString(spell.ClassSpellLevels, searchByClasses)}
             </td>
