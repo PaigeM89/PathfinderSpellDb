@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
@@ -25,6 +25,7 @@
     <Compile Include="Parsing/SavingThrows.fs" />
     <Compile Include="SpellParsing.fs" />
     <Compile Include="JsonConverters.fs" />
+    <Compile Include="DTOs.fs" />
     <Compile Include="GraphQLHandler.fs" />
     <Compile Include="Handlers.fs" />
     <Compile Include="Webhost.fs" />

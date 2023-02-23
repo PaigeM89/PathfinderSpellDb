@@ -2,6 +2,8 @@ namespace PathfinderSpellDb
 
 open System
 open System.IO
+open System.Text
+open System.Text.RegularExpressions
 open FSharp.Data
 open PathfinderSpellDb.Parsing
 
@@ -112,7 +114,27 @@ module SpellParsing =
     if domainStr = "" then
       []
     else
-      []
+      // remove the () for easier regex matching
+      let domainsAndLevels = domainStr.Replace("(", ""). Replace(")", "")
+      let regexStr = """(\w+) (\d)"""
+      let regex = Regex(regexStr, RegexOptions.IgnoreCase)
+      let regexMatches = regex.Matches(domainsAndLevels)
+
+      [
+        for regexMatch in regexMatches do
+          let groups = regexMatch.Groups
+          let domain =
+            let capture = groups.Item 1
+            capture.Value
+          let level = 
+            let capture = groups.Item 2
+            capture.Value |> intValueOrNone
+          match level with
+          | Some level ->
+            DomainSpellLevel.Create domain level |> Some
+          | None -> None
+      ]
+      |> List.choose id
 
   let spells =
     rawSpells.Rows
@@ -132,12 +154,14 @@ module SpellParsing =
         Range = buildRange row
         Duration = buildDuration row
 
-        SavingThrow = row.["saving_throw"].Trim()
+        SavingThrows = row.["saving_throw"].Trim() |> SavingThrows.parseSavingThrows
+        SavingThrowsStr = row.["saving_throw"].Trim()
 
+        SpellResistance = row.["spell_resistance"].Trim().Contains("yes")
         Dismissible = row.["dismissible"].Trim() = "1"
         Shapeable = row.["shapeable"].Trim() = "1"
 
-        Domains = []
+        Domains = parseDomains row
         Bloodlines = []
 
         Effect = row.["effect"] |> strValueOrNone
@@ -148,7 +172,12 @@ module SpellParsing =
 
   printfn "Loaded %i spells" (List.length spells)
 
-  // let distinctSavingThrows = spells |> List.map (fun s -> s.SavingThrow) |> List.distinct
+  // let distinctSavingThrows = 
+  //   spells
+  //   |> List.groupBy (fun s -> s.SavingThrowsStr)
+  //   |> List.map (fun (saving, spells) -> saving, List.length spells)
+  //   |> List.sortBy snd
+  //   |> List.iter (fun (saving, count) -> printfn "%A: %i" saving count)
 
   // printfn "%i Distinct saving throws:\n%A" (List.length distinctSavingThrows) distinctSavingThrows
 
@@ -166,36 +195,3 @@ module SpellParsing =
     spells
     |> List.collect (fun spell -> spell.ClassSpellLevels |> List.map (fun csl -> csl.ToTuple() |> fst))
     |> List.distinct
-
-module GraphQL =
-  open Types
-  open FSharp.Data.GraphQL.Types
-
-  let findSpellByName (name : string) = 
-    SpellParsing.spells |> List.tryFind (fun s -> s.Name.ToLowerInvariant() = name)
-
-  let findSpellByIndex (index: int) =
-    SpellParsing.spells |> List.tryItem index
-
-  let spellNameSearch (str : string) =
-    if (str.Length > 1) then
-      let str : string = str.ToLowerInvariant()
-      SpellParsing.spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
-    else
-      SpellParsing.spells
-
-  /// GraphQL type
-  let SpellType : ObjectDef<Spell> =
-    Define.Object<Spell>(
-      name = "Spell",
-      description = "A magical effect created by a character when cast.",
-      fields = [
-        Define.Field("id", Int, "The id of the spell. Used for querying. Generated on data load", fun _ (s : Spell) -> s.Id)
-        Define.Field("name", String, "The name of the spell", fun _ (s : Spell) -> s.Name)
-        Define.Field("school", String, "The school of the spell", fun _ (s : Spell) -> s.School)
-        Define.Field("subschool", Nullable String, "The subschool of the spell, if any", fun _ (s : Spell) -> s.SubSchool)
-        Define.Field("descriptors", ListOf String, "The descriptors of the spell, if any", fun _ (s: Spell) -> s.Descriptors)
-        Define.Field("description", String, "The short description of the spell", fun _ (s : Spell) -> s.ShortDescription)
-        Define.Field("fullDescription", String, "The full HTML description of the spell", fun _ (s: Spell) -> s.Description)
-      ]
-    )

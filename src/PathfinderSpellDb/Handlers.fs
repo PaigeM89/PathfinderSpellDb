@@ -4,98 +4,7 @@ open Falco
 open PathfinderSpellDb.Parsing
 
 module Handlers =
-
-  type ClassSpellLevelDto = {
-    ClassName : string
-    Level : int
-  } with
-    static member FromClassSpellLevel (lvl : Types.ClassSpellLevel) =
-      let (className, lvl) = lvl.ToTuple()
-      {
-        ClassName = className
-        Level = lvl
-      }
-
-  type ComponentDto = {
-    Name: string
-    Abbr: string
-    Cost: string option
-  } with
-    static member Create name abbr cost = {
-      Name = name
-      Abbr = abbr
-      Cost = cost
-    }
-
-    static member FromCastingComponent (comp : Types.CastingComponent) =
-      match comp with
-      | Types.CastingComponent.Verbal -> ComponentDto.Create "Verbal" "V" None
-      | Types.CastingComponent.Somatic -> ComponentDto.Create "Somatic" "S" None
-      | Types.CastingComponent.Material mat ->
-        let matStr = mat |> Option.map (fun s -> sprintf " (%s)" s) |> Option.defaultValue ""
-        ComponentDto.Create (sprintf "Material%s" matStr) "M" None
-      | Types.CastingComponent.CostlyMaterial(mat, cost) ->
-        let matStr = sprintf " (%s, %i gp)" mat cost
-        ComponentDto.Create (sprintf "Material%s" matStr) "M" None
-      | Types.CastingComponent.Focus focus ->
-        let focusStr = focus |> Option.map (fun s -> sprintf " (%s)" s) |> Option.defaultValue ""
-        ComponentDto.Create (sprintf "Focus%s" focusStr) "F" None
-      | Types.CastingComponent.DivineFocus -> ComponentDto.Create "Divine Focus" "DF" None
-
-  let rangeToString (range: Types.Range) =
-    match range with
-    | Types.Range.Personal -> "Personal"
-    | Types.Range.Touch -> "Touch"
-    | Types.Range.Close -> "25 ft. + 5 ft./2 levels"
-    | Types.Range.Medium -> "100 ft. + 10 ft./level"
-    | Types.Range.Long -> "400 ft. + 40 ft./level"
-    | Types.Range.Unlimited -> "Unlimited"
-    | Types.Range.Other s -> s
-
-  let durationToString (duration : Types.Duration) =
-    match duration with
-    | Types.Duration.Instantaneous -> "Instantaneous"
-    | Types.Duration.RoundPerLevel -> "1 round/level"
-    | Types.Duration.MinutePerLevel -> "1 minute/level"
-    | Types.Duration.HourPerLevel -> "1 hour/level"
-    | Types.Duration.DayPerLevel -> "1 day/level"
-    | Types.Duration.Permanent -> "Permanent"
-    | Types.Duration.Other s -> s
-    | Types.Duration.SeeText -> "See Text"
-
-  type SpellRowDto = {
-    Id : int
-    Name : string
-    School : string
-    ShortDescription : string
-    ClassSpellLevels: ClassSpellLevelDto list
-    CastingTime : string
-    Components : ComponentDto list
-    Range : string
-    Duration : string
-  } with
-    static member Create id name school desc lvls time comps range duration = {
-      Id = id
-      Name = name
-      School = school
-      ShortDescription = desc
-      ClassSpellLevels = lvls |> List.map ClassSpellLevelDto.FromClassSpellLevel
-      CastingTime = time
-      Components = comps
-      Range = range
-      Duration = duration
-    }
-
-  let mapSpellsToListDto (spells : Types.Spell list) =
-    spells
-    |> List.map (fun spell ->
-      let time = spell.CastingTime.ToString()
-      let componentDtos = spell.Components |> List.map ComponentDto.FromCastingComponent
-      let range = rangeToString spell.Range
-      let duration = durationToString spell.Duration
-      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range duration
-    )
-
+  open DTOs
   let allSpells() = SpellParsing.spells |> mapSpellsToListDto
 
   let getAllSpells() = allSpells() |> Response.ofJson
@@ -160,6 +69,7 @@ module Handlers =
     Descriptors : string list
     Description : string
     ClassSpellLevels : ClassSpellLevelDto list
+    Domains : string
   } with
     static member FromSpell (spell : Types.Spell) =
       {
@@ -170,6 +80,7 @@ module Handlers =
         Descriptors = spell.Descriptors
         Description = spell.Description
         ClassSpellLevels = spell.ClassSpellLevels |> List.map ClassSpellLevelDto.FromClassSpellLevel
+        Domains = spell.Domains |> List.map (fun d -> d.ToString()) |> String.concat ", "
       }
 
   let getSpell (id : int) =

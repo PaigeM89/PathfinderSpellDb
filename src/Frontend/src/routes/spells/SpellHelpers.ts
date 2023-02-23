@@ -8,6 +8,7 @@ export interface Spell {
   Descriptors: string []
   Description : string
   ClassSpellLevels: ClassSpellLevel[]
+  Domains : string
 }
 
 export function schoolStr(spell : Spell) {

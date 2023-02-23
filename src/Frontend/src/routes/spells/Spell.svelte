@@ -10,6 +10,9 @@
   <h1>{spell.Name}</h1>
   <h2>{schoolStr(spell)}</h2>
   <h3>{classListToString(spell.ClassSpellLevels, [])}</h3>
+  {#if spell.Domains}
+    <h3>Domains: {spell.Domains}</h3>
+  {/if}
   <p>{@html spell.Description}</p>
 {/if}
 

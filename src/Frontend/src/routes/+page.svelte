@@ -20,7 +20,7 @@
     return diff < 3600000;
   }
 
-  if (!$allSpellRowsStore || $allSpellRowsStore.length === 0 || !LastLoadedWithinOneHour($lastLoadedSpellsStore)) {
+  if ((!$allSpellRowsStore || $allSpellRowsStore.length === 0) && !LastLoadedWithinOneHour($lastLoadedSpellsStore)) {
     fetchAllSpellRows(data.fetch)
       .then(rows => {
         allSpellRowsStore.set(rows);
@@ -65,7 +65,7 @@
 
     let filteredSpells =
       spells
-        .filter(spell => {
+      .filter(spell => {
           let namePassFilter = true;
           if (searchName) {
             namePassFilter = spell.Name.toLocaleLowerCase().includes(name.toLocaleLowerCase());

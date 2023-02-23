@@ -50,8 +50,8 @@ module GraphQLHandler =
     Define.Object<Root>(
       name = "Query",
       fields = [
-        Define.Field("spells", ListOf SpellType, "Gets spells", textInputs, fun ctx _ -> ctx.Arg "name" |> spellNameSearch)
-        Define.Field("spell", Nullable SpellType, "Gets a specific spell", idInputs, fun ctx _ -> findSpellByIndex (ctx.Arg "id"))
+        // Define.Field("spells", ListOf SpellType, "Gets spells", textInputs, fun ctx _ -> ctx.Arg "name" |> spellNameSearch)
+        // Define.Field("spell", Nullable SpellType, "Gets a specific spell", idInputs, fun ctx _ -> findSpellByIndex (ctx.Arg "id"))
       ]
     )
 

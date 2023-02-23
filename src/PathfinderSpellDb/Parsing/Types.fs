@@ -117,7 +117,14 @@ module Types =
   type DomainSpellLevel = {
     Domain : string
     Level : int
-  }
+  } with
+    static member Create domain level = {
+      Domain = domain
+      Level = level
+    }
+
+    override this.ToString() =
+      $"{this.Domain} ({this.Level})"
 
   type BloodlineClassLevel = {
     Bloodline : string
@@ -141,6 +148,17 @@ module Types =
   | Will of descriptors : SavingThrowDescriptor list
   | None of descriptors : SavingThrowDescriptor list
 
+  [<RequireQualifiedAccess>]
+  type SpellResistanceDescriptor =
+  | Harmless
+  | Object
+
+  [<RequireQualifiedAccess>]
+  type SpellResistance = 
+  | Yes of descriptors: SpellResistanceDescriptor list
+  | No  of descriptors: SpellResistanceDescriptor list
+  | SeeText of descriptors: SpellResistanceDescriptor list
+
   type Spell = {
     Id: int
     Name : string
@@ -155,8 +173,11 @@ module Types =
     Range: Range
     Duration: Duration
 
-    SavingThrow : string
+    SavingThrows : SavingThrow list
+    SavingThrowsStr : string
 
+
+    SpellResistance: bool
     Dismissible: bool
     Shapeable: bool
 
