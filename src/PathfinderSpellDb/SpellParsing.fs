@@ -54,6 +54,8 @@ module SpellParsing =
       tryMapColumn "investigator" ClassSpellLevel.Investigator
       tryMapColumn "hunter" ClassSpellLevel.Hunter
       tryMapColumn "summoner_unchained" ClassSpellLevel.SummonerUnchained
+      // warpriest is missing from the source data (???)
+      //tryMapColumn "warpriest" ClassSpellLevel.Warpriest
     ]
     |> List.choose id
 
@@ -97,6 +99,10 @@ module SpellParsing =
     else if range.Contains "unlimited" then Range.Unlimited
     else Range.Other range
 
+  let buildArea (row : CsvRow) =
+    let area = row.["area"].Trim()
+    if area = "" then None else Some area
+
   let buildDuration (row : CsvRow) =
     let duration = row.["duration"].Trim().ToLowerInvariant()
     if duration.StartsWith "1 round/level" then Duration.RoundPerLevel
@@ -136,9 +142,60 @@ module SpellParsing =
       ]
       |> List.choose id
 
+  let parseBloodlines (row : CsvRow) =
+    let bloodlinesStr = row.["bloodline"].Trim()
+    if bloodlinesStr = "" then
+      []
+    else
+      let str = bloodlinesStr.Replace("(", "").Replace(")", "")
+      let regexStr = """(\w+) (\d)"""
+      let regex = Regex(regexStr, RegexOptions.IgnoreCase)
+      let regexMatches = regex.Matches(str)
+
+      [
+        for regexMatch in regexMatches do
+          let groups = regexMatch.Groups
+          let bloodline =
+            let capture = groups.Item 1
+            capture.Value
+          let level =
+            let capture = groups.Item 2
+            capture.Value |> intValueOrNone
+          match level with
+          | Some level ->
+            BloodlineClassLevel.Create bloodline level |> Some
+          | None -> None
+      ]
+      |> List.choose id
+
+  let parsePatrons (row : CsvRow) =
+    let patronsStr = row.["patron"].Trim()
+    if patronsStr = "" then
+      []
+    else
+      let str = patronsStr.Replace("(", "").Replace(")", "")
+      let regexStr = """(\w+) (\d)"""
+      let regex = Regex(regexStr, RegexOptions.IgnoreCase)
+      let regexMatches = regex.Matches str
+
+      [
+        for regexMatch in regexMatches do
+          let groups = regexMatch.Groups
+          let patron = 
+            let capture = groups.Item 1
+            capture.Value
+          let level =
+            let capture = groups.Item 2
+            capture.Value |> intValueOrNone
+          match level with
+          | Some level -> 
+            PatronClassLevel.Create patron level |> Some
+          | None -> None
+      ]
+      |> List.choose id
+
   let spells =
     rawSpells.Rows
-    |> Seq.sortBy (fun rawSpell -> rawSpell.["name"].Trim())
     |> Seq.mapi (fun index row ->
       {
         Id = index
@@ -152,22 +209,27 @@ module SpellParsing =
         CastingTime = buildCastingTime row
         Components = buildCastingComponents row
         Range = buildRange row
+        Area = buildArea row
         Duration = buildDuration row
 
         SavingThrows = row.["saving_throw"].Trim() |> SavingThrows.parseSavingThrows
         SavingThrowsStr = row.["saving_throw"].Trim()
 
-        SpellResistance = row.["spell_resistance"].Trim().Contains("yes")
+        SpellResistance = row.["spell_resistance"].Trim().ToLowerInvariant().Contains("yes")
         Dismissible = row.["dismissible"].Trim() = "1"
         Shapeable = row.["shapeable"].Trim() = "1"
 
         Domains = parseDomains row
-        Bloodlines = []
+        Bloodlines = parseBloodlines row
+        Patrons = parsePatrons row
 
         Effect = row.["effect"] |> strValueOrNone
         Targets = row.["targets"] |> strValueOrNone
+
+        Source = row.["source"].Trim()
       }
     )
+    |> Seq.sortBy (fun s -> s.Name)
     |> Seq.toList
 
   printfn "Loaded %i spells" (List.length spells)

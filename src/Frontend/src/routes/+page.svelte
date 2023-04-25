@@ -20,7 +20,7 @@
     return diff < 3600000;
   }
 
-  if ((!$allSpellRowsStore || $allSpellRowsStore.length === 0) && !LastLoadedWithinOneHour($lastLoadedSpellsStore)) {
+  if ((!$allSpellRowsStore || $allSpellRowsStore.length === 0)) { // && !LastLoadedWithinOneHour($lastLoadedSpellsStore)) {
     fetchAllSpellRows(data.fetch)
       .then(rows => {
         allSpellRowsStore.set(rows);
@@ -35,7 +35,7 @@
   let wasSearch = false;
 
   const headers = [
-    "Name", "School", "Description", "Casting Time", "Components", "Range", "Duration", "Level"
+    "Name", "School", "Description", "Casting Time", "Components", "Range", "Duration", "Level", "Source"
   ];
 
   function filterSpells(spells : SpellRow[], name : string, schools : string[], classes: string[], ranges: string[]) : SpellRow[] {    
@@ -170,6 +170,7 @@
             <td>
               {classListToString(spell.ClassSpellLevels, searchByClasses)}
             </td>
+            <td>{spell.Source}</td>
           </tr>
         {/each}
     </tbody>

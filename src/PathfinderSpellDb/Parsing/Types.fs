@@ -128,8 +128,25 @@ module Types =
 
   type BloodlineClassLevel = {
     Bloodline : string
-    ClassLevel : string
-  }
+    Level : int
+  } with
+    static member Create bloodline level = {
+      Bloodline = bloodline
+      Level = level
+    }
+
+    override this.ToString() = $"{this.Bloodline} ({this.Level})"
+
+  type PatronClassLevel = {
+    Patron : string
+    Level : int
+  } with
+    static member Create patron level = {
+      Patron = patron
+      Level = level
+    }
+
+    override this.ToString() = $"{this.Patron} ({this.Level})"
 
   [<RequireQualifiedAccess>]
   type SavingThrowDescriptor =
@@ -171,6 +188,7 @@ module Types =
     CastingTime : CastingTime
     Components: CastingComponent list
     Range: Range
+    Area: string option
     Duration: Duration
 
     SavingThrows : SavingThrow list
@@ -183,7 +201,10 @@ module Types =
 
     Domains: DomainSpellLevel list
     Bloodlines: BloodlineClassLevel list
+    Patrons: PatronClassLevel list
 
     Effect : string option
     Targets: string option
+
+    Source : string
   }

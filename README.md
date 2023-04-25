@@ -1,5 +1,9 @@
 # PathfinderSpellDb
 
+Running:
+  * 1 window doing `dotnet watch run` from `PathfinderSpellDb`
+  * 1 window doing `yarn dev` from `Frontend`
+
 [Enter useful description for PathfinderSpellDb]
 
 TODO:
@@ -18,6 +22,7 @@ TODO:
 * sorting
 * styling (get someone to do this?)
 * sqlite for storage & updating (needs auth)
+  * postgres has full text search tooling
 * clean up range
 * clean up duration!! big mess here
 * clean up casting time

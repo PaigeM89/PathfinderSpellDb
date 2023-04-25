@@ -24,6 +24,7 @@ export interface SpellRow {
   Components : Component []
   Range : string
   Duration : string
+  Source : string
 }
 
 export interface Paging {

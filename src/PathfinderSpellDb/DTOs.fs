@@ -75,8 +75,9 @@ module DTOs =
     Components : ComponentDto list
     Range : string
     Duration : string
+    Source : string
   } with
-    static member Create id name school desc lvls time comps range duration = {
+    static member Create id name school desc lvls time comps range duration source = {
       Id = id
       Name = name
       School = school
@@ -86,6 +87,7 @@ module DTOs =
       Components = comps
       Range = range
       Duration = duration
+      Source = source
     }
 
   let mapSpellsToListDto (spells : Types.Spell list) =
@@ -95,7 +97,7 @@ module DTOs =
       let componentDtos = spell.Components |> List.map ComponentDto.FromCastingComponent
       let range = rangeToString spell.Range
       let duration = durationToString spell.Duration
-      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range duration
+      SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range duration spell.Source
     )
 
   type SpellDto = {
@@ -112,6 +114,7 @@ module DTOs =
     Components : ComponentDto list
     Range : string
     Duration : string
+    Source : string
   }
 
 module GraphQL =
