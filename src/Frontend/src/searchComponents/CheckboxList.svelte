@@ -23,5 +23,14 @@
 </script>
 
 {#each checkboxes as checkbox}
-  <CheckboxInput checkboxName={checkbox.Name} checkboxLabel={checkbox.Label} bind:isChecked={checkbox.Selected} />
+  <div class="checkbox">
+    <CheckboxInput checkboxName={checkbox.Name} checkboxLabel={checkbox.Label} bind:isChecked={checkbox.Selected} />
+  </div>
 {/each}
+
+
+<style>
+  .checkbox {
+    border: 1px;
+  }
+</style>

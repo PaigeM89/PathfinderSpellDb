@@ -46,14 +46,16 @@ module Webhost =
       use_middleware useCors
       logging configureLogging
       endpoints [
-        post "/" (Endpoints.GraphQLHandler.handle)
+        //post "/" (Endpoints.GraphQLHandler.handle)
+        get "/spells/ranges" Handlers.getRanges
         get "/spells" (Handlers.getAllSpells())
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx
           let spellId = route.GetInt "id"
           Handlers.getSpell spellId ctx
         )
-        post "/spells" Handlers.handleSpellSearch
+        // this was extremely slow for some reason
+        //post "/spells" Handlers.handleSpellSearch
         get "/classes" Handlers.getClasses
       ]
     }

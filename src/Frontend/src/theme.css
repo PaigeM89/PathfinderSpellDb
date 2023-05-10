@@ -5,3 +5,17 @@ body {
 table {
   margin: 1rem;
 }
+
+div.multiselect {
+  background-color: white;
+}
+
+div.multiselect.invalid {
+  border: 1px solid red !important;
+}
+
+:root {
+  --sms-border: 1pt solid black;
+  --sms-focus-border: 1pt solid cornflowerblue;
+  --sms-margin: 1em 0;
+}

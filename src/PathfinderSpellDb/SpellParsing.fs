@@ -21,6 +21,14 @@ module SpellParsing =
     | true, x -> Some x
     | false, _ -> None
 
+  let capitalizeFirstLetter (s : string) =
+    if s.Length <= 1 then s.ToUpperInvariant()
+    else
+      let firstLetter = s.Substring(0, 1)
+      let rest = s.Substring(1)
+      firstLetter.ToUpperInvariant() + rest
+    
+
   let split (s : string) = s.Split(",") |> Array.toList
 
   let buildClassSpellLevels (row : CsvRow) =
@@ -200,7 +208,7 @@ module SpellParsing =
       {
         Id = index
         Name = row.["name"].Trim()
-        School = row.["school"].Trim().ToLowerInvariant()
+        School = row.["school"].Trim().ToLowerInvariant() |> capitalizeFirstLetter
         SubSchool = row.["subschool"] |> strValueOrNone
         Descriptors = row.["descriptor"] |> split
         ShortDescription = getShortDescription(row)
@@ -257,3 +265,15 @@ module SpellParsing =
     spells
     |> List.collect (fun spell -> spell.ClassSpellLevels |> List.map (fun csl -> csl.ToTuple() |> fst))
     |> List.distinct
+
+  let distinctRanges = 
+    spells
+    |> List.map (fun spell -> spell.Range.ToString())
+    |> List.distinct
+
+  let distinctSchools =
+    spells
+    |> List.map (fun spell -> spell.School)
+    |> List.distinct
+
+  

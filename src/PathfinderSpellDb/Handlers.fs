@@ -98,3 +98,9 @@ module Handlers =
       Name = className
     })
     |> Response.ofJson
+
+  let getRanges : HttpHandler =
+    SpellParsing.distinctRanges
+    |> Response.ofJson
+
+  let getSchools : HttpHandler = SpellParsing.distinctSchools |> Response.ofJson

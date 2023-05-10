@@ -42,6 +42,7 @@ declare module '$env/static/private' {
 	export const SHLVL: string;
 	export const HOME: string;
 	export const CHROME_DESKTOP: string;
+	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const DESKTOP_SESSION: string;
 	export const NVM_BIN: string;
@@ -80,6 +81,7 @@ declare module '$env/static/private' {
 	export const TERM: string;
 	export const GNOME_DESKTOP_SESSION_ID: string;
 	export const DOTNET_ROOT: string;
+	export const npm_package_scripts_start: string;
 	export const npm_config_ignore_scripts: string;
 	export const WINDOWPATH: string;
 	export const PATH: string;
@@ -104,6 +106,7 @@ declare module '$env/static/private' {
 	export const SSH_AGENT_LAUNCHER: string;
 	export const SSH_AUTH_SOCK: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
+	export const npm_package_devDependencies__tsconfig_svelte: string;
 	export const npm_package_devDependencies__sveltejs_kit: string;
 	export const npm_package_devDependencies__apollo_client: string;
 	export const npm_config_version_git_message: string;
@@ -111,7 +114,6 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const npm_package_version: string;
 	export const QT_ACCESSIBILITY: string;
-	export const NO_AT_BRIDGE: string;
 	export const GDMSESSION: string;
 	export const npm_config_argv: string;
 	export const npm_package_devDependencies_tslib: string;
@@ -123,6 +125,7 @@ declare module '$env/static/private' {
 	export const npm_config_version_git_sign: string;
 	export const GPG_AGENT_INFO: string;
 	export const GJS_DEBUG_OUTPUT: string;
+	export const npm_package_devDependencies_svelte_multiselect: string;
 	export const npm_config_strict_ssl: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const QT_IM_MODULE: string;
@@ -182,6 +185,7 @@ declare module '$env/dynamic/private' {
 		SHLVL: string;
 		HOME: string;
 		CHROME_DESKTOP: string;
+		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
 		DESKTOP_SESSION: string;
 		NVM_BIN: string;
@@ -220,6 +224,7 @@ declare module '$env/dynamic/private' {
 		TERM: string;
 		GNOME_DESKTOP_SESSION_ID: string;
 		DOTNET_ROOT: string;
+		npm_package_scripts_start: string;
 		npm_config_ignore_scripts: string;
 		WINDOWPATH: string;
 		PATH: string;
@@ -244,6 +249,7 @@ declare module '$env/dynamic/private' {
 		SSH_AGENT_LAUNCHER: string;
 		SSH_AUTH_SOCK: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
+		npm_package_devDependencies__tsconfig_svelte: string;
 		npm_package_devDependencies__sveltejs_kit: string;
 		npm_package_devDependencies__apollo_client: string;
 		npm_config_version_git_message: string;
@@ -251,7 +257,6 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		npm_package_version: string;
 		QT_ACCESSIBILITY: string;
-		NO_AT_BRIDGE: string;
 		GDMSESSION: string;
 		npm_config_argv: string;
 		npm_package_devDependencies_tslib: string;
@@ -263,6 +268,7 @@ declare module '$env/dynamic/private' {
 		npm_config_version_git_sign: string;
 		GPG_AGENT_INFO: string;
 		GJS_DEBUG_OUTPUT: string;
+		npm_package_devDependencies_svelte_multiselect: string;
 		npm_config_strict_ssl: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		QT_IM_MODULE: string;

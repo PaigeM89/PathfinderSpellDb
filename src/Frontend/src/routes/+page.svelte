@@ -7,8 +7,12 @@
   import type { Component, SpellRow } from "../Types";
   import type { PageData } from "./$types";
   import { fetchAllSpellRows } from "./SpellRows";
+  import SearchElement from "../searchComponents/SearchElement.svelte";
 
   export let data: PageData;
+
+  let selected : string = "";
+  let searchOptionsSelected : string[] = [];
 
   let ranges = [ "Personal", "Touch", "Close", "Medium", "Long", "Unlimited", "Other" ];
 
@@ -128,23 +132,37 @@
 
 <h1>Pathfinder Spell Database</h1>
 <p>A database of all the spells in Pathfinder 1E.</p>
-<h2>Search by name: </h2><input value={$name} on:input={debounceName} />
 
-<h2>Search by schools:</h2>
-<div>
-  <SchoolSearch bind:searchBySchools={searchBySchools} />
+<div class="searchElement">
+  <h2>Search by name: </h2>
+  <input value={$name} on:input={debounceName} />
 </div>
 
-<h2>Search by classes:</h2>
-<div class="checkboxes">
-  <CheckboxList namesAndLabels={data.classes.map(cc => [cc.Name, fixSummonerUnchained(cc.Name)])} bind:selectedCheckboxNames={searchByClasses} />
-</div>
 
-<h2>Search by ranges:</h2>
-<div class="checkboxes">
-  <CheckboxList namesAndLabels={ranges.map(x => [x, x])} bind:selectedCheckboxNames={searchByRanges} />
-</div>
 
+<div class="searchElements">
+  <div class="searchElement">
+    <SearchElement bind:selected bind:searchOptionsSelected={searchBySchools} classes={data.classes.map(cc => fixSummonerUnchained(cc.Name))} />
+    <!-- <h2>Search by schools:</h2>
+    <div>
+      <SchoolSearch bind:searchBySchools={searchBySchools} />
+    </div> -->
+  </div>
+
+  <div class="searchElement">
+    <h2>Search by classes:</h2>
+    <div class="checkboxes">
+      <CheckboxList namesAndLabels={data.classes.map(cc => [cc.Name, fixSummonerUnchained(cc.Name)])} bind:selectedCheckboxNames={searchByClasses} />
+    </div>
+  </div>
+
+  <div class="searchElement">
+    <h2>Search by ranges:</h2>
+    <div class="checkboxes">
+      <CheckboxList namesAndLabels={ranges.map(x => [x, x])} bind:selectedCheckboxNames={searchByRanges} />
+    </div>
+  </div>
+</div>
 {#if $allSpellRowsStore}
   <h1>Spells</h1>
   <table>
@@ -179,7 +197,11 @@
 
 <style>
   p {
-    text-align: justify;
+    text-align: center;
+  }
+
+  h1 {
+    text-align: center;
   }
 
   thead {
@@ -195,7 +217,6 @@
     border: 1px solid;
     border-collapse: collapse;
     padding: 0.25rem;
-    margin: 0.25rem;
   }
 
   tr:nth-child(even) {
@@ -207,6 +228,17 @@
   }
 
   .checkboxes {
-    display: inline-flex;
+    border: 1px;
   }
+
+  .searchElements {
+    display: flex;
+  }
+
+  .searchElement {
+    padding: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
 </style>

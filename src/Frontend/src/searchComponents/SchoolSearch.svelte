@@ -24,5 +24,13 @@
 </script>
 
 {#each schools as school}
-  <SchoolSearchCheckbox school={school.Name} bind:isChecked={school.Selected} />
+  <div class="checkbox">
+    <SchoolSearchCheckbox school={school.Name} bind:isChecked={school.Selected} />
+  </div>
 {/each}
+
+<style>
+  .checkbox {
+    border: 1px;
+  }
+</style>

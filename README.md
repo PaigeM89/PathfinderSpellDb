@@ -27,6 +27,8 @@ TODO:
 * clean up duration!! big mess here
 * clean up casting time
 
+have the server return search elements?
+
 Honestly, the paging is WAY slower than the `get all` ever was. I should just skip it for now.
 
 https://rodneylab.com/sveltekit-infinite-scroll/
