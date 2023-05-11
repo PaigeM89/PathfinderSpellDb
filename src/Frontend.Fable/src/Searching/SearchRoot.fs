@@ -97,7 +97,7 @@ module SearchRoot =
               ]
             ]
             prop.onClick (fun _ -> 
-                { advSearch with SearchType = st; Values = [] } |> AdvancedSearchUpdated |> dispatch)
+                { advSearch with SearchType = Some st; Values = [] } |> AdvancedSearchUpdated |> dispatch)
           ]
         )
       
@@ -107,7 +107,11 @@ module SearchRoot =
           Daisy.dropdown [
             Daisy.button.button [
               button.primary
-              prop.text (Map.tryFind advSearch.SearchType searchTypeName |> Option.defaultValue "Error")
+              match advSearch.SearchType with
+              | None -> prop.text "Select a field"
+              | Some searchType -> 
+                prop.text (Map.tryFind searchType searchTypeName |> Option.defaultValue "Error")
+              prop.className "mx-2 my-2"
             ]
             Daisy.dropdownContent [
               prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
@@ -116,14 +120,16 @@ module SearchRoot =
             ]
           ]
           match advSearch.SearchType with
-          | School -> //schoolSearch model advSearch dispatch
+          | Some School ->
             Searching.SearchDropdowns.schoolSearch model.Schools advSearch (AdvancedSearchUpdated >> dispatch)
-          | CasterClass -> //casterClassSearch model advSearch dispatch
+          | Some CasterClass ->
             Searching.SearchDropdowns.casterClassSearch model.CasterClasses advSearch (AdvancedSearchUpdated >> dispatch)
+          | None -> Html.none
           | _ -> Html.div []
           Daisy.button.button [
             prop.text "Delete"
             prop.onClick (fun _ -> DeleteAdvancedSearch advSearch.Id |> dispatch)
+            prop.className "mx-2 my-2"
           ]
         ]
       ]
@@ -135,6 +141,7 @@ module SearchRoot =
           Daisy.button.button [
             prop.text "Add advanced search"
             prop.onClick (fun _ -> AddAdvancedSearch |> dispatch)
+            prop.className "mx-2 my-2"
           ]
         ]
       ]

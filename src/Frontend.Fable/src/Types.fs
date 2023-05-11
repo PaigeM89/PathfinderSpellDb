@@ -54,12 +54,12 @@ module Types =
 
   type AdvancedSearch = {
     Id : Guid
-    SearchType : SearchType
+    SearchType : SearchType option
     Values : string list
   } with
     static member Empty() = {
       Id = Guid.NewGuid()
-      SearchType = School
+      SearchType = None
       Values = []
     }
 
