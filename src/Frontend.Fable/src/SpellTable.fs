@@ -33,18 +33,28 @@ module SpellTable =
       Html.td spell.Name
       Html.td spell.School
       Html.td [
-        Html.div [
-          prop.className "flex text-justify"
+        Html.p [
+          prop.className "whitespace-normal"
           prop.text classSpellLevelsStr
         ]
       ]
       Html.td spell.CastingTime
       Html.td componentsStr
+      Html.td spell.Range
+      Html.td spell.Duration
+      Html.td [
+        Html.p [
+          prop.className "whitespace-normal"
+          prop.text spell.ShortDescription
+        ]
+      ]
+      Html.td spell.Source
     ]
 
   let view spellRows dispatch =
     Daisy.table [
-      prop.className "w-full table-compact"
+      table.compact
+      prop.className "w-full table-zebra"
       prop.children [
         Html.thead [
           Html.tr [
@@ -53,6 +63,10 @@ module SpellTable =
             Html.th "Spell Level"
             Html.th "Casting time"
             Html.th "Components"
+            Html.th "Range"
+            Html.th "Duration"
+            Html.th "Description"
+            Html.th "Source"
           ]
         ]
         Html.tbody [

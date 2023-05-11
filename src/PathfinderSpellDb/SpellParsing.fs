@@ -66,6 +66,7 @@ module SpellParsing =
       //tryMapColumn "warpriest" ClassSpellLevel.Warpriest
     ]
     |> List.choose id
+    |> List.sortBy (fun x -> x.ToTuple() |> fst)
 
   let getShortDescription(row : CsvRow) =
     let desc = row.["short_description"].Trim()
