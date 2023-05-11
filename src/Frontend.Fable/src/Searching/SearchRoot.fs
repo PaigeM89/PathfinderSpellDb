@@ -13,19 +13,29 @@ module SearchRoot =
     NameSearchInput : string option
     ExpandedAdvancedSearchOptions : bool
 
+    Schools : string list
+    CasterClasses : string list
+
     Search : Types.Search
   } with
     static member Init() = {
       NameSearchInput = None
       ExpandedAdvancedSearchOptions = false
 
+      Schools = []
+      CasterClasses = []
+
       Search = Search.Empty()
     }
 
   type Msg =
   | NameInputUpdated of string option
-  | SearchUpdated of Types.Search
   | ToggleAdvancedSearch
+  | AddAdvancedSearch
+  | DeleteAdvancedSearch of id : Guid
+  | AdvancedSearchUpdated of advSearch : AdvancedSearch
+  // Raised for the parent component to handle, not of use within this element.
+  | SearchUpdated of Types.Search
 
   let update msg (model: Model) =
     match msg with
@@ -35,6 +45,16 @@ module SearchRoot =
       { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
     | ToggleAdvancedSearch ->
       { model with ExpandedAdvancedSearchOptions = model.ExpandedAdvancedSearchOptions |> not }, Cmd.none
+    | AddAdvancedSearch ->
+      let search = model.Search |> Search.addAdvancedSearch
+      { model with Search = search }, Cmd.none
+    | DeleteAdvancedSearch id ->  
+      let search = model.Search |> Search.removeAdvancedSearch id
+      { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
+    | AdvancedSearchUpdated advSearch ->
+      printfn "Advanced search updated: %A" advSearch
+      let search = model.Search |> Search.replaceAdvancedSearch advSearch
+      { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
     // This is raised from this element to notify parent elements
     // and doesn't need to be handled here.
     | SearchUpdated _ -> model, Cmd.none
@@ -66,6 +86,141 @@ module SearchRoot =
         ]
       ]
 
+    let schoolSearch model advSearch dispatch =
+      let dropdownElements =
+        model.Schools
+        |> List.sort
+        |> List.map (fun school ->
+          Html.li [
+            prop.children [
+              Daisy.label [
+                Daisy.checkbox [ 
+                  prop.isChecked (advSearch.Values |> List.contains school)
+                  // we handle the change on the onClick below
+                  // `defaultChecked` has some buggy behavior regarding checked state,
+                  // whereas this is always accurate
+                  prop.onChange (fun (_ : bool) -> ())
+                ]
+                Daisy.labelText school
+              ]
+            ]
+            prop.onClick (fun _ ->
+              if List.contains school advSearch.Values then
+                let advSearch = { advSearch with Values = List.filter (fun v -> v <> school) advSearch.Values }
+                advSearch |> AdvancedSearchUpdated |> dispatch
+              else
+                let advSearch = { advSearch with Values = school :: advSearch.Values |> List.sort }
+                advSearch |> AdvancedSearchUpdated |> dispatch
+            )
+          ]
+        )
+      Daisy.dropdown [
+        Daisy.button.button [
+          button.primary
+          match advSearch.Values with
+          | [] -> prop.text "Select school(s)"
+          | _ -> prop.text (advSearch.ValuesString())
+        ]
+        Daisy.dropdownContent [
+          prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
+          prop.tabIndex 0
+          prop.children dropdownElements
+        ]
+      ]
+
+    let casterClassSearch model advSearch dispatch =
+      let dropdownElements =
+        model.CasterClasses
+        |> List.sort
+        |> List.map (fun cc ->
+          Html.li [
+            prop.children [
+              Daisy.label [
+                Daisy.checkbox [ 
+                  prop.isChecked (advSearch.Values |> List.contains cc)
+                  // we handle the change on the onClick below
+                  // `defaultChecked` has some buggy behavior regarding checked state,
+                  // whereas this is always accurate
+                  prop.onChange (fun (_ : bool) -> ())
+                ]
+                Daisy.labelText (Formatting.fixSummonerUnchained cc)
+              ]
+            ]
+            prop.onClick (fun _ ->
+              if List.contains cc advSearch.Values then
+                let advSearch = { advSearch with Values = List.filter (fun v -> v <> cc) advSearch.Values }
+                advSearch |> AdvancedSearchUpdated |> dispatch
+              else
+                let advSearch = { advSearch with Values = cc :: advSearch.Values |> List.sort }
+                advSearch |> AdvancedSearchUpdated |> dispatch
+            )
+          ]
+        )
+      Daisy.dropdown [
+        Daisy.button.button [
+          button.primary
+          match advSearch.Values with
+          | [] -> prop.text "Select class(es)"
+          | _ -> prop.text (advSearch.ValuesString())
+        ]
+        Daisy.dropdownContent [
+          prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
+          prop.tabIndex 0
+          prop.children dropdownElements
+        ]
+      ]
+
+    let advancedSearch model advSearch dispatch =
+      let dropdownElements = 
+        searchTypes
+        |> List.map (fun (st, text) ->
+          Html.li [ 
+            prop.children [
+              Html.a [ 
+                prop.text text
+              ]
+            ]
+            prop.onClick (fun _ -> 
+                { advSearch with SearchType = st; Values = [] } |> AdvancedSearchUpdated |> dispatch)
+          ]
+        )
+      
+      Html.div [
+        prop.id (string advSearch.Id)
+        prop.children [
+          Daisy.dropdown [
+            Daisy.button.button [
+              button.primary
+              prop.text (Map.tryFind advSearch.SearchType searchTypeName |> Option.defaultValue "Error")
+            ]
+            Daisy.dropdownContent [
+              prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
+              prop.tabIndex 0
+              prop.children dropdownElements
+            ]
+          ]
+          match advSearch.SearchType with
+          | School -> schoolSearch model advSearch dispatch
+          | CasterClass -> casterClassSearch model advSearch dispatch
+          | _ -> Html.div []
+          Daisy.button.button [
+            prop.text "Delete"
+            prop.onClick (fun _ -> DeleteAdvancedSearch advSearch.Id |> dispatch)
+          ]
+        ]
+      ]
+
+    let expandedAdvancedSearchPanel model dispatch =
+      Html.div [
+        prop.children [
+          for x in model.Search.AdvancedSearches do advancedSearch model x dispatch
+          Daisy.button.button [
+            prop.text "Add advanced search"
+            prop.onClick (fun _ -> AddAdvancedSearch |> dispatch)
+          ]
+        ]
+      ]
+
     let advancedSearchPanel model dispatch =
       Html.div [
         prop.className "mt-8 cursor-pointer"
@@ -77,8 +232,7 @@ module SearchRoot =
             else 
               prop.text "Expand Advanced Search"
           ]
-          if model.ExpandedAdvancedSearchOptions then 
-            Html.div [ prop.text "This is additional content" ]
+          if model.ExpandedAdvancedSearchOptions then expandedAdvancedSearchPanel model dispatch
         ]
       ]
 

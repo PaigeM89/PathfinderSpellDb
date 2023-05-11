@@ -48,6 +48,7 @@ module Webhost =
       endpoints [
         //post "/" (Endpoints.GraphQLHandler.handle)
         get "/spells/ranges" Handlers.getRanges
+        get "/spells/schools" Handlers.getSchools
         get "/spells" (Handlers.getAllSpells())
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx

@@ -32,7 +32,6 @@ module SpellTable =
     ]
 
   let view spellRows dispatch =
-    console.log("In spell table, there are %i spells", (Seq.length spellRows))
     Daisy.table [
       prop.className "w-full"
       prop.children [

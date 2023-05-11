@@ -6,6 +6,7 @@
     <Compile Include="Types.fs" />
     <Compile Include="Formatting.fs" />
     <Compile Include="Searching/SearchRoot.fs" />
+    <Compile Include="SpellFiltering.fs" />
     <Compile Include="SpellTable.fs" />
     <Compile Include="Spells.fs" />
     <Compile Include="Root.fs" />
