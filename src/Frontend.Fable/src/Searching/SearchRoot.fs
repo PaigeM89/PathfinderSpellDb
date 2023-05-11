@@ -86,90 +86,6 @@ module SearchRoot =
         ]
       ]
 
-    let schoolSearch model advSearch dispatch =
-      let dropdownElements =
-        model.Schools
-        |> List.sort
-        |> List.map (fun school ->
-          Html.li [
-            prop.children [
-              Daisy.label [
-                Daisy.checkbox [ 
-                  prop.isChecked (advSearch.Values |> List.contains school)
-                  // we handle the change on the onClick below
-                  // `defaultChecked` has some buggy behavior regarding checked state,
-                  // whereas this is always accurate
-                  prop.onChange (fun (_ : bool) -> ())
-                ]
-                Daisy.labelText school
-              ]
-            ]
-            prop.onClick (fun _ ->
-              if List.contains school advSearch.Values then
-                let advSearch = { advSearch with Values = List.filter (fun v -> v <> school) advSearch.Values }
-                advSearch |> AdvancedSearchUpdated |> dispatch
-              else
-                let advSearch = { advSearch with Values = school :: advSearch.Values |> List.sort }
-                advSearch |> AdvancedSearchUpdated |> dispatch
-            )
-          ]
-        )
-      Daisy.dropdown [
-        Daisy.button.button [
-          button.primary
-          match advSearch.Values with
-          | [] -> prop.text "Select school(s)"
-          | _ -> prop.text (advSearch.ValuesString())
-        ]
-        Daisy.dropdownContent [
-          prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
-          prop.tabIndex 0
-          prop.children dropdownElements
-        ]
-      ]
-
-    let casterClassSearch model advSearch dispatch =
-      let dropdownElements =
-        model.CasterClasses
-        |> List.sort
-        |> List.map (fun cc ->
-          Html.li [
-            prop.children [
-              Daisy.label [
-                Daisy.checkbox [ 
-                  prop.isChecked (advSearch.Values |> List.contains cc)
-                  // we handle the change on the onClick below
-                  // `defaultChecked` has some buggy behavior regarding checked state,
-                  // whereas this is always accurate
-                  prop.onChange (fun (_ : bool) -> ())
-                ]
-                Daisy.labelText (Formatting.fixSummonerUnchained cc)
-              ]
-            ]
-            prop.onClick (fun _ ->
-              if List.contains cc advSearch.Values then
-                let advSearch = { advSearch with Values = List.filter (fun v -> v <> cc) advSearch.Values }
-                advSearch |> AdvancedSearchUpdated |> dispatch
-              else
-                let advSearch = { advSearch with Values = cc :: advSearch.Values |> List.sort }
-                advSearch |> AdvancedSearchUpdated |> dispatch
-            )
-          ]
-        )
-      Daisy.dropdown [
-        Daisy.button.button [
-          button.primary
-          match advSearch.Values with
-          | [] -> prop.text "Select class(es)"
-          | _ -> prop.text (advSearch.ValuesString())
-        ]
-        Daisy.dropdownContent [
-          prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
-          prop.tabIndex 0
-          prop.children dropdownElements
-        ]
-      ]
-
     let advancedSearch model advSearch dispatch =
       let dropdownElements = 
         searchTypes
@@ -200,8 +116,10 @@ module SearchRoot =
             ]
           ]
           match advSearch.SearchType with
-          | School -> schoolSearch model advSearch dispatch
-          | CasterClass -> casterClassSearch model advSearch dispatch
+          | School -> //schoolSearch model advSearch dispatch
+            Searching.SearchDropdowns.schoolSearch model.Schools advSearch (AdvancedSearchUpdated >> dispatch)
+          | CasterClass -> //casterClassSearch model advSearch dispatch
+            Searching.SearchDropdowns.casterClassSearch model.CasterClasses advSearch (AdvancedSearchUpdated >> dispatch)
           | _ -> Html.div []
           Daisy.button.button [
             prop.text "Delete"

@@ -26,6 +26,7 @@ module SpellFiltering =
     match casterClasses with
     | [] -> spells
     | casterClasses ->
+      printfn "Filtering by caster classes: %A" casterClasses
       spells
       |> Seq.filter (fun spell -> 
             spell.ClassSpellLevels 
