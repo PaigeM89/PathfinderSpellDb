@@ -16,6 +16,7 @@ module SearchRoot =
     Schools : string list
     CasterClasses : string list
     CastingTimes : (string * int) list
+    Components : string list
 
     Search : Types.Search
   } with
@@ -26,6 +27,7 @@ module SearchRoot =
       Schools = []
       CasterClasses = []
       CastingTimes = []
+      Components = []
 
       Search = Search.Empty()
     }
@@ -90,7 +92,8 @@ module SearchRoot =
 
     let advancedSearch model advSearch dispatch =
       let dropdownElements = 
-        searchTypes
+        searchTypeName
+        |> Map.toList
         |> List.map (fun (st, text) ->
           Html.li [ 
             prop.children [
@@ -130,6 +133,8 @@ module SearchRoot =
             Searching.SearchDropdowns.spellLevelSearch advSearch (AdvancedSearchUpdated >> dispatch)
           | Some CastingTime ->
             Searching.SearchDropdowns.castingTimeSearch model.CastingTimes advSearch (AdvancedSearchUpdated >> dispatch)
+          | Some Components ->
+            Searching.SearchDropdowns.componentSearch model.Components advSearch (AdvancedSearchUpdated >> dispatch)
           | _ -> Html.none
           Daisy.button.button [
             prop.text "Delete"

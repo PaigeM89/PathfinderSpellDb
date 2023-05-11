@@ -37,12 +37,6 @@ module Types =
   | Duration
   | Source
 
-  let searchTypes = [
-    School, "School"
-    CasterClass, "Class"
-    Level, "Spell Level"
-    CastingTime, "Casting Time"
-  ]
 
   let searchTypeName =
     [
@@ -50,6 +44,7 @@ module Types =
       CasterClass, "Class"
       Level, "Spell Level"
       CastingTime, "Casting Time"
+      Components, "Components"
     ] |> Map.ofList
 
   type AdvancedSearch = {

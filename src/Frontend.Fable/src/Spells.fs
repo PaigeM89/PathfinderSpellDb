@@ -57,12 +57,13 @@ module Spells =
       let schools = spells |> Seq.map (fun s -> s.School) |> Seq.distinct
       let casterClasses = spells |> Seq.collect (fun s -> s.ClassSpellLevels |> Seq.map(fun x -> x.ClassName)) |> Seq.distinct
       let castingTimes = spells |> Seq.map (fun s -> s.CastingTime) |> Seq.countBy id
-      //let castingTimes = spells |> Seq.map (fun s -> s.CastingTime) |> Seq.distinct
+      let components = spells |> Seq.collect (fun s -> s.Components |> Seq.map (fun c -> c.Name)) |> Seq.distinct
       let srm = 
         { model.SearchRootModel with 
             Schools = Seq.toList schools
             CasterClasses = Seq.toList casterClasses
             CastingTimes = Seq.toList castingTimes
+            Components = Seq.toList components
         }
       let model = 
         { model with SpellRows = spells; SearchRootModel = srm  }

@@ -3077,6 +3077,12 @@ html {
   margin-left: 50%;
 }
 
+.table-compact :where(th, td) {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .static {
   position: static;
 }
@@ -3120,6 +3126,10 @@ html {
   display: inline;
 }
 
+.flex {
+  display: flex;
+}
+
 .table {
   display: table;
 }
@@ -3148,6 +3158,10 @@ html {
   place-content: center;
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3165,6 +3179,10 @@ html {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.text-justify {
+  text-align: justify;
 }
 
 .shadow {

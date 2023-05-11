@@ -71,6 +71,24 @@ module SpellFiltering =
       spells
       |> Seq.filter (fun spell -> List.contains spell.CastingTime castingTimes)
 
+  let private filterByComponent (search : Search) (spells : SpellRow seq) =
+    let componentFilters = search.AdvancedSearches |> searchesMatchingType Components
+    let components =
+      componentFilters
+      |> List.collect (fun a -> a.Values)
+      |> List.distinct
+    match components with
+    | [] -> spells
+    | _ ->
+      printfn "Filtering spells for components %A" components
+      spells
+      |> Seq.filter (fun spell ->
+        spell.Components
+        |> Seq.exists (fun comp ->
+          List.contains comp.Name components
+        )
+      )
+
   let filterSpells (search : Search) (spells : SpellRow seq) =
     spells
     |> filterByName search
@@ -78,3 +96,4 @@ module SpellFiltering =
     |> filterByCasterClass search
     |> filterBySpellLevel search
     |> filterByCastingTime search
+    |> filterByComponent search

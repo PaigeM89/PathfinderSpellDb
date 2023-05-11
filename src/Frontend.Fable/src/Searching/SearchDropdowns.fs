@@ -90,3 +90,10 @@ module SearchDropdowns =
       |> List.map (fun (castingTime, count) -> castingTime, sprintf "%s (%i)" castingTime count)
       |> listItems advSearch dispatch
     dropdown advSearch "Select casting time(s)" dropdownElements
+
+  let componentSearch components advSearch dispatch =
+    components
+    |> List.sort
+    |> List.map (fun c -> c, c)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Component(s)"

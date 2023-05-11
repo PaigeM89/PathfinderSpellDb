@@ -25,16 +25,26 @@ module SpellTable =
         sprintf "%s %i" (Formatting.fixSummonerUnchained csl.ClassName) csl.Level
       )
     let classSpellLevelsStr = String.Join(", ", classSpellLevels)
+
+    let components = spell.Components |> Seq.map (fun c -> c.Abbr)
+    let componentsStr = String.Join(", ", components)
+
     Html.tr [
       Html.td spell.Name
       Html.td spell.School
-      Html.td classSpellLevelsStr
+      Html.td [
+        Html.div [
+          prop.className "flex text-justify"
+          prop.text classSpellLevelsStr
+        ]
+      ]
       Html.td spell.CastingTime
+      Html.td componentsStr
     ]
 
   let view spellRows dispatch =
     Daisy.table [
-      prop.className "w-full"
+      prop.className "w-full table-compact"
       prop.children [
         Html.thead [
           Html.tr [
@@ -42,6 +52,7 @@ module SpellTable =
             Html.th "School"
             Html.th "Spell Level"
             Html.th "Casting time"
+            Html.th "Components"
           ]
         ]
         Html.tbody [
