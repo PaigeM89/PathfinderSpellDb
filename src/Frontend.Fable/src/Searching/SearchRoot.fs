@@ -15,6 +15,7 @@ module SearchRoot =
 
     Schools : string list
     CasterClasses : string list
+    CastingTimes : (string * int) list
 
     Search : Types.Search
   } with
@@ -24,6 +25,7 @@ module SearchRoot =
 
       Schools = []
       CasterClasses = []
+      CastingTimes = []
 
       Search = Search.Empty()
     }
@@ -126,8 +128,9 @@ module SearchRoot =
             Searching.SearchDropdowns.casterClassSearch model.CasterClasses advSearch (AdvancedSearchUpdated >> dispatch)
           | Some Level ->
             Searching.SearchDropdowns.spellLevelSearch advSearch (AdvancedSearchUpdated >> dispatch)
-          | None -> Html.none
-          | _ -> Html.div []
+          | Some CastingTime ->
+            Searching.SearchDropdowns.castingTimeSearch model.CastingTimes advSearch (AdvancedSearchUpdated >> dispatch)
+          | _ -> Html.none
           Daisy.button.button [
             prop.text "Delete"
             prop.onClick (fun _ -> DeleteAdvancedSearch advSearch.Id |> dispatch)

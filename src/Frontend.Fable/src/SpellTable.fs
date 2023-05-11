@@ -29,6 +29,7 @@ module SpellTable =
       Html.td spell.Name
       Html.td spell.School
       Html.td classSpellLevelsStr
+      Html.td spell.CastingTime
     ]
 
   let view spellRows dispatch =
@@ -40,6 +41,7 @@ module SpellTable =
             Html.th "Name"
             Html.th "School"
             Html.th "Spell Level"
+            Html.th "Casting time"
           ]
         ]
         Html.tbody [

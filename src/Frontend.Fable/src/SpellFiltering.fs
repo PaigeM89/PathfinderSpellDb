@@ -59,9 +59,22 @@ module SpellFiltering =
         |> Array.exists (fun csl -> List.contains csl.Level spellLevels)
       )
 
+  let private filterByCastingTime (search : Search) (spells : SpellRow seq) =
+    let castingTimeFilters = search.AdvancedSearches |> searchesMatchingType CastingTime
+    let castingTimes =
+      castingTimeFilters
+      |> List.collect (fun a -> a.Values)
+      |> List.distinct
+    match castingTimes with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.CastingTime castingTimes)
+
   let filterSpells (search : Search) (spells : SpellRow seq) =
     spells
     |> filterByName search
     |> filterBySchool search
     |> filterByCasterClass search
     |> filterBySpellLevel search
+    |> filterByCastingTime search

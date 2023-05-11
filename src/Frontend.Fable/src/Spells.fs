@@ -37,9 +37,6 @@ module Spells =
       match model.Search.Name with
       | None -> model.SpellRows
       | Some n ->
-        let l = Seq.length model.SpellRows
-        console.log("Searching %i spells for %s", l, n)
-
         model.SpellRows |> Seq.filter (fun spell -> spell.Name.ToLowerInvariant().Contains n)
     filteredByName
 
@@ -59,10 +56,13 @@ module Spells =
     | AllSpellsLoaded spells ->
       let schools = spells |> Seq.map (fun s -> s.School) |> Seq.distinct
       let casterClasses = spells |> Seq.collect (fun s -> s.ClassSpellLevels |> Seq.map(fun x -> x.ClassName)) |> Seq.distinct
+      let castingTimes = spells |> Seq.map (fun s -> s.CastingTime) |> Seq.countBy id
+      //let castingTimes = spells |> Seq.map (fun s -> s.CastingTime) |> Seq.distinct
       let srm = 
         { model.SearchRootModel with 
             Schools = Seq.toList schools
             CasterClasses = Seq.toList casterClasses
+            CastingTimes = Seq.toList castingTimes
         }
       let model = 
         { model with SpellRows = spells; SearchRootModel = srm  }
@@ -72,7 +72,6 @@ module Spells =
       model, Cmd.none
     | SearchMsg (SearchRoot.Msg.SearchUpdated search) ->
       let model = { model with Search = search }
-      printfn "Search updated: %A" search
       model, Cmd.none
     | SearchMsg msg ->
       let searchModel, cmd = SearchRoot.update msg model.SearchRootModel
@@ -80,14 +79,15 @@ module Spells =
 
 
   let ListView model dispatch = 
+    let filteredSpells = SpellFiltering.filterSpells model.Search model.SpellRows
     Html.div [
       theme.dark
       prop.children [
         SearchRoot.view model.SearchRootModel (SearchMsg >> dispatch)
 
-        Daisy.divider "Spells"
+        Daisy.divider (sprintf "Spells (%i)" (Seq.length filteredSpells))
 
-        SpellTable.view (SpellFiltering.filterSpells model.Search model.SpellRows) (fun _ -> ())
+        SpellTable.view filteredSpells (fun _ -> ())
       ]
     ]
 

@@ -82,3 +82,11 @@ module SearchDropdowns =
       |> List.map (fun i -> string i, string i)
       |> listItems advSearch dispatch
     dropdown advSearch "Select Spell Level(s)" dropdownElements
+
+  let castingTimeSearch castingTimes advSearch dispatch =
+    let dropdownElements =
+      castingTimes
+      |> List.sortByDescending snd
+      |> List.map (fun (castingTime, count) -> castingTime, sprintf "%s (%i)" castingTime count)
+      |> listItems advSearch dispatch
+    dropdown advSearch "Select casting time(s)" dropdownElements
