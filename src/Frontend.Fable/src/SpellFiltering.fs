@@ -41,8 +41,27 @@ module SpellFiltering =
             |> Array.exists (fun csl -> List.contains csl.ClassName casterClasses) 
       )
 
+  let private filterBySpellLevel (search : Search) (spells : SpellRow seq) =
+    let spellLevelFilters = search.AdvancedSearches |> searchesMatchingType Level
+    let spellLevels =
+      spellLevelFilters |> List.collect (fun a -> a.Values) |> List.distinct
+      |> List.map (fun i ->
+        match Int32.TryParse i with
+        | true, x -> x
+        | false, _ -> -1
+      )
+    match spellLevels with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell ->
+        spell.ClassSpellLevels
+        |> Array.exists (fun csl -> List.contains csl.Level spellLevels)
+      )
+
   let filterSpells (search : Search) (spells : SpellRow seq) =
     spells
     |> filterByName search
     |> filterBySchool search
     |> filterByCasterClass search
+    |> filterBySpellLevel search

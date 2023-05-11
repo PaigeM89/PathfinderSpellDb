@@ -75,3 +75,10 @@ module SearchDropdowns =
       |> listItems advSearch dispatch
 
     dropdown advSearch "Select Class(es)" dropdownElements
+
+  let spellLevelSearch advSearch dispatch =
+    let dropdownElements =
+      [0..9]
+      |> List.map (fun i -> string i, string i)
+      |> listItems advSearch dispatch
+    dropdown advSearch "Select Spell Level(s)" dropdownElements

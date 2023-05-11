@@ -109,7 +109,7 @@ module SearchRoot =
               button.primary
               match advSearch.SearchType with
               | None -> prop.text "Select a field"
-              | Some searchType -> 
+              | Some searchType ->
                 prop.text (Map.tryFind searchType searchTypeName |> Option.defaultValue "Error")
               prop.className "mx-2 my-2"
             ]
@@ -124,6 +124,8 @@ module SearchRoot =
             Searching.SearchDropdowns.schoolSearch model.Schools advSearch (AdvancedSearchUpdated >> dispatch)
           | Some CasterClass ->
             Searching.SearchDropdowns.casterClassSearch model.CasterClasses advSearch (AdvancedSearchUpdated >> dispatch)
+          | Some Level ->
+            Searching.SearchDropdowns.spellLevelSearch advSearch (AdvancedSearchUpdated >> dispatch)
           | None -> Html.none
           | _ -> Html.div []
           Daisy.button.button [
