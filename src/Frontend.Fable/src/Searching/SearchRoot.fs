@@ -17,6 +17,9 @@ module SearchRoot =
     CasterClasses : string list
     CastingTimes : (string * int) list
     Components : string list
+    Ranges : string list
+    Durations : string list
+    Sources : string list
 
     Search : Types.Search
   } with
@@ -28,6 +31,9 @@ module SearchRoot =
       CasterClasses = []
       CastingTimes = []
       Components = []
+      Ranges = []
+      Durations = []
+      Sources = []
 
       Search = Search.Empty()
     }
@@ -135,6 +141,12 @@ module SearchRoot =
             Searching.SearchDropdowns.castingTimeSearch model.CastingTimes advSearch (AdvancedSearchUpdated >> dispatch)
           | Some Components ->
             Searching.SearchDropdowns.componentSearch model.Components advSearch (AdvancedSearchUpdated >> dispatch)
+          | Some Range ->
+            Searching.SearchDropdowns.rangeSearch model.Ranges advSearch (AdvancedSearchUpdated >> dispatch)
+          | Some Duration ->
+            Searching.SearchDropdowns.durationSearch model.Durations advSearch (AdvancedSearchUpdated >> dispatch)
+          | Some Source ->
+            Searching.SearchDropdowns.sourcesSearch model.Sources advSearch (AdvancedSearchUpdated >> dispatch)
           | _ -> Html.none
           Daisy.button.button [
             prop.text "Delete"

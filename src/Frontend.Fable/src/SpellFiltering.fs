@@ -5,6 +5,9 @@ open Types
 
 module SpellFiltering =
 
+  let distinctValues (advSearches : AdvancedSearch list) =
+    advSearches |> List.collect (fun a -> a.Values) |> List.distinct
+
   let searchesMatchingType (st : SearchType) (advSearches : AdvancedSearch list) =
     advSearches
     |> List.filter (fun advSearch ->
@@ -89,6 +92,33 @@ module SpellFiltering =
         )
       )
 
+  let private filterByRange (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType Range
+    let ranges = filters |> distinctValues
+    match ranges with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.Range ranges)
+
+  let private filterByDuration (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType Duration
+    let durations = filters |> distinctValues
+    match durations with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.Duration durations)
+
+  let private filterBySource (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType Source
+    let sources = filters |> distinctValues
+    match sources with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.Source sources)
+
   let filterSpells (search : Search) (spells : SpellRow seq) =
     spells
     |> filterByName search
@@ -97,3 +127,6 @@ module SpellFiltering =
     |> filterBySpellLevel search
     |> filterByCastingTime search
     |> filterByComponent search
+    |> filterByRange search
+    |> filterByDuration search
+    |> filterBySource search

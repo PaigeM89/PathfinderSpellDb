@@ -97,3 +97,21 @@ module SearchDropdowns =
     |> List.map (fun c -> c, c)
     |> listItems advSearch dispatch
     |> dropdown advSearch "Select Component(s)"
+
+  let rangeSearch ranges advSearch dispatch =
+    ranges
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Range(s)"
+
+  let durationSearch durations advSearch dispatch =
+    durations
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Duration(s)"
+
+  let sourcesSearch sources advSearch dispatch =
+    sources
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Source(s)"

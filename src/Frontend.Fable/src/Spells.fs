@@ -14,12 +14,16 @@ module Spells =
     RootServerUrl : string
     SpellRows : Types.SpellRow seq
 
+    /// If the user views a specific spell, this will get populated with that spell's details
+    Spell : Types.SpellRow option
+
     Search : Types.Search
     SearchRootModel : SearchRoot.Model
   } with
     static member Init serverUrl = {
       RootServerUrl = serverUrl
       SpellRows = []
+      Spell = None
       Search = Types.Search.Empty()
       SearchRootModel = SearchRoot.Model.Init()
     }
@@ -31,14 +35,6 @@ module Spells =
   | SearchMsg of SearchRoot.Msg
 
   let init (serverUrl : string) = Model.Init serverUrl, Cmd.ofMsg LoadAllSpells
-
-  let filterSpells (model : Model) =
-    let filteredByName =
-      match model.Search.Name with
-      | None -> model.SpellRows
-      | Some n ->
-        model.SpellRows |> Seq.filter (fun spell -> spell.Name.ToLowerInvariant().Contains n)
-    filteredByName
 
   module ApiCalls =
     let loadAllSpells model =
@@ -58,12 +54,18 @@ module Spells =
       let casterClasses = spells |> Seq.collect (fun s -> s.ClassSpellLevels |> Seq.map(fun x -> x.ClassName)) |> Seq.distinct
       let castingTimes = spells |> Seq.map (fun s -> s.CastingTime) |> Seq.countBy id
       let components = spells |> Seq.collect (fun s -> s.Components |> Seq.map (fun c -> c.Name)) |> Seq.distinct
-      let srm = 
+      let ranges = spells |> Seq.map (fun s -> s.Range) |> Seq.countBy id |> Seq.sortByDescending snd
+      let durations = spells |> Seq.map (fun s -> s.Duration) |> Seq.countBy id |> Seq.sortByDescending snd
+      let sources = spells |> Seq.map (fun s -> s.Source) |> Seq.countBy id |> Seq.sortByDescending snd
+      let srm =
         { model.SearchRootModel with 
             Schools = Seq.toList schools
             CasterClasses = Seq.toList casterClasses
             CastingTimes = Seq.toList castingTimes
             Components = Seq.toList components
+            Ranges = Seq.toList (Seq.map fst ranges)
+            Durations = Seq.toList (Seq.map fst durations)
+            Sources = Seq.toList (Seq.map fst sources)
         }
       let model = 
         { model with SpellRows = spells; SearchRootModel = srm  }

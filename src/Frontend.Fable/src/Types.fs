@@ -45,6 +45,9 @@ module Types =
       Level, "Spell Level"
       CastingTime, "Casting Time"
       Components, "Components"
+      Range, "Range"
+      Duration, "Duration"
+      Source, "Source"
     ] |> Map.ofList
 
   type AdvancedSearch = {
