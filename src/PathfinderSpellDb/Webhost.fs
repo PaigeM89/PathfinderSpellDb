@@ -49,12 +49,12 @@ module Webhost =
         //post "/" (Endpoints.GraphQLHandler.handle)
         get "/spells/ranges" Handlers.getRanges
         get "/spells/schools" Handlers.getSchools
-        get "/spells" (Handlers.getAllSpells())
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx
           let spellId = route.GetInt "id"
           Handlers.getSpell spellId ctx
         )
+        get "/spells" (Handlers.getAllSpells())
         // this was extremely slow for some reason
         //post "/spells" Handlers.handleSpellSearch
         get "/classes" Handlers.getClasses

@@ -205,9 +205,9 @@ module SpellParsing =
 
   let spells =
     rawSpells.Rows
-    |> Seq.mapi (fun index row ->
+    |> Seq.map (fun row ->
       {
-        Id = index
+        Id = 0
         Name = row.["name"].Trim()
         School = row.["school"].Trim().ToLowerInvariant() |> capitalizeFirstLetter
         SubSchool = row.["subschool"] |> strValueOrNone
@@ -239,6 +239,7 @@ module SpellParsing =
       }
     )
     |> Seq.sortBy (fun s -> s.Name)
+    |> Seq.mapi (fun index spell -> { spell with Id = index } )
     |> Seq.toList
 
   printfn "Loaded %i spells" (List.length spells)

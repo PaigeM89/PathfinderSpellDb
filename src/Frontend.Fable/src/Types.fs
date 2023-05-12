@@ -1,18 +1,9 @@
 namespace Frontend
 
 open System
+open Shared.Dtos
 
 module Types =
-  type ClassSpellLevel = {
-    ClassName: string
-    Level : int
-  }
-
-  type Component = {
-    Name : string
-    Abbr : string
-    Cost : string option
-  }
 
   type SpellRow = {
     Id : int
@@ -79,7 +70,7 @@ module Types =
     let setName n (s : Search) = { s with Name = n }
 
     let addAdvancedSearch (s : Search) =
-      { s with AdvancedSearches = AdvancedSearch.Empty() :: s.AdvancedSearches }
+      { s with AdvancedSearches = s.AdvancedSearches @ [ AdvancedSearch.Empty() ]}
     
     let removeAdvancedSearch id (s : Search) = 
       { s with AdvancedSearches = s.AdvancedSearches |> List.filter (fun a -> a.Id <> id) }
@@ -90,3 +81,6 @@ module Types =
             s.AdvancedSearches
             |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
       }
+
+module String =
+  let join (xs : string seq) = String.Join(", ", xs)

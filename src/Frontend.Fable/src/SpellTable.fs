@@ -2,10 +2,6 @@ namespace Frontend
 
 open Frontend
 open System
-open Fable.Core
-open Fable.Core.JS
-open Fable.Core.JsInterop
-open Elmish
 open Feliz
 open Feliz.DaisyUI
 
@@ -18,7 +14,7 @@ module SpellTable =
       SpellRows = spellRows
     }
 
-  let private spellRow (spell : Types.SpellRow) =
+  let private spellRow (spell : Types.SpellRow) dispatch =
     let classSpellLevels =
       spell.ClassSpellLevels
       |> Seq.map (fun csl -> 
@@ -29,35 +25,33 @@ module SpellTable =
     let components = spell.Components |> Seq.map (fun c -> c.Abbr)
     let componentsStr = String.Join(", ", components)
 
+    let p (text : string) =
+      Html.p [
+        // this key is needed to suppress a warning but doesn't have a lot of value
+        prop.key (sprintf "%i-%s" spell.Id text)
+        prop.className "whitespace-normal"
+        prop.text text
+      ]
+
     Html.tr [
-      Html.td spell.Name
+      Html.td [
+        prop.id (string spell.Id)
+        prop.className "underline"
+        prop.children [
+          Html.a [
+            prop.text spell.Name
+            prop.onClick (fun _ -> dispatch spell.Id)
+            prop.className "cursor-pointer"
+          ]
+        ]
+      ]
       Html.td spell.School
-      Html.td [
-        Html.p [
-          prop.className "whitespace-normal"
-          prop.text classSpellLevelsStr
-        ]
-      ]
-      Html.td  [
-        Html.p [
-          prop.className "whitespace-normal"
-          prop.text spell.CastingTime
-        ]
-      ]
+      Html.td (p classSpellLevelsStr)
+      Html.td (p spell.CastingTime)
       Html.td componentsStr
-      Html.td spell.Range
-      Html.td [
-        Html.p [
-          prop.text spell.Duration
-          prop.className "whitespace-normal"
-        ]
-      ]
-      Html.td [
-        Html.p [
-          prop.className "whitespace-normal"
-          prop.text spell.ShortDescription
-        ]
-      ]
+      Html.td (p spell.Range)
+      Html.td (p spell.Duration)
+      Html.td (p spell.ShortDescription)
       Html.td spell.Source
     ]
 
@@ -80,7 +74,7 @@ module SpellTable =
           ]
         ]
         Html.tbody [
-          for spell in spellRows do yield spellRow spell
+          for spell in spellRows do yield spellRow spell dispatch
         ]
       ]
     ]

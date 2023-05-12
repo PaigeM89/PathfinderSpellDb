@@ -15,7 +15,7 @@ module Spells =
     SpellRows : Types.SpellRow seq
 
     /// If the user views a specific spell, this will get populated with that spell's details
-    Spell : Types.SpellRow option
+    Spell : Shared.Dtos.Spell option
 
     Search : Types.Search
     SearchRootModel : SearchRoot.Model
@@ -32,6 +32,10 @@ module Spells =
   | LoadAllSpells
   | AllSpellsLoaded of Types.SpellRow seq
   | SpellLoadingExn of exn
+  | LoadSpell of spellId : int
+  | SpellLoaded of Shared.Dtos.Spell
+  | SpellLoadExn of exn
+  | ReturnToList
   | SearchMsg of SearchRoot.Msg
 
   let init (serverUrl : string) = Model.Init serverUrl, Cmd.ofMsg LoadAllSpells
@@ -43,6 +47,14 @@ module Spells =
         let! response = Fetch.fetch url [] |> Async.AwaitPromise
         let! spells = response.json<Types.SpellRow seq>() |> Async.AwaitPromise
         return spells
+      }
+
+    let loadSpell model id =
+      async {
+        let url = model.RootServerUrl + "/spells/" + (string id)
+        let! response = Fetch.fetch url [] |> Async.AwaitPromise
+        let! spell = response.json<Shared.Dtos.Spell>() |> Async.AwaitPromise
+        return spell
       }
 
   let update msg (model: Model) =
@@ -73,6 +85,15 @@ module Spells =
     | SpellLoadingExn e ->
       console.error e
       model, Cmd.none
+    | LoadSpell id ->
+      model, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
+    | SpellLoaded spell ->
+      { model with Spell = Some spell }, Cmd.none
+    | SpellLoadExn e ->
+      console.error e
+      { model with Spell = None }, Cmd.none
+    | ReturnToList ->
+      { model with Spell = None }, Cmd.none
     | SearchMsg (SearchRoot.Msg.SearchUpdated search) ->
       let model = { model with Search = search }
       model, Cmd.none
@@ -86,11 +107,15 @@ module Spells =
     Html.div [
       theme.dark
       prop.children [
-        SearchRoot.view model.SearchRootModel (SearchMsg >> dispatch)
+        match model.Spell with
+        | Some spell ->
+          Spell.view spell (fun () -> dispatch ReturnToList)
+        | None ->
+          SearchRoot.view model.SearchRootModel (SearchMsg >> dispatch)
 
-        Daisy.divider (sprintf "Spells (%i)" (Seq.length filteredSpells))
+          Daisy.divider (sprintf "Spells (%i)" (Seq.length filteredSpells))
 
-        SpellTable.view filteredSpells (fun _ -> ())
+          SpellTable.view filteredSpells (LoadSpell >> dispatch)
       ]
     ]
 
