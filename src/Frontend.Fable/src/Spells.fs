@@ -7,10 +7,18 @@ open Fable.Core.JsInterop
 open Elmish
 open Feliz
 open Feliz.DaisyUI
+open Elmish.Navigation
 
 module Spells =
 
+  type Route = 
+  | Spell of id : int
+  | SpellList
+
   type Model = {
+    Route : Route
+    Query : string
+
     RootServerUrl : string
     SpellRows : Types.SpellRow seq
 
@@ -20,7 +28,10 @@ module Spells =
     Search : Types.Search
     SearchRootModel : SearchRoot.Model
   } with
-    static member Init serverUrl = {
+    static member Init serverUrl initialRoute = {
+      Route = initialRoute
+      Query = ""
+
       RootServerUrl = serverUrl
       SpellRows = []
       Spell = None
@@ -38,7 +49,13 @@ module Spells =
   | ReturnToList
   | SearchMsg of SearchRoot.Msg
 
-  let init (serverUrl : string) = Model.Init serverUrl, Cmd.ofMsg LoadAllSpells
+  let init (serverUrl : string) initialRoute = 
+    let model = Model.Init serverUrl initialRoute
+    match model.Route with
+    | SpellList -> model, Cmd.ofMsg LoadAllSpells
+    | Spell spellId ->
+      let cmds = Cmd.batch [ Cmd.ofMsg LoadAllSpells; Cmd.ofMsg (LoadSpell spellId) ]
+      model, cmds
 
   module ApiCalls =
     let loadAllSpells model =
@@ -88,12 +105,12 @@ module Spells =
     | LoadSpell id ->
       model, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
     | SpellLoaded spell ->
-      { model with Spell = Some spell }, Cmd.none
+      { model with Spell = Some spell }, Navigation.modifyUrl (sprintf "#spells/%i" spell.Id)
     | SpellLoadExn e ->
       console.error e
       { model with Spell = None }, Cmd.none
     | ReturnToList ->
-      { model with Spell = None }, Cmd.none
+      { model with Spell = None }, Navigation.modifyUrl "#"
     | SearchMsg (SearchRoot.Msg.SearchUpdated search) ->
       let model = { model with Search = search }
       model, Cmd.none
@@ -102,7 +119,7 @@ module Spells =
       { model with SearchRootModel = searchModel }, Cmd.map SearchMsg cmd
 
 
-  let ListView model dispatch = 
+  let View model dispatch = 
     let filteredSpells = SpellFiltering.filterSpells model.Search model.SpellRows
     Html.div [
       theme.dark
@@ -118,4 +135,3 @@ module Spells =
           SpellTable.view filteredSpells (LoadSpell >> dispatch)
       ]
     ]
-
