@@ -103,7 +103,7 @@ module SearchRoot =
         |> List.map (fun (st, text) ->
           Html.li [ 
             prop.children [
-              Html.a [ 
+              Html.a [
                 prop.text text
               ]
             ]

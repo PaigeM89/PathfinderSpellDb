@@ -38,10 +38,20 @@ module SpellTable =
           prop.text classSpellLevelsStr
         ]
       ]
-      Html.td spell.CastingTime
+      Html.td  [
+        Html.p [
+          prop.className "whitespace-normal"
+          prop.text spell.CastingTime
+        ]
+      ]
       Html.td componentsStr
       Html.td spell.Range
-      Html.td spell.Duration
+      Html.td [
+        Html.p [
+          prop.text spell.Duration
+          prop.className "whitespace-normal"
+        ]
+      ]
       Html.td [
         Html.p [
           prop.className "whitespace-normal"

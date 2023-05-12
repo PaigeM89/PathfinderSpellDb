@@ -19,12 +19,13 @@ module SearchDropdowns =
               prop.isChecked (advSearch.Values |> List.contains ddValue)
               // we handle the change on the onClick below
               // `defaultChecked` has some buggy behavior regarding checked state,
-              // whereas this is always accurate
+              // whereas this is always accurate, and `isChecked` requires an `onChange` handler
               prop.onChange (fun (_ : bool) -> ())
             ]
             Daisy.labelText ddText
           ]
         ]
+        prop.className "text-right"
         prop.onClick (fun _ ->
           if List.contains ddValue advSearch.Values then
             let advSearch = { advSearch with Values = List.filter (fun v -> v <> ddValue) advSearch.Values }
