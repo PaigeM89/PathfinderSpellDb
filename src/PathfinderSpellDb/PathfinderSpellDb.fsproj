@@ -24,6 +24,7 @@
     <Compile Include="Parsing/Types.fs" />
     <Compile Include="Parsing/SavingThrows.fs" />
     <Compile Include="SpellParsing.fs" />
+    <Compile Include="../shared/DTOs.fs" />
     <Compile Include="JsonConverters.fs" />
     <Compile Include="DTOs.fs" />
     <Compile Include="GraphQLHandler.fs" />

@@ -22,7 +22,7 @@ let urlUpdate (result : Spells.Route option) model =
   | Some (Spells.Spell id) -> 
     { model with Spells.Route = Spells.Spell id }, Cmd.ofMsg (Spells.LoadSpell id)
   | Some Spells.SpellList ->
-    { model with Route = Spells.SpellList; Spell = None }, Navigation.modifyUrl "#"
+    { model with Route = Spells.SpellList; Spell = None }, Cmd.none
   | None -> { model with Route = Spells.SpellList; Spell = None }, Navigation.modifyUrl "#"
 
 let hashRouteParser : Navigation.Parser<Spells.Route option> = parseHash route

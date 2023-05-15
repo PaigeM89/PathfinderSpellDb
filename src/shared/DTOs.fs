@@ -11,20 +11,24 @@ module Dtos =
     Name : string
     Abbr : string
     Cost : string option
-  }
+  } with
+    static member Create name abbr cost = {
+      Name = name
+      Abbr = abbr
+      Cost = cost
+    }
 
   type Spell = {
     Id : int
     Name : string
     School : string
     Subschool : string option
-    Descriptors: string list
-    ShortDescription : string
-    FullDescription : string
-    ClassSpellLevels: ClassSpellLevel list
+    Descriptors: string seq
+    Description : string
+    ClassSpellLevels: ClassSpellLevel seq
     Domains : string
     CastingTime : string
-    Components : Component list
+    Components : Component seq
     Range : string
     Duration : string
     Source : string

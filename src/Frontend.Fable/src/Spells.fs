@@ -17,7 +17,6 @@ module Spells =
 
   type Model = {
     Route : Route
-    Query : string
 
     RootServerUrl : string
     SpellRows : Types.SpellRow seq
@@ -30,7 +29,6 @@ module Spells =
   } with
     static member Init serverUrl initialRoute = {
       Route = initialRoute
-      Query = ""
 
       RootServerUrl = serverUrl
       SpellRows = []
