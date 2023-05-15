@@ -2,6 +2,7 @@ namespace Frontend
 
 open System
 open Types
+open Shared.Dtos
 
 module SpellFiltering =
 

@@ -8,13 +8,13 @@ open Feliz.DaisyUI
 module SpellTable =
 
   type Model = {
-    SpellRows : Types.SpellRow list
+    SpellRows : Shared.Dtos.SpellRow list
   } with
     static member Init spellRows = {
       SpellRows = spellRows
     }
 
-  let private spellRow (spell : Types.SpellRow) dispatch =
+  let private spellRow (spell : Shared.Dtos.SpellRow) dispatch =
     let classSpellLevels =
       spell.ClassSpellLevels
       |> Seq.map (fun csl -> 

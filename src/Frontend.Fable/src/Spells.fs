@@ -19,7 +19,7 @@ module Spells =
     Route : Route
 
     RootServerUrl : string
-    SpellRows : Types.SpellRow seq
+    SpellRows : Shared.Dtos.SpellRow seq
 
     /// If the user views a specific spell, this will get populated with that spell's details
     Spell : Shared.Dtos.Spell option
@@ -39,7 +39,7 @@ module Spells =
 
   type Msg =
   | LoadAllSpells
-  | AllSpellsLoaded of Types.SpellRow seq
+  | AllSpellsLoaded of Shared.Dtos.SpellRow seq
   | SpellLoadingExn of exn
   | LoadSpell of spellId : int
   | SpellLoaded of Shared.Dtos.Spell
@@ -60,7 +60,7 @@ module Spells =
       async {
         let url = model.RootServerUrl + "/spells"
         let! response = Fetch.fetch url [] |> Async.AwaitPromise
-        let! spells = response.json<Types.SpellRow seq>() |> Async.AwaitPromise
+        let! spells = response.json<Shared.Dtos.SpellRow seq>() |> Async.AwaitPromise
         return spells
       }
 

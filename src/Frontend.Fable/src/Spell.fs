@@ -11,10 +11,19 @@ open Fable.React
 
 module Spell =
 
-  let private h2 (text : string) =
-    Html.h2 [
-      prop.className "text-xl py-1"
-      prop.text text
+  let private detail label (value: string) =
+    Html.div [
+      prop.className "flex"
+      prop.children [
+        Html.h2 [
+          prop.className "text-xl py-1 font-extrabold"
+          prop.text (label + ":")
+        ]
+        Html.h2 [
+          prop.className "text-xl py-1 pl-1"
+          prop.text value
+        ]
+      ]
     ]
 
   let private details (spell : Shared.Dtos.Spell) =
@@ -35,23 +44,35 @@ module Spell =
     Html.div [
       prop.className "py-2"
       prop.children [
-        h2 (sprintf "School: %s" school)
+        detail "School" school
 
-        let csl = spell.ClassSpellLevels |> Seq.toList |> List.map (fun csl -> sprintf "%s %i" csl.ClassName csl.Level) |> String.join
-        h2 csl
+        let csl = spell.ClassSpellLevels |> Seq.toList |> List.map (fun csl -> sprintf "%s %i" (Formatting.fixSummonerUnchained csl.ClassName) csl.Level) |> String.join
+        detail "Level" csl
+        if spell.Domains <> "" then detail "Domains" spell.Domains else Html.none
+        detail "Casting Time" spell.CastingTime
+        detail "Components" (Formatting.componentsStr spell.Components)
+        detail "Range" spell.Range
+        detail "Duration" spell.Duration
+        detail "Source" spell.Source
       ]
     ]
 
   let private description (spell : Shared.Dtos.Spell) =
     Html.div [
+      prop.className "text-justify"
       prop.dangerouslySetInnerHTML spell.Description
     ]
 
   let private footer dispatch =
-    Html.a [
-      prop.className "underline cursor-pointer pt-4"
-      prop.text "Back to list"
-      prop.onClick (fun _ -> dispatch())
+    Html.div [
+      prop.className "pt-4"
+      prop.children [
+        Html.a [
+          prop.className "underline cursor-pointer"
+          prop.text "Back to list"
+          prop.onClick (fun _ -> dispatch())
+        ]
+      ]
     ]
 
   let view (spell : Shared.Dtos.Spell) dispatch =

@@ -5,19 +5,6 @@ open Shared.Dtos
 
 module Types =
 
-  type SpellRow = {
-    Id : int
-    Name : string
-    School : string
-    ShortDescription : string
-    ClassSpellLevels : ClassSpellLevel[]
-    CastingTime : string
-    Components : Component list
-    Range : string
-    Duration : string
-    Source : string
-  }
-
   type SearchType =
   | School
   | CasterClass
