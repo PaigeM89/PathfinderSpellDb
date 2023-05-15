@@ -101,14 +101,18 @@ module Spells =
       console.error e
       model, Cmd.none
     | LoadSpell id ->
-      model, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
+      // sometimes we end up here with the spell already loaded; if so, don't bother loading it again
+      match model.Spell with
+      | Some spell when spell.Id = id -> model, Cmd.none
+      | _ ->
+        model, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
     | SpellLoaded spell ->
-      { model with Spell = Some spell }, Navigation.modifyUrl (sprintf "#spells/%i" spell.Id)
+      { model with Spell = Some spell }, Navigation.newUrl (sprintf "#spells/%i" spell.Id)
     | SpellLoadExn e ->
       console.error e
       { model with Spell = None }, Cmd.none
     | ReturnToList ->
-      { model with Spell = None }, Navigation.modifyUrl "#"
+      { model with Spell = None }, Navigation.newUrl "#"
     | SearchMsg (SearchRoot.Msg.SearchUpdated search) ->
       let model = { model with Search = search }
       model, Cmd.none
