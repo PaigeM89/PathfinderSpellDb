@@ -30,3 +30,9 @@ module JsonHelpers =
       |> tee (fun c ->
           Seq.iter c.Converters.Add converters
           c.ContractResolver <- CamelCasePropertyNamesContractResolver ())
+
+[<AutoOpen>]
+module String =
+  open System
+  
+  let join (s : string list) = String.Join(", ", s)

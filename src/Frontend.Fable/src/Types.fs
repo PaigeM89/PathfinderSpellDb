@@ -41,6 +41,9 @@ module Types =
 
     member this.ValuesString() = String.Join(", ", this.Values)
 
+    member this.IsEmpty() =
+      this.SearchType.IsNone || (List.isEmpty this.Values)
+
   type Search = {
     Name : string option
     AdvancedSearches : AdvancedSearch list
@@ -50,6 +53,12 @@ module Types =
       // start with an advanced search option
       AdvancedSearches = [ AdvancedSearch.Empty() ]
     }
+
+    member this.IsEmpty() = 
+      let nameEmpty = this.Name.IsNone
+      match this.AdvancedSearches with
+      | [] -> nameEmpty
+      | xs -> nameEmpty && xs |> List.forall (fun a -> a.IsEmpty())
 
   module Search =
     let forName n (s : Search) = { s with Name = Some n }
@@ -68,6 +77,25 @@ module Types =
             s.AdvancedSearches
             |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
       }
+
+  type FilterTargets = {
+    Schools : string list
+    CasterClasses : string list
+    CastingTimes : string list
+    Components : string list
+    Ranges : string list
+    Durations : string list
+    Sources : string list
+  } with
+    static member Empty() = {
+      Schools = []
+      CasterClasses = []
+      CastingTimes = []
+      Components = []
+      Ranges = []
+      Durations = []
+      Sources = []
+    }
 
 module String =
   let join (xs : string seq) = String.Join(", ", xs)

@@ -29,7 +29,6 @@ module SpellFiltering =
     match schools with
     | [] -> spells
     | schools ->
-      printfn "Filtering by schools: %A" schools
       spells |> Seq.filter (fun spell -> List.contains spell.School schools)
 
   let private filterByCasterClass (search : Search) (spells : SpellRow seq) =
@@ -38,7 +37,6 @@ module SpellFiltering =
     match casterClasses with
     | [] -> spells
     | casterClasses ->
-      printfn "Filtering by caster classes: %A" casterClasses
       spells
       |> Seq.filter (fun spell -> 
             spell.ClassSpellLevels 
@@ -84,7 +82,6 @@ module SpellFiltering =
     match components with
     | [] -> spells
     | _ ->
-      printfn "Filtering spells for components %A" components
       spells
       |> Seq.filter (fun spell ->
         spell.Components

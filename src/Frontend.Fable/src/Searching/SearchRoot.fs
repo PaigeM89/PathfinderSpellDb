@@ -1,7 +1,9 @@
 namespace Frontend
 
 open System
+open Frontend.Searching
 open Fable.Core
+open Fable.Core.JsInterop
 open Frontend.Types
 open Elmish
 open Feliz
@@ -13,61 +15,119 @@ module SearchRoot =
     NameSearchInput : string option
     ExpandedAdvancedSearchOptions : bool
 
-    Schools : string list
-    CasterClasses : string list
-    CastingTimes : (string * int) list
-    Components : string list
-    Ranges : string list
-    Durations : string list
-    Sources : string list
-
-    Search : Types.Search
+    FilterTargets : FilterTargets
+    AdvancedSearches : AdvancedSearch.Model list
   } with
     static member Init() = {
       NameSearchInput = None
       ExpandedAdvancedSearchOptions = false
 
-      Schools = []
-      CasterClasses = []
-      CastingTimes = []
-      Components = []
-      Ranges = []
-      Durations = []
-      Sources = []
+      FilterTargets = FilterTargets.Empty()
 
-      Search = Search.Empty()
+      AdvancedSearches = [ AdvancedSearch.Model.Init() ]
+    }
+
+    member this.ToSearch() = {
+      Name = this.NameSearchInput
+      AdvancedSearches = this.AdvancedSearches |> List.map (fun a -> a.ToAdvancedSearch())
     }
 
   type Msg =
   | NameInputUpdated of string option
+  | NameInputCompleted of string option
   | ToggleAdvancedSearch
   | AddAdvancedSearch
-  | DeleteAdvancedSearch of id : Guid
-  | AdvancedSearchUpdated of advSearch : AdvancedSearch
+
+  | AdvancedSearchMsg of modelId : Guid * AdvancedSearch.Msg
+
+  | AdvancedSearchUpdated of advSearch : AdvancedSearch.Model
+  | DoFiltering
   // Raised for the parent component to handle, not of use within this element.
   | SearchUpdated of Types.Search
+
+  let private updateAdvancedSearchOptions (model : Model) (advSearch : AdvancedSearch.Model) =
+    match advSearch.SearchType with
+    | Some School ->
+      { advSearch with Options = model.FilterTargets.Schools }
+    | Some CasterClass ->
+      { advSearch with Options = model.FilterTargets.CasterClasses }
+    | Some  Level ->
+      { advSearch with Options = [0..9] |> List.map string }
+    | Some CastingTime ->
+      { advSearch with Options = model.FilterTargets.CastingTimes }
+    | Some Components ->
+      { advSearch with Options = model.FilterTargets.Components }
+    | Some Range ->
+      { advSearch with Options = model.FilterTargets.Ranges }
+    | Some Duration ->  
+      { advSearch with Options = model.FilterTargets.Durations }
+    | Some Source ->
+      { advSearch with Options = model.FilterTargets.Sources }
+    | None -> advSearch
 
   let update msg (model: Model) =
     match msg with
     | NameInputUpdated nameOpt ->
+      { model with
+          NameSearchInput = nameOpt
+      }, Cmd.none
+    | NameInputCompleted nameOpt ->
       let model = { model with NameSearchInput = nameOpt }
-      let search = model.Search |> Search.setName nameOpt
-      { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
+      let search = model.ToSearch()
+      model, Cmd.ofMsg (SearchUpdated search)
     | ToggleAdvancedSearch ->
       { model with ExpandedAdvancedSearchOptions = model.ExpandedAdvancedSearchOptions |> not }, Cmd.none
     | AddAdvancedSearch ->
-      let search = model.Search |> Search.addAdvancedSearch
-      { model with Search = search }, Cmd.none
-    | DeleteAdvancedSearch id ->  
-      let search = model.Search |> Search.removeAdvancedSearch id
-      { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
+      let model = { model with AdvancedSearches = model.AdvancedSearches @ [ Searching.AdvancedSearch.Model.Init() ] }
+      model, Cmd.none
+    
+    | AdvancedSearchMsg (_, AdvancedSearch.DeleteAdvancedSearch id) ->
+      let advSearches = model.AdvancedSearches |> List.filter (fun adv -> adv.Id <> id)
+      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+    
+    | AdvancedSearchMsg (_, AdvancedSearch.AdvancedSearchUpdate advSearch) ->
+      let advSearches =
+        model.AdvancedSearches
+        |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
+      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+
+    | AdvancedSearchMsg (_, AdvancedSearch.AdvancedSearchTypeUpdate advSearch) ->
+      let advSearch = updateAdvancedSearchOptions model advSearch
+      let advSearches =
+        model.AdvancedSearches
+        |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
+      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+
+    | AdvancedSearchMsg (modelId, msg) ->
+      let x = 
+        model.AdvancedSearches
+        |> Seq.tryFind (fun a -> a.Id = modelId)
+        |> Option.map (fun a -> AdvancedSearch.update msg a)
+      
+      match x with
+      | Some (advSearchModel, cmd) ->
+        let advancedSearches = model.AdvancedSearches |> List.map (fun a -> if a.Id = advSearchModel.Id then advSearchModel else a)
+        let model = { model with AdvancedSearches = advancedSearches }
+        let cmd = Cmd.map (fun cmd -> AdvancedSearchMsg(advSearchModel.Id, cmd)) cmd
+        model, cmd
+      | _ -> model, Cmd.none
+
     | AdvancedSearchUpdated advSearch ->
-      printfn "Advanced search updated: %A" advSearch
-      let search = model.Search |> Search.replaceAdvancedSearch advSearch
-      { model with Search = search }, Cmd.ofMsg (SearchUpdated search)
+      let advSearches =
+        model.AdvancedSearches
+        |> List.map(fun a -> if a.Id = advSearch.Id then advSearch else a)
+      
+      { model with AdvancedSearches = advSearches }, Cmd.none
+
+    // we need to make an Advanced Search component because otherwise this has to 
+    // find the right Advanced Search element
+    | DoFiltering -> 
+      model, Cmd.none
     // This is raised from this element to notify parent elements
     // and doesn't need to be handled here.
     | SearchUpdated _ -> model, Cmd.none
+
+  let debouncer = Debouncer("nameSearch", 500)
 
   module private Views =
     let private removeSpaces (s : string) = s.Replace(" ", "")
@@ -86,72 +146,11 @@ module SearchRoot =
             match model.NameSearchInput with
             | Some s -> prop.value s
             | None -> prop.value ""
-            prop.onChange (fun (s : string) ->
-              if removeSpaces s = "" then 
-                NameInputUpdated None |> dispatch
-              else
-                NameInputUpdated (Some s) |> dispatch
+            prop.onInput(fun (e: Browser.Types.Event) ->
+              let text = e.target?value
+              NameInputUpdated (Some text) |> dispatch
+              debouncer.Debounce dispatch (NameInputCompleted (Some text))
             )
-          ]
-        ]
-      ]
-
-    let advancedSearch model advSearch dispatch =
-      let dropdownElements = 
-        searchTypeName
-        |> Map.toList
-        |> List.map (fun (st, text) ->
-          Html.li [ 
-            prop.children [
-              Html.a [
-                prop.text text
-              ]
-            ]
-            prop.onClick (fun _ -> 
-                { advSearch with SearchType = Some st; Values = [] } |> AdvancedSearchUpdated |> dispatch)
-          ]
-        )
-      
-      Html.div [
-        prop.id (string advSearch.Id)
-        prop.children [
-          Daisy.dropdown [
-            Daisy.button.button [
-              button.primary
-              match advSearch.SearchType with
-              | None -> prop.text "Select a field"
-              | Some searchType ->
-                prop.text (Map.tryFind searchType searchTypeName |> Option.defaultValue "Error")
-              prop.className "mx-2 my-2"
-            ]
-            Daisy.dropdownContent [
-              prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
-              prop.tabIndex 0
-              prop.children dropdownElements
-            ]
-          ]
-          match advSearch.SearchType with
-          | Some School ->
-            Searching.SearchDropdowns.schoolSearch model.Schools advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some CasterClass ->
-            Searching.SearchDropdowns.casterClassSearch model.CasterClasses advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some Level ->
-            Searching.SearchDropdowns.spellLevelSearch advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some CastingTime ->
-            Searching.SearchDropdowns.castingTimeSearch model.CastingTimes advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some Components ->
-            Searching.SearchDropdowns.componentSearch model.Components advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some Range ->
-            Searching.SearchDropdowns.rangeSearch model.Ranges advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some Duration ->
-            Searching.SearchDropdowns.durationSearch model.Durations advSearch (AdvancedSearchUpdated >> dispatch)
-          | Some Source ->
-            Searching.SearchDropdowns.sourcesSearch model.Sources advSearch (AdvancedSearchUpdated >> dispatch)
-          | _ -> Html.none
-          Daisy.button.button [
-            prop.text "Delete"
-            prop.onClick (fun _ -> DeleteAdvancedSearch advSearch.Id |> dispatch)
-            prop.className "mx-2 my-2"
           ]
         ]
       ]
@@ -159,7 +158,8 @@ module SearchRoot =
     let expandedAdvancedSearchPanel model dispatch =
       Html.div [
         prop.children [
-          for x in model.Search.AdvancedSearches do advancedSearch model x dispatch
+          for x in model.AdvancedSearches do AdvancedSearch.view x (fun m -> AdvancedSearchMsg (x.Id, m) |> dispatch)
+          //advancedSearch model x dispatch
           Daisy.button.button [
             prop.text "Add advanced search"
             prop.onClick (fun _ -> AddAdvancedSearch |> dispatch)

@@ -15,20 +15,16 @@ module SpellTable =
     }
 
   let private spellRow (spell : Shared.Dtos.SpellRow) dispatch =
-    let classSpellLevels =
-      spell.ClassSpellLevels
-      |> Seq.map (fun csl -> 
-        sprintf "%s %i" (Formatting.fixSummonerUnchained csl.ClassName) csl.Level
-      )
-    let classSpellLevelsStr = String.Join(", ", classSpellLevels)
-
     let components = spell.Components |> Seq.map (fun c -> c.Abbr)
     let componentsStr = String.Join(", ", components)
 
-    let p (text : string) =
+    // ints are faster for large amounts of spell rows being rendered
+    let key (i : int) = spell.Id + i
+
+    let p (k : int) (text : string) =
       Html.p [
         // this key is needed to suppress a warning but doesn't have a lot of value
-        prop.key (sprintf "%i-%s" spell.Id text)
+        prop.key (key k)
         prop.className "whitespace-normal"
         prop.text text
       ]
@@ -46,16 +42,16 @@ module SpellTable =
         ]
       ]
       Html.td spell.School
-      Html.td (p classSpellLevelsStr)
-      Html.td (p spell.CastingTime)
+      Html.td (p 0 spell.ClassSpellLevelsString)
+      Html.td (p 1 spell.CastingTime)
       Html.td componentsStr
-      Html.td (p spell.Range)
-      Html.td (p spell.Duration)
-      Html.td (p spell.ShortDescription)
+      Html.td (p 2 spell.Range)
+      Html.td (p 3 spell.Duration)
+      Html.td (p 4 spell.ShortDescription)
       Html.td spell.Source
     ]
 
-  let view spellRows dispatch =
+  let view limit (spellRows : Shared.Dtos.SpellRow []) loadSpellDispatch =
     Daisy.table [
       table.compact
       prop.className "w-full table-zebra"
@@ -73,8 +69,19 @@ module SpellTable =
             Html.th "Source"
           ]
         ]
-        Html.tbody [
-          for spell in spellRows do yield spellRow spell dispatch
-        ]
+        match limit with
+        | Some x ->
+          if (Array.length spellRows > x) then
+            Html.tbody [
+              for spell in (Array.take x spellRows) do yield spellRow spell loadSpellDispatch
+            ]
+          else
+            Html.tbody [
+              for spell in spellRows do yield spellRow spell loadSpellDispatch
+            ]
+        | None ->
+          Html.tbody [
+            for spell in spellRows do yield spellRow spell loadSpellDispatch
+          ]
       ]
     ]

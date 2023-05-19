@@ -59,7 +59,7 @@ module Spell =
 
   let private description (spell : Shared.Dtos.Spell) =
     Html.div [
-      prop.className "text-justify"
+      prop.className "text-justify whitespace-pre"
       prop.dangerouslySetInnerHTML spell.Description
     ]
 

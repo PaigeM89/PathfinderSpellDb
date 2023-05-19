@@ -6,7 +6,9 @@
     <Compile Include="../../shared/DTOs.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Formatting.fs" />
+    <Compile Include="Debouncer.fs" />
     <Compile Include="Searching/SearchDropdowns.fs" />
+    <Compile Include="Searching/AdvancedSearch.fs" />
     <Compile Include="Searching/SearchRoot.fs" />
     <Compile Include="SpellFiltering.fs" />
     <Compile Include="SpellTable.fs" />
@@ -25,5 +27,6 @@
     <PackageReference Include="Fable.Promise" Version="3.2.0" />
     <PackageReference Include="Feliz" Version="2.6.0" />
     <PackageReference Include="Feliz.DaisyUI" Version="3.0.0" />
+    <PackageReference Include="Feliz.UseElmish" Version="2.4.0" />
   </ItemGroup>
 </Project>

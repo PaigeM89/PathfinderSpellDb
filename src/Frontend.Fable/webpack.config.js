@@ -4,8 +4,10 @@
 
 var path = require("path");
 
+var mode = hasArg("prod") ? "production" : "development";
+
 module.exports = {
-    mode: "development",
+    mode: mode,
     entry: "./src/Root.fs.js",
     output: {
         path: path.join(__dirname, "./public"),
@@ -20,4 +22,11 @@ module.exports = {
     },
     module: {
     }
+}
+
+
+function hasArg(arg) {
+  return arg instanceof RegExp
+      ? process.argv.some(x => arg.test(x))
+      : process.argv.indexOf(arg) !== -1;
 }

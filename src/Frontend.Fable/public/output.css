@@ -3148,8 +3148,25 @@ html {
   margin-bottom: 0.5rem;
 }
 
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .mt-8 {
   margin-top: 2rem;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 .block {
@@ -3192,6 +3209,10 @@ html {
   place-content: center;
 }
 
+.place-self-center {
+  place-self: center;
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3200,6 +3221,10 @@ html {
 
 .whitespace-normal {
   white-space: normal;
+}
+
+.whitespace-pre {
+  white-space: pre;
 }
 
 .rounded {
@@ -3229,16 +3254,12 @@ html {
   padding-bottom: 0.5rem;
 }
 
-.pt-4 {
-  padding-top: 1rem;
-}
-
-.pt-8 {
-  padding-top: 2rem;
-}
-
 .pl-1 {
   padding-left: 0.25rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
 }
 
 .text-center {
@@ -3253,23 +3274,14 @@ html {
   text-align: justify;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
 }
 
-.font-bold {
-  font-weight: 700;
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .font-extrabold {

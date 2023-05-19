@@ -5,6 +5,11 @@ module Dtos =
     ClassName: string
     Level : int
   } with
+      static member Create className level = {
+        ClassName = className
+        Level = level
+      }
+      
       override this.ToString() = sprintf "%s %i" this.ClassName this.Level
 
   type Component = {
@@ -24,6 +29,7 @@ module Dtos =
     School : string
     ShortDescription : string
     ClassSpellLevels : ClassSpellLevel[]
+    ClassSpellLevelsString : string
     CastingTime : string
     Components : Component list
     Range : string
@@ -39,6 +45,7 @@ module Dtos =
     Descriptors: string seq
     Description : string
     ClassSpellLevels: ClassSpellLevel seq
+    ClassSpellLevelsString : string
     Domains : string
     CastingTime : string
     Components : Component seq

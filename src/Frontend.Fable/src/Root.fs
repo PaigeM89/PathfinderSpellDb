@@ -28,6 +28,9 @@ let urlUpdate (result : Spells.Route option) model =
 let hashRouteParser : Navigation.Parser<Spells.Route option> = parseHash route
 
 Program.mkProgram init Spells.update Spells.View
-|> Program.withReactBatched "app"
+// batching can have buggy text input (loses input) if the app is running slow
+//|> Program.withReactBatched "app"
+|> Program.withReactSynchronous "app"
 |> Program.toNavigable hashRouteParser urlUpdate
 |> Program.run
+//|> Program.runWith "http://localhost:5000"
