@@ -87,7 +87,7 @@ module AdvancedSearch =
             Daisy.labelText ddText
           ]
         ]
-        prop.className "text-right"
+        prop.className "text-right w-52"
         prop.onClick (fun _ ->
           if isSelected then
             let model = { model with SelectedValues = List.filter (fun v -> v <> ddValue) model.SelectedValues }
@@ -103,12 +103,12 @@ module AdvancedSearch =
 
   let private dropdownContent dispatch model (elements: Fable.React.ReactElement list) =
     Daisy.dropdownContent [
-      prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
+      prop.className "p-2 shadow menu bg-base-100 rounded-box w-auto overflow-x-clip overflow-y-auto h-96 flex-row"
       prop.tabIndex 0
       prop.children [
         Daisy.input [
           input.bordered
-          prop.className "w-52"
+          prop.className "w-56"
           prop.placeholder ""
           match model.UserFilterInput with
           | None -> prop.value ""
