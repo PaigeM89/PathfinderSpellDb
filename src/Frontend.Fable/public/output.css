@@ -3188,10 +3188,6 @@ html {
   height: 24rem;
 }
 
-.h-auto {
-  height: auto;
-}
-
 .w-52 {
   width: 13rem;
 }
@@ -3200,20 +3196,12 @@ html {
   width: 14rem;
 }
 
-.w-60 {
-  width: 15rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
 .w-auto {
   width: auto;
 }
 
-.basis-52 {
-  flex-basis: 13rem;
+.w-full {
+  width: 100%;
 }
 
 .cursor-pointer {
@@ -3224,16 +3212,8 @@ html {
   flex-direction: row;
 }
 
-.flex-nowrap {
-  flex-wrap: nowrap;
-}
-
 .place-content-center {
   place-content: center;
-}
-
-.overflow-x-auto {
-  overflow-x: auto;
 }
 
 .overflow-y-auto {

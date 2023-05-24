@@ -51,5 +51,7 @@ module Dtos =
     Components : Component seq
     Range : string
     Duration : string
+    SavingThrows : string
+    SpellResistance: bool
     Source : string
   }

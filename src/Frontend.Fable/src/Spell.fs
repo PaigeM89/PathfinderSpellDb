@@ -16,11 +16,11 @@ module Spell =
       prop.className "flex"
       prop.children [
         Html.h2 [
-          prop.className "text-xl py-1 font-extrabold"
+          prop.className "text-xl font-extrabold"
           prop.text (label + ":")
         ]
         Html.h2 [
-          prop.className "text-xl py-1 pl-1"
+          prop.className "text-xl pl-1"
           prop.text value
         ]
       ]
@@ -49,17 +49,23 @@ module Spell =
         let csl = spell.ClassSpellLevels |> Seq.toList |> List.map (fun csl -> sprintf "%s %i" (Formatting.fixSummonerUnchained csl.ClassName) csl.Level) |> String.join
         detail "Level" csl
         if spell.Domains <> "" then detail "Domains" spell.Domains else Html.none
+        detail "Source" spell.Source
+        
+        Daisy.divider "Casting"
         detail "Casting Time" spell.CastingTime
         detail "Components" (Formatting.componentsStr spell.Components)
+        
+        Daisy.divider "Effect"
         detail "Range" spell.Range
         detail "Duration" spell.Duration
-        detail "Source" spell.Source
+        detail "Saving throw" spell.SavingThrows
+        detail "Spell Resistance" (if spell.SpellResistance then "Yes" else "No")
       ]
     ]
 
   let private description (spell : Shared.Dtos.Spell) =
     Html.div [
-      prop.className "text-justify whitespace-pre"
+      prop.className "text-justify"
       prop.dangerouslySetInnerHTML spell.Description
     ]
 
@@ -86,6 +92,8 @@ module Spell =
         ]
         
         details spell
+        
+        Daisy.divider "Description"
 
         description spell
 

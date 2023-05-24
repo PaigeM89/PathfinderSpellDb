@@ -44,34 +44,35 @@ module Types =
   | Wizard of int
   with
     member this.ToTuple() =
+      let name = GetUnionCaseName this
       match this with
-      | Adept x -> GetUnionCaseName this, x
-      | Alchemist x -> GetUnionCaseName this, x
-      | Antipaladin x -> GetUnionCaseName this, x
-      | Bard x -> GetUnionCaseName this, x
-      | Bloodrager x -> GetUnionCaseName this, x
-      | Cleric x -> GetUnionCaseName this, x
-      | Druid x -> GetUnionCaseName this, x
-      | Hunter x -> GetUnionCaseName this, x
-      | Inquisitor x -> GetUnionCaseName this, x
-      | Investigator x -> GetUnionCaseName this, x
-      | Magus x -> GetUnionCaseName this, x
-      | Medium x -> GetUnionCaseName this, x
-      | Mesmerist x -> GetUnionCaseName this, x
-      | Occultist x -> GetUnionCaseName this, x
-      | Oracle x -> GetUnionCaseName this, x
-      | Paladin x -> GetUnionCaseName this, x
-      | Psychic x -> GetUnionCaseName this, x
-      | Ranger x -> GetUnionCaseName this, x
-      | Shaman x -> GetUnionCaseName this, x
-      | Skald x -> GetUnionCaseName this, x
-      | Spiritualist x -> GetUnionCaseName this, x
-      | Sorcerer x -> GetUnionCaseName this, x
-      | Summoner x -> GetUnionCaseName this, x
-      | SummonerUnchained x -> GetUnionCaseName this, x
-      | Warpriest x -> GetUnionCaseName this, x
-      | Witch x -> GetUnionCaseName this, x
-      | Wizard x -> GetUnionCaseName this, x
+      | Adept x -> name, x
+      | Alchemist x -> name, x
+      | Antipaladin x -> name, x
+      | Bard x -> name, x
+      | Bloodrager x -> name, x
+      | Cleric x -> name, x
+      | Druid x -> name, x
+      | Hunter x -> name, x
+      | Inquisitor x -> name, x
+      | Investigator x -> name, x
+      | Magus x -> name, x
+      | Medium x -> name, x
+      | Mesmerist x -> name, x
+      | Occultist x -> name, x
+      | Oracle x -> name, x
+      | Paladin x -> name, x
+      | Psychic x -> name, x
+      | Ranger x -> name, x
+      | Shaman x -> name, x
+      | Skald x -> name, x
+      | Spiritualist x -> name, x
+      | Sorcerer x -> name, x
+      | Summoner x -> name, x
+      | SummonerUnchained x -> name, x
+      | Warpriest x -> name, x
+      | Witch x -> name, x
+      | Wizard x -> name, x
 
   [<RequireQualifiedAccess>]
   type CastingTime =
@@ -124,7 +125,7 @@ module Types =
     }
 
     override this.ToString() =
-      $"{this.Domain} ({this.Level})"
+      $"{this.Domain} {this.Level}"
 
   type BloodlineClassLevel = {
     Bloodline : string

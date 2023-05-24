@@ -88,7 +88,8 @@ module AdvancedSearch =
           ]
         ]
         prop.className "text-right w-52"
-        prop.onClick (fun _ ->
+        prop.onClick (fun e ->
+          e.preventDefault()
           if isSelected then
             let model = { model with SelectedValues = List.filter (fun v -> v <> ddValue) model.SelectedValues }
             model |> ModelUpdate |>  dispatch
