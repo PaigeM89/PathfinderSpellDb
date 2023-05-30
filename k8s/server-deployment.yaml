@@ -19,6 +19,6 @@ spec:
         image: registry.digitalocean.com/mpaige-container-registry/pfsdb:v0.1.0
         env:
         - name: CORS_ORIGINS
-          value: "https://pathfinderspelldb.com,http://pathfinderspelldb.com,http://www.pathfinderspelldb.com,https://www.pathfinderspelldb.com"
+          value: "https://pathfinderspelldb.com,http://pathfinderspelldb.com,http://www.pathfinderspelldb.com,https://www.pathfinderspelldb.com,http://api.pathfinderspelldb.com,https://api.pathfinderspelldb.com"
         ports:
         - containerPort: 80

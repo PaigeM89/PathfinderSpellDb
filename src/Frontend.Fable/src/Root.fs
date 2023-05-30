@@ -10,7 +10,7 @@ let apiRoute =
 #if DEBUG
   "http://localhost:5000"
 #else
-  "http://api.pathfinderspelldb.com"
+  "https://api.pathfinderspelldb.com"
 #endif
 
 let init initialRoute = 
