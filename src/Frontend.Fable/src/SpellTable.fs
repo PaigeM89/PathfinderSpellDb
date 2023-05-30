@@ -14,7 +14,7 @@ module SpellTable =
       SpellRows = spellRows
     }
 
-  let private spellRow (spell : Shared.Dtos.SpellRow) dispatch =
+  let private spellRow loadingSpellId (spell : Shared.Dtos.SpellRow) dispatch =
     let components = spell.Components |> Seq.map (fun c -> c.Abbr)
     let componentsStr = String.Join(", ", components)
 
@@ -37,7 +37,10 @@ module SpellTable =
         prop.className "underline"
         prop.children [
           Html.a [
-            prop.text spell.Name
+            if spell.Id = loadingSpellId then 
+              prop.text (spell.Name + " (Loading...)")
+            else
+              prop.text spell.Name
             prop.onClick (fun _ -> dispatch spell.Id)
             prop.className "cursor-pointer"
           ]
@@ -55,7 +58,8 @@ module SpellTable =
       Html.td spell.Source
     ]
 
-  let view limit (spellRows : Shared.Dtos.SpellRow []) loadSpellDispatch =
+  let view limit loadingSpell (spellRows : Shared.Dtos.SpellRow []) loadSpellDispatch =
+    let loadingSpellId = Option.defaultValue -1 loadingSpell
     Daisy.table [
       table.compact
       prop.className "w-full table-zebra"
@@ -79,15 +83,15 @@ module SpellTable =
         | Some x ->
           if (Array.length spellRows > x) then
             Html.tbody [
-              for spell in (Array.take x spellRows) do yield spellRow spell loadSpellDispatch
+              for spell in (Array.take x spellRows) do yield spellRow loadingSpellId spell loadSpellDispatch
             ]
           else
             Html.tbody [
-              for spell in spellRows do yield spellRow spell loadSpellDispatch
+              for spell in spellRows do yield spellRow loadingSpellId spell loadSpellDispatch
             ]
         | None ->
           Html.tbody [
-            for spell in spellRows do yield spellRow spell loadSpellDispatch
+            for spell in spellRows do yield spellRow loadingSpellId spell loadSpellDispatch
           ]
       ]
     ]

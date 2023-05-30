@@ -26,6 +26,8 @@ module Spells =
 
     /// If the user views a specific spell, this will get populated with that spell's details
     Spell : Shared.Dtos.Spell option
+    /// If populated, that spell id is currently loading
+    LoadingSpell : int option
 
     Search : Types.Search
     SearchRootModel : SearchRoot.Model
@@ -40,6 +42,7 @@ module Spells =
       RowsLimit = Some 100
       
       Spell = None
+      LoadingSpell = None
       Search = Types.Search.Empty()
       SearchRootModel = SearchRoot.Model.Init()
     }
@@ -127,9 +130,9 @@ module Spells =
       match model.Spell with
       | Some spell when spell.Id = id -> model, Cmd.none
       | _ ->
-        model, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
+        { model with LoadingSpell = Some id }, Cmd.OfAsync.perform (ApiCalls.loadSpell model) id SpellLoaded
     | SpellLoaded spell ->
-      { model with Spell = Some spell }, Navigation.newUrl (sprintf "#spells/%i" spell.Id)
+      { model with Spell = Some spell; LoadingSpell = None }, Navigation.newUrl (sprintf "#spells/%i" spell.Id)
     | SpellLoadExn e ->
       console.error e
       { model with Spell = None }, Cmd.none
@@ -171,14 +174,15 @@ module Spells =
           Daisy.divider (sprintf "Spells (%i)" spellCount)
 
           if model.IsFiltering then
-            SpellTable.view None [||] (fun _ -> ())
+            SpellTable.view None None [||] (fun _ -> ())
           else
             let spells =
               match model.FilteredSpells with
               | None -> model.SpellRows
               | Some xs -> xs
 
-            SpellTable.view model.RowsLimit spells (LoadSpell >> dispatch)
+            SpellTable.view model.RowsLimit model.LoadingSpell spells (LoadSpell >> dispatch)
+
             Daisy.divider ""
             match model.RowsLimit with
             | Some limit ->
