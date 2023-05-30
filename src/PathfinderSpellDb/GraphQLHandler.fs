@@ -40,7 +40,7 @@ module GraphQLHandler =
         Define.Field("requestId", Guid, "The ID of the client.", fun _ (r : Root) -> r.RequestId)
       ])
 
-  let spells : Spell list = SpellParsing.spells |> Seq.toList
+  let spells : Spell list = [] //SpellParsing.spells |> Seq.toList
 
   let Query =
     let textInputs = [ Define.Input ("name", String ) ]

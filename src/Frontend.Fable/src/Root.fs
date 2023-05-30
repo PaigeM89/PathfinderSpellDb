@@ -6,10 +6,17 @@ open Elmish.React
 open Elmish.UrlParser
 open Elmish.Navigation
 
+let apiRoute = 
+#if DEBUG
+  "http://localhost:5000"
+#else
+  "http://api.pathfinderspelldb.com"
+#endif
+
 let init initialRoute = 
   match initialRoute with
-  | Some route -> Spells.init "http://localhost:5000" route
-  | None -> Spells.init "http://localhost:5000" Spells.SpellList
+  | Some route -> Spells.init apiRoute route
+  | None -> Spells.init apiRoute Spells.SpellList
 
 let route : Parser<(Spells.Route -> Spells.Route), Spells.Route> =
   oneOf [
@@ -33,4 +40,4 @@ Program.mkProgram init Spells.update Spells.View
 |> Program.withReactSynchronous "app"
 |> Program.toNavigable hashRouteParser urlUpdate
 |> Program.run
-//|> Program.runWith "http://localhost:5000"
+//|> Program.runWith apiRoute

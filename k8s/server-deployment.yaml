@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pfsdb-server
+  labels:
+    app: pfsdb-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pfsdb-server
+  template:
+    metadata:
+      labels:
+        app: pfsdb-server
+    spec:
+      containers:
+      - name: pfsdb-server
+        image: registry.digitalocean.com/mpaige-container-registry/pfsdb:v0.1.0
+        env:
+        - name: CORS_ORIGINS
+          value: "https://pathfinderspelldb.com,http://pathfinderspelldb.com,http://www.pathfinderspelldb.com,https://www.pathfinderspelldb.com"
+        ports:
+        - containerPort: 80

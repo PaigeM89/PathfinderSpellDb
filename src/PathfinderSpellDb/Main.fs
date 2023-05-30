@@ -1,5 +1,6 @@
 namespace PathfinderSpellDb
 
+open FsLibLog
 open System.Reflection
 
 module AssemblyInfo =
@@ -40,37 +41,42 @@ module AssemblyInfo =
         let githash = getGitHash assembly
         printfn "%s - %A - %s - %s" name.Name version releaseDate githash
 
-module Say =
-    open System
-
-    let nothing name =
-        name
-        |> ignore
-
-    let hello name = sprintf "Hello %s" name
-
-    let colorizeIn (color: string) str =
-        let oldColor = Console.ForegroundColor
-        Console.ForegroundColor <- (Enum.Parse(typedefof<ConsoleColor>, color) :?> ConsoleColor)
-        printfn "%s" str
-        Console.ForegroundColor <- oldColor
-
 module Main =
+    open Configuration
     open Argu
+    open FsLibLog.Operators
+    open Serilog
+    open Serilog.Core
+    open Serilog.Events
 
-    type CLIArguments =
-        | Info
-        | Version
-        | Favorite_Color of string // Look in App.config
-        | [<MainCommand>] Hello of string
+    type ThreadIdEnricher() =
+      interface ILogEventEnricher with
+        member this.Enrich(logEvent : LogEvent, propertyFactory: ILogEventPropertyFactory) =
+          logEvent.AddPropertyIfAbsent(
+            propertyFactory.CreateProperty(
+              "ThreadId",
+              System.Threading.Thread.CurrentThread.ManagedThreadId
+           )
+          )
 
-        interface IArgParserTemplate with
-            member s.Usage =
-                match s with
-                | Info -> "More detailed information"
-                | Version -> "Version of application"
-                | Favorite_Color _ -> "Favorite color"
-                | Hello _ -> "Who to say hello to"
+    let log =
+        LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .Enrich.FromLogContext()
+            .Enrich.With(ThreadIdEnricher())
+            .WriteTo.File("log.txt",
+              outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:W3}] ({ThreadId}) {Message}{NewLine}{Exception}"
+            )
+            .WriteTo.Console(
+              outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:W3}] ({ThreadId}) {Message}{NewLine}{Exception}"
+            )
+            .CreateLogger()
+
+    LogProvider.setLoggerProvider (Providers.SerilogProvider.create ())
+    Serilog.Log.Logger <- log
+
+    let logger = LogProvider.getLoggerByName "PathfinderSpellDb.Main"
+
 
     [<EntryPoint>]
     let main (argv: string array) =
@@ -81,18 +87,20 @@ module Main =
             AssemblyInfo.printVersion ()
         elif results.Contains Info then
             AssemblyInfo.printInfo ()
-        elif results.Contains Hello then
-            match results.TryGetResult Hello with
-            | Some v ->
-                let color = results.GetResult Favorite_Color
-
-                Say.hello v
-                |> Say.colorizeIn color
-            | None ->
-                parser.PrintUsage()
-                |> printfn "%s"
+        elif results.Contains Usage then
+            let usage = 
+              let x = CLIArguments.Usage :> IArgParserTemplate
+              x.Usage
+            printfn "%s" usage
         else
-          printfn "Starting webhost..."
-          Webhost.host()
+          let config = 
+            let csvPath = Configuration.tryGetCsvPath results
+            let cors = Configuration.tryGetCors results
+            ApplicationConfig.Create csvPath cors
+
+          !!! "Configuration: {config}" >>!+ ("config", config)
+          |> logger.info
+          logger.info <| !!! "Starting webhost"
+          Webhost.host config
 
         0

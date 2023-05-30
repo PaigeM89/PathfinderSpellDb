@@ -21,17 +21,17 @@ module Webhost =
     FsLibLog.Providers.MicrosoftExtensionsLoggingProvider.setMicrosoftLoggerFactory microsoftLoggerFactory
     log.ClearProviders().AddConsole()
 
-  let configureCors (builder : CorsPolicyBuilder) =
-    builder.WithOrigins("http://localhost:5173")
+  let configureCors cors (builder : CorsPolicyBuilder) =
+    builder.WithOrigins(cors)
       .AllowAnyMethod()
       .AllowAnyHeader()
       .AllowAnyOrigin()
       .Build()
 
-  let addCors (svcs: IServiceCollection) =
+  let addCors (cors : string[]) (svcs: IServiceCollection) =
     svcs
       .AddCors(fun options ->
-        options.AddDefaultPolicy(CorsPolicyBuilder() |> configureCors)
+        options.AddDefaultPolicy(CorsPolicyBuilder() |> (configureCors cors))
       )
       .Configure<KestrelServerOptions>(fun (options: KestrelServerOptions) ->
         options.AllowSynchronousIO <- true
@@ -40,23 +40,20 @@ module Webhost =
   let useCors (x: IApplicationBuilder) =
     x.UseCors()
 
-  let host() =
+  let host (config : Configuration.ApplicationConfig) =
     webHost [||] {
-      add_service addCors
+      add_service (addCors config.CorsOrigins)
       use_middleware useCors
       logging configureLogging
       endpoints [
-        //post "/" (Endpoints.GraphQLHandler.handle)
-        get "/spells/ranges" Handlers.getRanges
-        get "/spells/schools" Handlers.getSchools
+        get "/spells/ranges" (Handlers.getRanges config)
+        get "/spells/schools" (Handlers.getSchools config)
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx
           let spellId = route.GetInt "id"
-          Handlers.getSpell spellId ctx
+          (Handlers.getSpell config spellId) ctx
         )
-        get "/spells" (Handlers.getAllSpells())
-        // this was extremely slow for some reason
-        //post "/spells" Handlers.handleSpellSearch
-        get "/classes" Handlers.getClasses
+        get "/spells" (Handlers.getAllSpells config)
+        get "/classes" (Handlers.getClasses config)
       ]
     }

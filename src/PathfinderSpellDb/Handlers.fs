@@ -6,9 +6,9 @@ open PathfinderSpellDb.Parsing
 module Handlers =
   open DTOs
 
-  let allSpells() = SpellParsing.spells |> mapSpellsToListDto
+  let allSpells config = (SpellParsing.loadedSpells config).Value |> mapSpellsToListDto
 
-  let getAllSpells() = allSpells() |> Response.ofJson
+  let getAllSpells config = allSpells config |> Response.ofJson
 
   let private toClassSpellLevelDto (csl : Types.ClassSpellLevel) : Shared.Dtos.ClassSpellLevel =
     {
@@ -84,8 +84,8 @@ module Handlers =
       Source = spell.Source
     }
 
-  let getSpell (id : int) =
-    SpellParsing.findSpellByIndex id
+  let getSpell config (id : int) =
+    SpellParsing.findSpellByIndex config id
     |> Option.map toSpellDto
     |> Response.ofJson
 
@@ -93,15 +93,15 @@ module Handlers =
     Name : string
   }
 
-  let getClasses : HttpHandler =
-    SpellParsing.allClasses
+  let getClasses config : HttpHandler =
+    SpellParsing.allClasses config
     |> List.map (fun className -> {
       Name = className
     })
     |> Response.ofJson
 
-  let getRanges : HttpHandler =
-    SpellParsing.distinctRanges
+  let getRanges config : HttpHandler =
+    SpellParsing.distinctRanges config
     |> Response.ofJson
 
-  let getSchools : HttpHandler = SpellParsing.distinctSchools |> Response.ofJson
+  let getSchools config : HttpHandler = SpellParsing.distinctSchools config |> Response.ofJson

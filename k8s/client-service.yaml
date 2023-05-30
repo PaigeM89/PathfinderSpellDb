@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pfsdb-client-service
+spec:
+  selector:
+    app: pfsdb-client
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

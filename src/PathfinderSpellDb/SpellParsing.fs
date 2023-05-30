@@ -5,14 +5,25 @@ open System.IO
 open System.Text
 open System.Text.RegularExpressions
 open FSharp.Data
+open FsLibLog
+open FsLibLog.Operators
 open PathfinderSpellDb.Parsing
 
 module SpellParsing = 
   open Types
 
+
+  let logger = LogProvider.getLoggerByName "PathfinderSpellDb.SpellParsing"
+
+
   let loadFile path = File.ReadAllLines path
 
-  let rawSpells = CsvFile.Load(__SOURCE_DIRECTORY__ + "/spells.csv").Cache()
+  let rawSpells (config : Configuration.ApplicationConfig) =
+    !!! "Loading raw spells off CSV Path {path}"
+    >>!+ ("path", config.CsvPath)
+    |> logger.info
+
+    CsvFile.Load(config.CsvPath).Cache()
 
   let strValueOrNone (s : string) = if s = "" then None else Some s
 
@@ -203,8 +214,10 @@ module SpellParsing =
       ]
       |> List.choose id
 
-  let spells =
-    rawSpells.Rows
+  let spells (config : Configuration.ApplicationConfig) =
+    let spells = rawSpells config
+    
+    spells.Rows
     |> Seq.map (fun row ->
       {
         Id = 0
@@ -241,8 +254,8 @@ module SpellParsing =
     |> Seq.sortBy (fun s -> s.Name)
     |> Seq.mapi (fun index spell -> { spell with Id = index } )
     |> Seq.toList
-
-  printfn "Loaded %i spells" (List.length spells)
+  
+  let loadedSpells config = lazy (spells config)
 
   // let distinctSavingThrows = 
   //   spells
@@ -253,28 +266,28 @@ module SpellParsing =
 
   // printfn "%i Distinct saving throws:\n%A" (List.length distinctSavingThrows) distinctSavingThrows
 
-  let spellNameSearch (str : string) =
-    if (str.Length > 1) then
-      let str : string = str.ToLowerInvariant()
-      spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
-    else
-      spells
+  // let spellNameSearch (str : string) =
+  //   if (str.Length > 1) then
+  //     let str : string = str.ToLowerInvariant()
+  //     spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
+  //   else
+  //     spells
 
-  let findSpellByIndex (index: int) =
-    spells |> List.tryItem index
+  let findSpellByIndex config (index: int) =
+    (loadedSpells config).Value |> List.tryItem index
 
-  let allClasses =
-    spells
+  let allClasses config =
+    (loadedSpells config).Value
     |> List.collect (fun spell -> spell.ClassSpellLevels |> List.map (fun csl -> csl.ToTuple() |> fst))
     |> List.distinct
 
-  let distinctRanges = 
-    spells
+  let distinctRanges config =
+    (loadedSpells config).Value
     |> List.map (fun spell -> spell.Range.ToString())
     |> List.distinct
 
-  let distinctSchools =
-    spells
+  let distinctSchools config =
+    (loadedSpells config).Value
     |> List.map (fun spell -> spell.School)
     |> List.distinct
 

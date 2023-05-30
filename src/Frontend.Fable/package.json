@@ -4,7 +4,8 @@
     "postinstall": "dotnet tool restore",
     "start": "dotnet fable watch src --run webpack-dev-server",
     "build": "dotnet fable src && webpack",
-    "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch"
+    "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch",
+    "prod":"dotnet fable src -c Release && webpack --mode production"
   },
   "devDependencies": {
     "daisyui": "^2.51.3",

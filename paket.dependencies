@@ -13,6 +13,10 @@ nuget FsToolkit.ErrorHandling
 nuget FSharp.Data.GraphQL.Server
 nuget FSharp.SystemTextJson
 nuget FSharp.Data
+nuget Serilog
+nuget Serilog.Sinks.Console
+nuget Serilog.Settings.Configuration
+nuget Serilog.AspNetCore
 
 # used by the graphQL stuff
 nuget Newtonsoft.Json

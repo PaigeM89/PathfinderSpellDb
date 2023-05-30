@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup>
     <Title>PathfinderSpellDb</Title>
@@ -21,6 +22,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
     <Compile Include="Helpers.fs" />
+    <Compile Include="Configuration.fs" />
     <Compile Include="Parsing/Types.fs" />
     <Compile Include="Parsing/SavingThrows.fs" />
     <Compile Include="SpellParsing.fs" />

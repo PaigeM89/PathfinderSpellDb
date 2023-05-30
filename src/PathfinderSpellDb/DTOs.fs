@@ -173,18 +173,19 @@ module GraphQL =
   open FSharp.Data.GraphQL.Types
   open DTOs
 
-  let findSpellByName (name : string) = 
-    SpellParsing.spells |> List.tryFind (fun s -> s.Name.ToLowerInvariant() = name)
+  let thing = 0
+  // let findSpellByName (name : string) = 
+  //   SpellParsing.spells |> List.tryFind (fun s -> s.Name.ToLowerInvariant() = name)
 
-  let findSpellByIndex (index: int) =
-    SpellParsing.spells |> List.tryItem index
+  // let findSpellByIndex (index: int) =
+  //   SpellParsing.spells |> List.tryItem index
 
-  let spellNameSearch (str : string) =
-    if (str.Length > 1) then
-      let str : string = str.ToLowerInvariant()
-      SpellParsing.spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
-    else
-      SpellParsing.spells
+  // let spellNameSearch (str : string) =
+  //   if (str.Length > 1) then
+  //     let str : string = str.ToLowerInvariant()
+  //     SpellParsing.spells |> List.filter (fun s -> s.Name.ToLowerInvariant().Contains(str))
+  //   else
+  //     SpellParsing.spells
 
   /// GraphQL type
   // let SpellType : ObjectDef<SpellDto> =

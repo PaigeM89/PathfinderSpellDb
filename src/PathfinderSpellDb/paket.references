@@ -7,5 +7,9 @@ FSharp.Data
 FSharp.Data.GraphQL.Server
 Newtonsoft.Json
 FSharp.SystemTextJson
+Serilog
+Serilog.Sinks.Console
+Serilog.Settings.Configuration
+Serilog.AspNetCore
 
 File: FsLibLog.fs
