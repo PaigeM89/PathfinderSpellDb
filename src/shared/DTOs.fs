@@ -34,6 +34,8 @@ module Dtos =
     Components : Component list
     Range : string
     Duration : string
+    SavingThrowStr : string
+    SpellResistance : bool
     Source : string
   }
 

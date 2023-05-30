@@ -61,6 +61,10 @@ module SearchRoot =
       { advSearch with Options = model.FilterTargets.Ranges }
     | Some Duration ->  
       { advSearch with Options = model.FilterTargets.Durations }
+    | Some SavingThrow ->
+      { advSearch with Options = model.FilterTargets.SavingThrows }
+    | Some SpellResistance ->
+      { advSearch with Options = model.FilterTargets.SpellResistance }
     | Some Source ->
       { advSearch with Options = model.FilterTargets.Sources }
     | None -> advSearch
@@ -130,7 +134,6 @@ module SearchRoot =
   let debouncer = Debouncer("nameSearch", 500)
 
   module private Views =
-    let private removeSpaces (s : string) = s.Replace(" ", "")
 
     let nameSearch model dispatch =
       Html.div [

@@ -235,7 +235,11 @@ module SpellParsing =
         Duration = buildDuration row
 
         SavingThrows = row.["saving_throw"].Trim() |> SavingThrows.parseSavingThrows
-        SavingThrowsStr = row.["saving_throw"].Trim()
+        SavingThrowsStr = 
+          if row.["saving_throw"].Trim() = "" || row.["saving_throw"].Trim() = "none" then
+            "None"
+          else
+            row.["saving_throw"].Trim()
 
         SpellResistance = row.["spell_resistance"].Trim().ToLowerInvariant().Contains("yes")
         Dismissible = row.["dismissible"].Trim() = "1"

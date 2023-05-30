@@ -126,6 +126,7 @@ module DTOs =
         let t = csl.ToTuple()
         fst t, snd t
       )
+    
     {
       Id = spell.Id
       Name = spell.Name
@@ -137,36 +138,14 @@ module DTOs =
       Components = componentDtos
       Range = range
       Duration = duration
+      SavingThrowStr = if spell.SavingThrowsStr.Trim() = "" then "None" else spell.SavingThrowsStr
+      SpellResistance = spell.SpellResistance
       Source = spell.Source
     }
 
   let mapSpellsToListDto (spells : Types.Spell list) =
     spells
-    |> List.map (fun spell ->
-      // let time = spell.CastingTime.ToString()
-      // let componentDtos = spell.Components |> List.map ComponentDto.FromCastingComponent
-      // let range = rangeToString spell.Range
-      // let duration = durationToString spell.Duration
-      //SpellRowDto.Create spell.Id spell.Name spell.School spell.ShortDescription spell.ClassSpellLevels time componentDtos range duration spell.Source
-      createSpellRowDto spell
-    )
-
-  // type SpellDto = {
-  //   Id : int
-  //   Name : string
-  //   School : string
-  //   Subschool : string option
-  //   Descriptors: string list
-  //   ShortDescription : string
-  //   FullDescription : string
-  //   ClassSpellLevels: ClassSpellLevelDto list
-  //   Domains : string
-  //   CastingTime : string
-  //   Components : ComponentDto list
-  //   Range : string
-  //   Duration : string
-  //   Source : string
-  // }
+    |> List.map createSpellRowDto
 
 module GraphQL =
   open Types

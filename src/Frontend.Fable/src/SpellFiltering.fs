@@ -108,6 +108,25 @@ module SpellFiltering =
       spells
       |> Seq.filter (fun spell -> List.contains spell.Duration durations)
 
+  let private filterBySavingThrow (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType SavingThrow
+    let savingThrows = filters |> distinctValues
+    match savingThrows with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.SavingThrowStr savingThrows)
+
+  let private filterBySpellResistance (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType SpellResistance
+    let spellRes = filters |> distinctValues
+    match spellRes with
+    | [] -> spells
+    | _ -> 
+      let spellRes = spellRes |> Seq.map (fun sr -> if sr = "Yes" then true else false) |> Seq.toList
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.SpellResistance spellRes)
+
   let private filterBySource (search : Search) (spells : SpellRow seq) =
     let filters = search.AdvancedSearches |> searchesMatchingType Source
     let sources = filters |> distinctValues
@@ -127,4 +146,6 @@ module SpellFiltering =
     |> filterByComponent search
     |> filterByRange search
     |> filterByDuration search
+    |> filterBySavingThrow search
+    |> filterBySpellResistance search
     |> filterBySource search

@@ -102,6 +102,7 @@ module Spells =
       let components = spells |> Seq.collect (fun s -> s.Components |> Seq.map (fun c -> c.Name)) |> Seq.distinct
       let ranges = spells |> Seq.map (fun s -> s.Range) |> Seq.countBy id |> Seq.sortByDescending snd
       let durations = spells |> Seq.map (fun s -> s.Duration) |> Seq.countBy id |> Seq.sortByDescending snd
+      let savingThrows = spells |> Seq.map (fun s -> s.SavingThrowStr) |> Seq.countBy id |> Seq.sortByDescending snd
       let sources = spells |> Seq.map (fun s -> s.Source) |> Seq.countBy id |> Seq.sortByDescending snd
       let filterTargets =
         { Types.FilterTargets.Empty() with 
@@ -111,6 +112,7 @@ module Spells =
             Components = Seq.toList components
             Ranges = Seq.toList (Seq.map fst ranges)
             Durations = Seq.toList (Seq.map fst durations)
+            SavingThrows = Seq.toList (Seq.map fst savingThrows)
             Sources = Seq.toList (Seq.map fst sources)
         }
       

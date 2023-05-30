@@ -13,6 +13,8 @@ module Types =
   | Components
   | Range
   | Duration
+  | SavingThrow
+  | SpellResistance
   | Source
 
 
@@ -25,6 +27,8 @@ module Types =
       Components, "Components"
       Range, "Range"
       Duration, "Duration"
+      SavingThrow, "Saving Throw"
+      SpellResistance, "Spell Resistance"
       Source, "Source"
     ] |> Map.ofList
 
@@ -85,6 +89,8 @@ module Types =
     Components : string list
     Ranges : string list
     Durations : string list
+    SavingThrows : string list
+    SpellResistance : string list
     Sources : string list
   } with
     static member Empty() = {
@@ -94,6 +100,8 @@ module Types =
       Components = []
       Ranges = []
       Durations = []
+      SavingThrows = []
+      SpellResistance = [ "Yes"; "No" ]
       Sources = []
     }
 

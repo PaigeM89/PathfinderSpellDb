@@ -188,6 +188,18 @@ module AdvancedSearch =
     |> listItems model dispatch
     |> dropdown dispatch model "Select Duration(s)"
 
+  let savingThrowsSearch savingThrows advSearch dispatch =
+    savingThrows
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown dispatch advSearch "Select Saving Throw(s)"
+
+  let spellResistanceSearch spellRes advSearch dispatch =
+    spellRes
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown dispatch advSearch "Select Spell Resistance(s)"
+
   let sourcesSearch sources model dispatch =
     sources
     |> List.map (fun r -> r, r)
@@ -249,6 +261,8 @@ module AdvancedSearch =
           rangeSearch values model dispatch
         | Some Duration ->
           durationSearch values model dispatch
+        | Some SavingThrow -> savingThrowsSearch values model dispatch
+        | Some SpellResistance -> spellResistanceSearch values model dispatch
         | Some Source ->
           sourcesSearch values model dispatch
         | _ -> Html.none

@@ -29,6 +29,8 @@ module SpellTable =
         prop.text text
       ]
 
+    let spellRes = if spell.SpellResistance then "Yes" else "No"
+
     Html.tr [
       Html.td [
         prop.id (string spell.Id)
@@ -47,7 +49,9 @@ module SpellTable =
       Html.td componentsStr
       Html.td (p 2 spell.Range)
       Html.td (p 3 spell.Duration)
-      Html.td (p 4 spell.ShortDescription)
+      Html.td (p 4 spell.SavingThrowStr)
+      Html.td (p 5 spellRes)
+      Html.td (p 6 spell.ShortDescription)
       Html.td spell.Source
     ]
 
@@ -65,6 +69,8 @@ module SpellTable =
             Html.th "Components"
             Html.th "Range"
             Html.th "Duration"
+            Html.th "Saving Throw"
+            Html.th "Spell Resistance"
             Html.th "Description"
             Html.th "Source"
           ]
