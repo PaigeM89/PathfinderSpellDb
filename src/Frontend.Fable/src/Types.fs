@@ -5,6 +5,8 @@ open Shared.Dtos
 
 module Types =
 
+  let GithubLink = "https://github.com/PaigeM89/PathfinderSpellDb"
+
   type SearchType =
   | School
   | CasterClass
@@ -16,7 +18,6 @@ module Types =
   | SavingThrow
   | SpellResistance
   | Source
-
 
   let searchTypeName =
     [

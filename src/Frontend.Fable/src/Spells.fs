@@ -155,6 +155,22 @@ module Spells =
     | IncreaseSpellLimit limit ->
       { model with RowsLimit = limit }, Cmd.none
 
+  let footer = 
+    Daisy.footer [
+      prop.className "p-10 bg-neutral text-neutral-content grid"
+      prop.children [
+        Html.h3 [
+          prop.className "ml-auto"
+          prop.text ("Version: " + Version.__VERSION__)
+        ]
+        Html.a [
+          prop.className "ml-auto"
+          prop.text "Contribute on Github!"
+          prop.href Types.GithubLink
+        ]
+      ]
+    ]
+
 
   let View model dispatch = 
     Html.div [
@@ -203,5 +219,7 @@ module Spells =
                   ]
                 ]
             | None -> Html.none
+
+            footer
       ]
     ]

@@ -3,10 +3,11 @@
 // https://github.com/fable-compiler/webpack-config-template
 
 var path = require("path");
+const webpack = require("webpack");
 
 var mode = hasArg("prod") ? "production" : "development";
 
-module.exports = {
+module.exports = env => ({
     mode: mode,
     entry: "./src/Root.fs.js",
     output: {
@@ -21,8 +22,14 @@ module.exports = {
         port: 8080,
     },
     module: {
-    }
-}
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        //VERSION: JSON.stringify("0.1.3"),
+        VERSION: JSON.stringify(env.version ?? '0.0.1'),
+      })
+    ]
+});
 
 
 function hasArg(arg) {

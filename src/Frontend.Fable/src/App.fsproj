@@ -3,6 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Version.fs" />
     <Compile Include="../../shared/DTOs.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Formatting.fs" />
