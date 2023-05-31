@@ -34,8 +34,6 @@ let urlUpdate (result : Spells.Route option) model =
 
 let hashRouteParser : Navigation.Parser<Spells.Route option> = parseHash route
 
-printfn "Version: %s" Version.__VERSION__
-
 Program.mkProgram init Spells.update Spells.View
 // batching can have buggy text input (loses input) if the app is running slow
 // so usee synchronous instead

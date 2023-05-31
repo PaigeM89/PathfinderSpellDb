@@ -25,8 +25,7 @@ module.exports = env => ({
     },
     plugins: [
       new webpack.DefinePlugin({
-        //VERSION: JSON.stringify("0.1.3"),
-        VERSION: JSON.stringify(env.version ?? '0.0.1'),
+        VERSION: JSON.stringify(env.version ?? 'dev'),
       })
     ]
 });
