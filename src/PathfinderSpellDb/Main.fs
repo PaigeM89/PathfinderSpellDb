@@ -56,7 +56,7 @@ module Main =
             propertyFactory.CreateProperty(
               "ThreadId",
               System.Threading.Thread.CurrentThread.ManagedThreadId
-           )
+            )
           )
 
     let log =

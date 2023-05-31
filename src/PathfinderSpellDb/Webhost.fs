@@ -46,14 +46,11 @@ module Webhost =
       use_middleware useCors
       logging configureLogging
       endpoints [
-        get "/spells/ranges" (Handlers.getRanges config)
-        get "/spells/schools" (Handlers.getSchools config)
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx
           let spellId = route.GetInt "id"
           (Handlers.getSpell config spellId) ctx
         )
         get "/spells" (Handlers.getAllSpells config)
-        get "/classes" (Handlers.getClasses config)
       ]
     }

@@ -88,20 +88,3 @@ module Handlers =
     SpellParsing.findSpellByIndex config id
     |> Option.map toSpellDto
     |> Response.ofJson
-
-  type ClassDto = {
-    Name : string
-  }
-
-  let getClasses config : HttpHandler =
-    SpellParsing.allClasses config
-    |> List.map (fun className -> {
-      Name = className
-    })
-    |> Response.ofJson
-
-  let getRanges config : HttpHandler =
-    SpellParsing.distinctRanges config
-    |> Response.ofJson
-
-  let getSchools config : HttpHandler = SpellParsing.distinctSchools config |> Response.ofJson

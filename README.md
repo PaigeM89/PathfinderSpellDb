@@ -1,53 +1,25 @@
 # PathfinderSpellDb
 
-Running:
+Running locally:
   * 1 window doing `dotnet watch run` from `PathfinderSpellDb`
-  * 1 window doing `yarn dev` from `Frontend`
+  * 1 window doing `yarn start` from `Frontend`
+  * 1 window doing `yarn tailwind` fro `Frontend`
 
 [Enter useful description for PathfinderSpellDb]
 
 TODO:
 * add additional fields
-  * SAVING THROWS
-  * spell resistance
+  * SAVING THROWS (need significant cleanup / simplification for searching)
   * domains
   * bloodlines
   * patron
-  * diety
   * material_cost
   * mythic text / mythic
-  * SOURCE
-* paging
-* searching by fields other than name
-* sorting
-* styling (get someone to do this?)
 * sqlite for storage & updating (needs auth)
   * postgres has full text search tooling
 * clean up range
-* clean up duration!! big mess here
+* clean up duration
 * clean up casting time
-
-have the server return search elements?
-
-Honestly, the paging is WAY slower than the `get all` ever was. I should just skip it for now.
-
-https://rodneylab.com/sveltekit-infinite-scroll/
-
-Commonly referenced links:
-
-https://github.com/timhall/svelte-apollo/blob/master/examples/sveltekit/src/routes/index.svelte
-
-https://github.com/fsprojects/FSharp.Data.GraphQL/blob/dev/samples/star-wars-api/Schema.fs
-
-https://www.apollographql.com/docs/react/pagination/core-api/
-
-further reading:
-
-https://rodneylab.com/sveltekit-graphql-queries-fetch/
-
-https://stackoverflow.com/questions/67135169/how-to-initialize-apolloclient-in-sveltekit-to-work-on-both-ssr-and-client-side
-
-https://the-guild.dev/graphql/codegen/docs/guides/svelte
 
 ---
 
