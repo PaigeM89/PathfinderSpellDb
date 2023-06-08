@@ -41,7 +41,6 @@ module SearchRoot =
   | AdvancedSearchMsg of modelId : Guid * AdvancedSearch.Msg
 
   | AdvancedSearchUpdated of advSearch : AdvancedSearch.Model
-  | DoFiltering
   // Raised for the parent component to handle, not of use within this element.
   | SearchUpdated of Types.Search
 
@@ -87,20 +86,23 @@ module SearchRoot =
     
     | AdvancedSearchMsg (_, AdvancedSearch.DeleteAdvancedSearch id) ->
       let advSearches = model.AdvancedSearches |> List.filter (fun adv -> adv.Id <> id)
-      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+      let model = { model with AdvancedSearches = advSearches }
+      model, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
     
     | AdvancedSearchMsg (_, AdvancedSearch.AdvancedSearchUpdate advSearch) ->
       let advSearches =
         model.AdvancedSearches
         |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
-      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+      let model = { model with AdvancedSearches = advSearches }
+      model, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
 
     | AdvancedSearchMsg (_, AdvancedSearch.AdvancedSearchTypeUpdate advSearch) ->
       let advSearch = updateAdvancedSearchOptions model advSearch
       let advSearches =
         model.AdvancedSearches
         |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
-      { model with AdvancedSearches = advSearches }, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
+      let model = { model with AdvancedSearches = advSearches }
+      model, Cmd.ofMsg (SearchUpdated <| model.ToSearch())
 
     | AdvancedSearchMsg (modelId, msg) ->
       let x = 
@@ -123,10 +125,6 @@ module SearchRoot =
       
       { model with AdvancedSearches = advSearches }, Cmd.none
 
-    // we need to make an Advanced Search component because otherwise this has to 
-    // find the right Advanced Search element
-    | DoFiltering -> 
-      model, Cmd.none
     // This is raised from this element to notify parent elements
     // and doesn't need to be handled here.
     | SearchUpdated _ -> model, Cmd.none
@@ -162,7 +160,6 @@ module SearchRoot =
       Html.div [
         prop.children [
           for x in model.AdvancedSearches do AdvancedSearch.view x (fun m -> AdvancedSearchMsg (x.Id, m) |> dispatch)
-          //advancedSearch model x dispatch
           Daisy.button.button [
             prop.text "Add advanced search"
             prop.onClick (fun _ -> AddAdvancedSearch |> dispatch)

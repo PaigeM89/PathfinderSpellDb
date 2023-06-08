@@ -31,19 +31,9 @@ module SpellFiltering =
     | schools ->
       spells |> Seq.filter (fun spell -> List.contains spell.School schools)
 
-  let private filterByCasterClass (search : Search) (spells : SpellRow seq) =
+  let private filterByClassAndLevel (search : Search) (spells : SpellRow seq) =
     let casterClassFilters = search.AdvancedSearches |> searchesMatchingType CasterClass
     let casterClasses = casterClassFilters |> List.collect (fun a -> a.Values) |> List.distinct
-    match casterClasses with
-    | [] -> spells
-    | casterClasses ->
-      spells
-      |> Seq.filter (fun spell -> 
-            spell.ClassSpellLevels 
-            |> Array.exists (fun csl -> List.contains csl.ClassName casterClasses) 
-      )
-
-  let private filterBySpellLevel (search : Search) (spells : SpellRow seq) =
     let spellLevelFilters = search.AdvancedSearches |> searchesMatchingType Level
     let spellLevels =
       spellLevelFilters |> List.collect (fun a -> a.Values) |> List.distinct
@@ -52,13 +42,25 @@ module SpellFiltering =
         | true, x -> x
         | false, _ -> -1
       )
-    match spellLevels with
-    | [] -> spells
-    | _ ->
+    match casterClasses, spellLevels with
+    | [], [] -> spells
+    | [], levels ->
       spells
       |> Seq.filter (fun spell ->
         spell.ClassSpellLevels
-        |> Array.exists (fun csl -> List.contains csl.Level spellLevels)
+        |> Array.exists (fun csl -> List.contains csl.Level levels)
+      )
+    | classes, [] ->
+      spells
+      |> Seq.filter (fun spell -> 
+            spell.ClassSpellLevels 
+            |> Array.exists (fun csl -> List.contains csl.ClassName classes) 
+      )
+    | classes, levels ->
+      spells
+      |> Seq.filter (fun spell ->
+        spell.ClassSpellLevels
+        |> Array.exists (fun csl -> List.contains csl.Level levels && List.contains csl.ClassName classes)
       )
 
   let private filterByCastingTime (search : Search) (spells : SpellRow seq) =
@@ -140,8 +142,7 @@ module SpellFiltering =
     spells
     |> filterByName search
     |> filterBySchool search
-    |> filterByCasterClass search
-    |> filterBySpellLevel search
+    |> filterByClassAndLevel search
     |> filterByCastingTime search
     |> filterByComponent search
     |> filterByRange search

@@ -1,5 +1,13 @@
 # PathfinderSpellDb
 
+https://www.pathfinderspelldb.com
+
+This project contains all 2,905 spells in Pathfinder First Edition and provides fast & efficient ways to search for the exact spells you need.
+
+---
+
+# Development
+
 Running locally:
   * 1 window doing `dotnet watch run` from `PathfinderSpellDb`
   * 1 window doing `yarn start` from `Frontend`
@@ -44,8 +52,7 @@ PathfinderSpellDb | [![NuGet Badge](https://buildstats.info/nuget/PathfinderSpel
 
 Make sure the following **requirements** are installed on your system:
 
-- [dotnet SDK](https://www.microsoft.com/net/download/core) 3.0 or higher
-- [Mono](http://www.mono-project.com/) if you're on Linux or macOS.
+- [dotnet SDK](https://www.microsoft.com/net/download/core) 7.0 or higher
 
 or
 

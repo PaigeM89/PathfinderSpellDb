@@ -66,18 +66,6 @@ module SearchDropdowns =
       dropdownContent dropdownElements
     ]
 
-  // let dropdown2 modelUpdateDispatch filterDispatch advSearch (emptyValuesText : string) dropdownElements =
-  //   Daisy.dropdown [
-  //     Daisy.button.button [
-  //       button.primary
-  //       match advSearch.Values with
-  //       | [] -> prop.text emptyValuesText
-  //       | _ -> prop.text (advSearch.ValuesString())
-  //       prop.className "mx-4 my-2"
-  //     ]
-  //     dropdownContent dropdownElements
-  //   ]
-
   let schoolSearch schools advSearch dispatch =
     let dropdownElements =
       schools
