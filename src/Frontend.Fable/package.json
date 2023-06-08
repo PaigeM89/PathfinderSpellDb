@@ -6,7 +6,7 @@
     "build": "dotnet fable src && webpack",
     "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch",
     "tailwindProd": "npx tailwindcss -i ./src/input.css -o ./public/output.css",
-    "prod":"dotnet fable src -c Release && webpack --mode production --env version='0.1.6'"
+    "prod":"dotnet fable src -c Release && webpack --mode production --env version='0.1.7'"
   },
   "devDependencies": {
     "daisyui": "^2.51.3",
