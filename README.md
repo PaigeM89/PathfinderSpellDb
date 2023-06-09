@@ -1,6 +1,6 @@
 # PathfinderSpellDb
 
-https://www.pathfinderspelldb.com
+https://pathfinderspelldb.com
 
 This project contains all 2,905 spells in Pathfinder First Edition and provides fast & efficient ways to search for the exact spells you need.
 
