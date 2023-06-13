@@ -8,12 +8,9 @@ open Elmish
 open Feliz
 open Feliz.DaisyUI
 open Elmish.Navigation
+open Frontend.Types
 
 module Spells =
-
-  type Route = 
-  | Spell of id : int
-  | SpellList
 
   type Model = {
     Route : Route
@@ -63,14 +60,6 @@ module Spells =
 
   let init (serverUrl : string) initialRoute = 
     let model = Model.Init serverUrl initialRoute
-    match model.Route with
-    | SpellList -> model, Cmd.ofMsg LoadAllSpells
-    | Spell spellId ->
-      let cmds = Cmd.batch [ Cmd.ofMsg LoadAllSpells; Cmd.ofMsg (LoadSpell spellId) ]
-      model, cmds
-
-  let init2 (serverUrl : string) = 
-    let model = Model.Init serverUrl SpellList
     match model.Route with
     | SpellList -> model, Cmd.ofMsg LoadAllSpells
     | Spell spellId ->

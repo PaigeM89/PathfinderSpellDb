@@ -5,6 +5,10 @@ open Shared.Dtos
 
 module Types =
 
+  type Route = 
+  | Spell of id : int
+  | SpellList
+
   let GithubLink = "https://github.com/PaigeM89/PathfinderSpellDb"
 
   type SearchType =

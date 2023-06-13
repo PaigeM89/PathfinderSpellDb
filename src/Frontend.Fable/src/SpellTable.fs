@@ -41,7 +41,7 @@ module SpellTable =
               prop.text (spell.Name + " (Loading...)")
             else
               prop.text spell.Name
-            prop.onClick (fun _ -> dispatch spell.Id)
+            prop.href (sprintf "#spells/%i" spell.Id)
             prop.className "cursor-pointer"
           ]
         ]
