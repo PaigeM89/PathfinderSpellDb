@@ -41,6 +41,7 @@ module Webhost =
     x.UseCors()
 
   let host (config : Configuration.ApplicationConfig) =
+    let lazySpells = Handlers.lazyLoadSpells config
     webHost [||] {
       add_service (addCors config.CorsOrigins)
       use_middleware useCors
@@ -49,7 +50,7 @@ module Webhost =
         get "/spells/{id:int}" (fun ctx ->
           let route = Request.getRoute ctx
           let spellId = route.GetInt "id"
-          (Handlers.getSpell config spellId) ctx
+          (Handlers.getSpell lazySpells.Value spellId) ctx
         )
         get "/spells" (Handlers.getAllSpells config)
       ]

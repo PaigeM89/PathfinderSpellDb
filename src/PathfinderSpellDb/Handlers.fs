@@ -84,7 +84,10 @@ module Handlers =
       Source = spell.Source
     }
 
-  let getSpell config (id : int) =
-    SpellParsing.findSpellByIndex config id
+  let lazyLoadSpells config = SpellParsing.loadedSpells config
+
+  let getSpell (spells : Types.Spell list) (id : int) =
+    spells
+    |> List.tryItem id
     |> Option.map toSpellDto
     |> Response.ofJson
