@@ -165,6 +165,15 @@ module Spells =
     Html.div [
       theme.dark
       prop.children [
+        Html.h1 [
+          prop.className "text-2xl text-center"
+          prop.text "Pathfinder Spell DB"
+        ]
+        Html.h2 [
+          prop.className "text-xl text-center"
+          prop.text "A searchable database of all the spells in Pathfinder 1E"
+        ]
+
         match model.Spell with
         | Some spell ->
           Spell.view spell (fun () -> dispatch ReturnToList)
