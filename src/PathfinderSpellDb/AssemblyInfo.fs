@@ -4,10 +4,10 @@ open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("PathfinderSpellDb")>]
 [<assembly: AssemblyProductAttribute("PathfinderSpellDb")>]
-[<assembly: AssemblyVersionAttribute("0.1.1")>]
+[<assembly: AssemblyVersionAttribute("0.1.2")>]
 [<assembly: AssemblyMetadataAttribute("ReleaseDate","2017-03-17T00:00:00.0000000")>]
-[<assembly: AssemblyFileVersionAttribute("0.1.1")>]
-[<assembly: AssemblyInformationalVersionAttribute("0.1.1")>]
+[<assembly: AssemblyFileVersionAttribute("0.1.2")>]
+[<assembly: AssemblyInformationalVersionAttribute("0.1.2")>]
 [<assembly: AssemblyMetadataAttribute("ReleaseChannel","release")>]
 [<assembly: AssemblyMetadataAttribute("GitHash","b385af579477bb585016a6b5204121de4a485dac")>]
 do ()
@@ -15,9 +15,9 @@ do ()
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "PathfinderSpellDb"
     let [<Literal>] AssemblyProduct = "PathfinderSpellDb"
-    let [<Literal>] AssemblyVersion = "0.1.1"
+    let [<Literal>] AssemblyVersion = "0.1.2"
     let [<Literal>] AssemblyMetadata_ReleaseDate = "2017-03-17T00:00:00.0000000"
-    let [<Literal>] AssemblyFileVersion = "0.1.1"
-    let [<Literal>] AssemblyInformationalVersion = "0.1.1"
+    let [<Literal>] AssemblyFileVersion = "0.1.2"
+    let [<Literal>] AssemblyInformationalVersion = "0.1.2"
     let [<Literal>] AssemblyMetadata_ReleaseChannel = "release"
     let [<Literal>] AssemblyMetadata_GitHash = "b385af579477bb585016a6b5204121de4a485dac"
