@@ -73,8 +73,6 @@ module SpellParsing =
       tryMapColumn "investigator" ClassSpellLevel.Investigator
       tryMapColumn "hunter" ClassSpellLevel.Hunter
       tryMapColumn "summoner_unchained" ClassSpellLevel.SummonerUnchained
-      // warpriest is missing from the source data (???)
-      //tryMapColumn "warpriest" ClassSpellLevel.Warpriest
     ]
     |> List.choose id
     |> List.sortBy (fun x -> x.ToTuple() |> fst)
@@ -295,4 +293,3 @@ module SpellParsing =
     |> List.map (fun spell -> spell.School)
     |> List.distinct
 
-  
