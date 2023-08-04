@@ -26,6 +26,7 @@ TODO:
 * sqlite for storage & updating (needs auth)
   * postgres has full text search tooling
 * clean up range
+* clean up areas
 * clean up duration
 * clean up casting time
 
