@@ -101,6 +101,15 @@ module SpellFiltering =
       spells
       |> Seq.filter (fun spell -> List.contains spell.Range ranges)
 
+  let private filterByArea (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType Area
+    let areas = filters |> distinctValues
+    match areas with
+    | [] -> spells
+    | _ ->
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.Area areas)
+
   let private filterByDuration (search : Search) (spells : SpellRow seq) =
     let filters = search.AdvancedSearches |> searchesMatchingType Duration
     let durations = filters |> distinctValues
@@ -146,6 +155,7 @@ module SpellFiltering =
     |> filterByCastingTime search
     |> filterByComponent search
     |> filterByRange search
+    |> filterByArea search
     |> filterByDuration search
     |> filterBySavingThrow search
     |> filterBySpellResistance search

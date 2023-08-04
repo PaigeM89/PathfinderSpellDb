@@ -78,6 +78,7 @@ module Handlers =
       CastingTime = spell.CastingTime |> castingTimeToString
       Components = spell.Components |> List.map toComponentDto
       Range = spell.Range |> rangeToString
+      Area = spell.Area |> Option.defaultValue ""
       Duration = spell.Duration |> durationToString
       SavingThrows = spell.SavingThrowsStr
       SpellResistance = spell.SpellResistance

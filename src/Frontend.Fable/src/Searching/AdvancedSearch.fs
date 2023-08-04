@@ -182,6 +182,12 @@ module AdvancedSearch =
     |> listItems model dispatch
     |> dropdown dispatch model "Select Range(s)"
 
+  let areaSearch areas model dispatch =
+    areas
+    |> List.map (fun r -> r, r)
+    |> listItems model dispatch
+    |> dropdown dispatch model "Select Area(s)"
+
   let durationSearch durations model dispatch =
     durations
     |> List.map (fun r -> r, r)
@@ -259,6 +265,8 @@ module AdvancedSearch =
           componentSearch values model dispatch
         | Some Range ->
           rangeSearch values model dispatch
+        | Some Area ->
+          areaSearch values model dispatch
         | Some Duration ->
           durationSearch values model dispatch
         | Some SavingThrow -> savingThrowsSearch values model dispatch

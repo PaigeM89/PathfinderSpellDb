@@ -58,6 +58,8 @@ module SearchRoot =
       { advSearch with Options = model.FilterTargets.Components }
     | Some Range ->
       { advSearch with Options = model.FilterTargets.Ranges }
+    | Some Area ->
+      { advSearch with Options = model.FilterTargets.Areas }
     | Some Duration ->  
       { advSearch with Options = model.FilterTargets.Durations }
     | Some SavingThrow ->

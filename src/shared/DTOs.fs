@@ -33,6 +33,7 @@ module Dtos =
     CastingTime : string
     Components : Component list
     Range : string
+    Area : string
     Duration : string
     SavingThrowStr : string
     SpellResistance : bool
@@ -52,6 +53,7 @@ module Dtos =
     CastingTime : string
     Components : Component seq
     Range : string
+    Area : string
     Duration : string
     SavingThrows : string
     SpellResistance: bool

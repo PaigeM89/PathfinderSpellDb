@@ -18,6 +18,7 @@ module Types =
   | CastingTime
   | Components
   | Range
+  | Area
   | Duration
   | SavingThrow
   | SpellResistance
@@ -31,6 +32,7 @@ module Types =
       CastingTime, "Casting Time"
       Components, "Components"
       Range, "Range"
+      Area, "Area"
       Duration, "Duration"
       SavingThrow, "Saving Throw"
       SpellResistance, "Spell Resistance"
@@ -93,6 +95,7 @@ module Types =
     CastingTimes : string list
     Components : string list
     Ranges : string list
+    Areas : string list
     Durations : string list
     SavingThrows : string list
     SpellResistance : string list
@@ -104,6 +107,7 @@ module Types =
       CastingTimes = []
       Components = []
       Ranges = []
+      Areas = []
       Durations = []
       SavingThrows = []
       SpellResistance = [ "Yes"; "No" ]

@@ -51,6 +51,7 @@ module SpellTable =
       Html.td (p 1 spell.CastingTime)
       Html.td componentsStr
       Html.td (p 2 spell.Range)
+      Html.td (p 2 spell.Area)
       Html.td (p 3 spell.Duration)
       Html.td (p 4 spell.SavingThrowStr)
       Html.td (p 5 spellRes)
@@ -72,6 +73,7 @@ module SpellTable =
             Html.th "Casting time"
             Html.th "Components"
             Html.th "Range"
+            Html.th "Area"
             Html.th "Duration"
             Html.th "Saving Throw"
             Html.th "Spell Resistance"

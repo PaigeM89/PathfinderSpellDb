@@ -57,6 +57,7 @@ module Spell =
         
         Daisy.divider "Effect"
         detail "Range" spell.Range
+        if spell.Area <> "" then detail "Area" spell.Area
         detail "Duration" spell.Duration
         detail "Saving throw" spell.SavingThrows
         detail "Spell Resistance" (if spell.SpellResistance then "Yes" else "No")

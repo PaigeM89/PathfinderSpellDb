@@ -73,6 +73,7 @@ module DTOs =
       CastingTime = time
       Components = componentDtos
       Range = range
+      Area = spell.Area |> Option.defaultValue ""
       Duration = duration
       SavingThrowStr = if spell.SavingThrowsStr.Trim() = "" then "None" else spell.SavingThrowsStr
       SpellResistance = spell.SpellResistance
