@@ -11,9 +11,7 @@ This project contains all 2,905 spells in Pathfinder First Edition and provides 
 Running locally:
   * 1 window doing `dotnet watch run` from `PathfinderSpellDb`
   * 1 window doing `yarn start` from `Frontend`
-  * 1 window doing `yarn tailwind` fro `Frontend`
-
-[Enter useful description for PathfinderSpellDb]
+  * 1 window doing `yarn tailwind` from `Frontend`
 
 TODO:
 * add additional fields

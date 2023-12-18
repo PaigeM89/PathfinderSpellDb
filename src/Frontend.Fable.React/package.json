@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "scripts": {
+    "postinstall": "dotnet tool restore",
+    "start": "dotnet fable watch src --run webpack-dev-server -- --env version='dev'",
+    "build": "dotnet fable src && webpack",
+    "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch",
+    "tailwindProd": "npx tailwindcss -i ./src/input.css -o ./public/output.css",
+    "prod": "dotnet fable src -c Release && webpack --mode production --env version='0.2.1'"
+  },
+  "devDependencies": {
+    "daisyui": "^2.51.3",
+    "tailwindcss": "^3.2.7",
+    "vite": "^5.0.10",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
