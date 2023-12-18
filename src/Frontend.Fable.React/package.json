@@ -1,8 +1,9 @@
 {
   "private": true,
+  "name":"pfsdb",
   "scripts": {
     "postinstall": "dotnet tool restore",
-    "start": "dotnet fable watch src --run webpack-dev-server -- --env version='dev'",
+    "start":"dotnet fable watch ./src -o ./public --sourceMaps --configuration DEBUG --runFast vite serve ./public --config ./vite.config.js",
     "build": "dotnet fable src && webpack",
     "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch",
     "tailwindProd": "npx tailwindcss -i ./src/input.css -o ./public/output.css",

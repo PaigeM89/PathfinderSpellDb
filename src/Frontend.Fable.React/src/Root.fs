@@ -1,5 +1,6 @@
 module App
 
+open Pfsdb
 open Feliz
 
 let apiRoute = 
@@ -30,4 +31,6 @@ let Counter() =
 
 open Browser.Dom
 
-ReactDOM.render(Counter(), document.getElementById "root")
+let root = document.getElementById("app") |> ReactDOM.createRoot
+
+SpellList.SpellListLoader() |> root.render

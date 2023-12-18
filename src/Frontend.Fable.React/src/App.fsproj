@@ -5,6 +5,7 @@
   <ItemGroup>
     <Compile Include="Version.fs" />
     <Compile Include="../../shared/DTOs.fs" />
+    <Compile Include="SpellList.fs" />
     <Compile Include="Root.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -14,6 +15,8 @@
     <PackageReference Include="Fable.Promise" Version="3.2.0" />
     <PackageReference Include="Feliz" Version="2.6.0" />
     <PackageReference Include="Feliz.DaisyUI" Version="3.0.0" />
+    <PackageReference Include="Feliz.Router" Version="4.0.0" />
+    <PackageReference Include="Feliz.UseDeferred" Version="2.0.0" />
     <PackageReference Include="Feliz.UseElmish" Version="2.4.0" />
   </ItemGroup>
 </Project>
