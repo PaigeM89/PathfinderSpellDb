@@ -2,6 +2,8 @@ namespace Pfsdb
 
 open System
 open Shared.Dtos
+open Fable.Core
+open Fable.Core.JsInterop
 open Feliz
 open Feliz.DaisyUI
 
@@ -88,10 +90,66 @@ module SpellList =
             ]
         ]
 
+    type Search = {
+        SpellName : string option
+    } with
+        static member Empty() = {
+            SpellName = None
+        }
+
+    module Search =
+        let setSpellName name search = 
+            if String.IsNullOrWhiteSpace name then { search with SpellName = None }
+            else { search with SpellName = Some name }
+
+        let doSearch (spells : SpellRow seq) search =
+            match search.SpellName with
+            | Some spellName ->
+                spells
+                |> Seq.filter (fun spell ->
+                    spell.Name.ToLowerInvariant().Contains (spellName.Trim().ToLowerInvariant())
+                )
+            | None -> spells
+
+    let debouncer = Debouncer("spellNameSearch", 500)
+
+    [<ReactComponent>]
+    let SearchRoot(onSearchUpdate) =
+        let searchModel, setSearchModel = React.useState(Search.Empty())
+        Html.div [
+          prop.className "grid place-content-center"
+          prop.children [
+            Daisy.label [
+                Daisy.labelText "Search by name"
+            ]
+            Daisy.input [
+              input.bordered
+              input.lg
+              prop.placeholder "Spell name"
+              match searchModel.SpellName with
+              | Some s -> prop.value s
+              | None -> prop.value ""
+              prop.onInput(fun (e: Browser.Types.Event) ->
+                let text = e.target?value
+                let updateSearchModel search = 
+                    Search.setSpellName text search
+                    |> setSearchModel
+                updateSearchModel searchModel
+                debouncer.Debounce onSearchUpdate searchModel
+              )
+            ]
+          ]
+        ]
+
     [<ReactComponent>]
     let SpellList(spells : SpellRow seq) =
-        let spellCount = spells |> Seq.length
+        let filteredSpells, setFilteredSpells = React.useState(spells)
+        let spellCount = filteredSpells |> Seq.length
         
+        let onSearchUpdate (searchModel : Search) =
+            Search.doSearch spells searchModel
+            |> setFilteredSpells
+
         Html.div [
             theme.dark
             prop.children [
@@ -104,8 +162,10 @@ module SpellList =
                     prop.text "A searchable database of all the spells in Pathfinder 1E"
                 ]
 
+                SearchRoot(onSearchUpdate)
+
                 Daisy.divider (sprintf "Spells (%i)" spellCount)
 
-                SpellTable(spells, Some 100)
+                SpellTable(filteredSpells, Some 100)
             ]
         ]

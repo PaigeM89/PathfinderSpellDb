@@ -1,14 +1,10 @@
 namespace Pfsdb
 
-open System
 open Fable.Core
-open Fable.Core.JS
-open Fable.Core.JsInterop
 open Shared.Dtos
 open Feliz
 open Feliz.Router
 open Feliz.UseDeferred
-open Feliz.DaisyUI
 
 module SpellRouting =
 
@@ -55,5 +51,4 @@ module SpellRouting =
       | Deferred.HasNotStartedYet -> Html.p "Not Started"
       | Deferred.InProgress -> Html.p "In progress"
       | Deferred.Failed e -> Html.p "Errored"
-      | Deferred.Resolved content -> 
-        SpellsRouter(content)
+      | Deferred.Resolved content -> SpellsRouter(content)
