@@ -131,10 +131,8 @@ module SpellList =
               | None -> prop.value ""
               prop.onInput(fun (e: Browser.Types.Event) ->
                 let text = e.target?value
-                let updateSearchModel search = 
-                    Search.setSpellName text search
-                    |> setSearchModel
-                updateSearchModel searchModel
+                let searchModel = Search.setSpellName text searchModel
+                setSearchModel searchModel
                 debouncer.Debounce onSearchUpdate searchModel
               )
             ]
