@@ -1,23 +1,11 @@
 namespace Pfsdb
 
 open System
-open Fable.Core
-open Fable.Core.JS
-open Fable.Core.JsInterop
 open Shared.Dtos
 open Feliz
-open Feliz.Router
-open Feliz.UseDeferred
 open Feliz.DaisyUI
 
 module SpellList =
-
-    let loadData = async {
-        let url = ApiRoot.apiRoute + "/spells"
-        let! response = Fetch.fetch url [] |> Async.AwaitPromise
-        let! spells = response.json<Shared.Dtos.SpellRow seq>() |> Async.AwaitPromise
-        return spells
-    }
 
     let private spellRow (spell : Shared.Dtos.SpellRow) =
         let components = spell.Components |> Seq.map (fun c -> c.Abbr)
@@ -121,28 +109,3 @@ module SpellList =
                 SpellTable(spells, Some 100)
             ]
         ]
-
-    [<ReactComponent>]
-    let SpellsRouter(spells : SpellRow seq) =
-        let (currentUrl, updateUrl) = React.useState(Router.currentUrl())
-        React.router [
-            router.onUrlChanged updateUrl
-            router.children [
-                match currentUrl with
-                | [] -> SpellList(spells)
-                | ["spells"; Route.Int spellId ] ->
-                    printfn "Spell loaded: %i" spellId
-                    SpellList(spells)
-                | _ -> SpellList(spells)
-            ]
-        ]
-
-    [<ReactComponent>]
-    let SpellListLoader() =
-        let data = React.useDeferred(loadData, [||])
-        match data with
-        | Deferred.HasNotStartedYet -> Html.p "Not Started"
-        | Deferred.InProgress -> Html.p "In progress"
-        | Deferred.Failed e -> Html.p "Errored"
-        | Deferred.Resolved content -> 
-            SpellsRouter(content)

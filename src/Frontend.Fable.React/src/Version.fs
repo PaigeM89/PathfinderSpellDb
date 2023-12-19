@@ -14,3 +14,8 @@ module ApiRoot =
     #else
       "https://api.pathfinderspelldb.com"
     #endif
+    
+module String =
+  open System
+  
+  let join (xs : string seq) = String.Join(", ", xs)

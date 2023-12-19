@@ -6,4 +6,4 @@ open Browser.Dom
 
 let root = document.getElementById("app") |> ReactDOM.createRoot
 
-SpellList.SpellListLoader() |> root.render
+SpellRouting.SpellListLoader() |> root.render
