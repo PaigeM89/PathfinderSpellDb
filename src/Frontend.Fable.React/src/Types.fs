@@ -19,7 +19,7 @@ module Types =
   | SpellResistance
   | Source
 
-  let searchTypeName =
+  let searchTypeNames =
     [
       School, "School"
       CasterClass, "Class"

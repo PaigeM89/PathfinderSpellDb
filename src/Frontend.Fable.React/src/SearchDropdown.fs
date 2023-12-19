@@ -25,10 +25,11 @@ module SearchDropdown =
           ]
         ]
         prop.className "text-right"
-        prop.onClick (fun _ ->
+        prop.onClick (fun ev ->
+          ev.preventDefault()
           if List.contains ddValue advSearch.Values then
             let advSearch = { advSearch with Values = List.filter (fun v -> v <> ddValue) advSearch.Values }
-            advSearch |>  dispatch
+            advSearch |> dispatch
           else
             let advSearch = { advSearch with Values = ddValue :: advSearch.Values |> List.sort }
             advSearch |> dispatch
@@ -74,3 +75,70 @@ module SearchDropdown =
       |> listItems advSearch dispatch
 
     dropdown advSearch "Select School(s)" dropdownElements
+
+  let casterClassSearch casterClasses advSearch modelUpdateDispatch  =
+    let dropdownElements =
+      casterClasses
+      |> List.sort
+      |> List.map (fun cc -> cc, Formatting.fixSummonerUnchained cc)
+      |> listItems advSearch modelUpdateDispatch
+
+    dropdown advSearch "Select Class(es)" dropdownElements
+
+  let spellLevelSearch advSearch dispatch =
+    let dropdownElements =
+      [0..9]
+      |> List.map (fun i -> string i, string i)
+      |> listItems advSearch dispatch
+    dropdown advSearch "Select Spell Level(s)" dropdownElements
+
+  let castingTimeSearch castingTimes advSearch dispatch =
+    let dropdownElements =
+      castingTimes
+      |> List.map (fun castingTime -> castingTime, castingTime)
+      |> listItems advSearch dispatch
+    dropdown advSearch "Select casting time(s)" dropdownElements
+
+  let componentSearch components advSearch dispatch =
+    components
+    |> List.sort
+    |> List.map (fun c -> c, c)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Component(s)"
+
+  let rangeSearch ranges advSearch dispatch =
+    ranges
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Range(s)"
+
+  let areaSearch areas advSearch dispatch =
+    areas
+    |> List.map (fun a -> a, a)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Area(s)" 
+
+  let durationSearch durations advSearch dispatch =
+    durations
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Duration(s)"
+
+  let savingThrowsSearch savingThrows advSearch dispatch =
+    savingThrows
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Saving Throw(s)"
+
+  let spellResistanceSearch spellRes advSearch dispatch =
+    spellRes
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Spell Resistance(s)"
+
+  let sourcesSearch sources advSearch dispatch =
+    sources
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Select Source(s)"
+

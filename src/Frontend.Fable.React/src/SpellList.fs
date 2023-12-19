@@ -93,7 +93,7 @@ module SpellList =
         ]
 
     [<ReactComponent>]
-    let SpellList(spells : SpellRow seq) =
+    let SpellList(spells : SpellRow seq, filterTargets) =
         let filteredSpells, setFilteredSpells = React.useState(spells)
         let spellCount = filteredSpells |> Seq.length
         
@@ -113,7 +113,7 @@ module SpellList =
                     prop.text "A searchable database of all the spells in Pathfinder 1E"
                 ]
 
-                SearchRoot(onSearchUpdate)
+                SearchRoot(filterTargets, onSearchUpdate)
 
                 Daisy.divider (sprintf "Spells (%i)" spellCount)
 
