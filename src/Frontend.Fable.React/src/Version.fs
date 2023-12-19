@@ -1,4 +1,4 @@
-namespace Frontend
+namespace Pfsdb
 
 module Version =
 
@@ -7,4 +7,10 @@ module Version =
   [<Emit("VERSION")>]
   let __VERSION__ : string = jsNative
 
-  
+module ApiRoot =
+  let apiRoute = 
+    #if DEBUG
+      "http://localhost:5000"
+    #else
+      "https://api.pathfinderspelldb.com"
+    #endif
