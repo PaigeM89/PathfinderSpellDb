@@ -1,4 +1,4 @@
-module App
+module Root
 
 open Pfsdb
 open Feliz

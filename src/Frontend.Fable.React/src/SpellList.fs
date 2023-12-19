@@ -6,32 +6,11 @@ open Fable.Core.JS
 open Fable.Core.JsInterop
 open Shared.Dtos
 open Feliz
+open Feliz.Router
 open Feliz.UseDeferred
 open Feliz.DaisyUI
 
 module SpellList =
-    let thing = 0
-
-    let sampleData = [
-        {
-            Id = 0
-            Name = "Test spell"
-            School = "Evocation"
-            ShortDescription = "Short description"
-            ClassSpellLevels = [|
-                ClassSpellLevel.Create "Bard" 1
-            |]
-            ClassSpellLevelsString = "Bard 1"
-            CastingTime = "3.85 hours"
-            Components = []
-            Range = "82 feet per 1.5 levels"
-            Area = "3.6 cubic meters"
-            Duration = "Instant"
-            SavingThrowStr = "Reflex 1/4"
-            SpellResistance = false
-            Source = "Test"
-        }
-    ]
 
     let loadData = async {
         let url = ApiRoot.apiRoute + "/spells"
@@ -62,11 +41,11 @@ module SpellList =
                 prop.id (string spell.Id)
                 prop.className "underline"
                 prop.children [
-                Html.a [
-                    prop.text spell.Name
-                    prop.href (sprintf "#spells/%i" spell.Id)
-                    prop.className "cursor-pointer"
-                ]
+                    Html.a [
+                        prop.text spell.Name
+                        prop.href (sprintf "#spells/%i" spell.Id)
+                        prop.className "cursor-pointer"
+                    ]
                 ]
             ]
             Html.td spell.School
@@ -144,6 +123,21 @@ module SpellList =
         ]
 
     [<ReactComponent>]
+    let SpellsRouter(spells : SpellRow seq) =
+        let (currentUrl, updateUrl) = React.useState(Router.currentUrl())
+        React.router [
+            router.onUrlChanged updateUrl
+            router.children [
+                match currentUrl with
+                | [] -> SpellList(spells)
+                | ["spells"; Route.Int spellId ] ->
+                    printfn "Spell loaded: %i" spellId
+                    SpellList(spells)
+                | _ -> SpellList(spells)
+            ]
+        ]
+
+    [<ReactComponent>]
     let SpellListLoader() =
         let data = React.useDeferred(loadData, [||])
         match data with
@@ -151,4 +145,4 @@ module SpellList =
         | Deferred.InProgress -> Html.p "In progress"
         | Deferred.Failed e -> Html.p "Errored"
         | Deferred.Resolved content -> 
-            SpellList(content)
+            SpellsRouter(content)

@@ -5,6 +5,7 @@
   <ItemGroup>
     <Compile Include="Version.fs" />
     <Compile Include="../../shared/DTOs.fs" />
+    <Compile Include="Spell.fs" />
     <Compile Include="SpellList.fs" />
     <Compile Include="Root.fs" />
   </ItemGroup>
