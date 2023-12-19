@@ -10,10 +10,14 @@ module Webhost =
   open Microsoft.Extensions.DependencyInjection
   open Microsoft.AspNetCore.Cors.Infrastructure
   open Microsoft.AspNetCore.Server.Kestrel.Core
+
   let microsoftLoggerFactory = LoggerFactory.Create(fun builder ->
     builder
       .SetMinimumLevel(LogLevel.Debug)
-      .AddSimpleConsole(fun opts -> opts.IncludeScopes <- true)
+      .AddSimpleConsole(fun opts -> 
+        opts.TimestampFormat <- "HH:mm:ss.ffff"
+        opts.IncludeScopes <- true
+      )
     |> ignore
   )
 

@@ -77,7 +77,7 @@ module Spell =
         Html.a [
           prop.className "underline cursor-pointer"
           prop.text "Back to list"
-          prop.href ""
+          prop.href "#"
         ]
       ]
     ]
