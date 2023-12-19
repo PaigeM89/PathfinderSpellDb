@@ -100,8 +100,6 @@ module SpellList =
         let onSearchUpdate (searchModel : Search) =
             SpellFiltering.filterSpells searchModel spells
             |> setFilteredSpells
-            // Search.doSearch spells searchModel
-            // |> setFilteredSpells
 
         Html.div [
             theme.dark
