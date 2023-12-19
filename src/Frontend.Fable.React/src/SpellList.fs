@@ -1,6 +1,8 @@
 namespace Pfsdb
 
 open System
+open Pfsdb.Types
+open Pfsdb.Searching
 open Shared.Dtos
 open Fable.Core
 open Fable.Core.JsInterop
@@ -90,63 +92,16 @@ module SpellList =
             ]
         ]
 
-    type Search = {
-        SpellName : string option
-    } with
-        static member Empty() = {
-            SpellName = None
-        }
-
-    module Search =
-        let setSpellName name search = 
-            if String.IsNullOrWhiteSpace name then { search with SpellName = None }
-            else { search with SpellName = Some name }
-
-        let doSearch (spells : SpellRow seq) search =
-            match search.SpellName with
-            | Some spellName ->
-                spells
-                |> Seq.filter (fun spell ->
-                    spell.Name.ToLowerInvariant().Contains (spellName.Trim().ToLowerInvariant())
-                )
-            | None -> spells
-
-    let debouncer = Debouncer("spellNameSearch", 500)
-
-    [<ReactComponent>]
-    let SearchRoot(onSearchUpdate) =
-        let searchModel, setSearchModel = React.useState(Search.Empty())
-        Html.div [
-          prop.className "grid place-content-center"
-          prop.children [
-            Daisy.label [
-                Daisy.labelText "Search by name"
-            ]
-            Daisy.input [
-              input.bordered
-              input.lg
-              prop.placeholder "Spell name"
-              match searchModel.SpellName with
-              | Some s -> prop.value s
-              | None -> prop.value ""
-              prop.onInput(fun (e: Browser.Types.Event) ->
-                let text = e.target?value
-                let searchModel = Search.setSpellName text searchModel
-                setSearchModel searchModel
-                debouncer.Debounce onSearchUpdate searchModel
-              )
-            ]
-          ]
-        ]
-
     [<ReactComponent>]
     let SpellList(spells : SpellRow seq) =
         let filteredSpells, setFilteredSpells = React.useState(spells)
         let spellCount = filteredSpells |> Seq.length
         
         let onSearchUpdate (searchModel : Search) =
-            Search.doSearch spells searchModel
+            SpellFiltering.filterSpells searchModel spells
             |> setFilteredSpells
+            // Search.doSearch spells searchModel
+            // |> setFilteredSpells
 
         Html.div [
             theme.dark

@@ -5,9 +5,13 @@
   <ItemGroup>
     <Compile Include="Version.fs" />
     <Compile Include="../../shared/DTOs.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="Formatting.fs" />
     <Compile Include="Debouncer.fs" />
+    <Compile Include="SpellFiltering.fs" />
     <Compile Include="Spell.fs" />
+    <Compile Include="SearchDropdown.fs" />
+    <Compile Include="Search.fs" />
     <Compile Include="SpellList.fs" />
     <Compile Include="SpellRouting.fs" />
     <Compile Include="Root.fs" />
