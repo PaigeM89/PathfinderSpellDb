@@ -93,10 +93,35 @@ module SpellList =
         ]
 
     [<ReactComponent>]
+    let Footer() =
+      Daisy.footer [
+        prop.className "p-10 bg-neutral text-neutral-content grid"
+        prop.children [
+            Html.h3 [
+              prop.className "ml-auto"
+              prop.text ("Version: " + Version.__VERSION__)
+            ]
+            Html.a [
+              prop.className "ml-auto"
+              prop.text "Contribute on Github!"
+              prop.href Types.GithubLink
+            ]
+        ]
+      ]
+
+    [<ReactComponent>]
     let SpellList(spells : SpellRow seq, filterTargets) =
+        let loadedSpellsCount, setLoadedSpellsCount = React.useState (Some 100)
         let filteredSpells, setFilteredSpells = React.useState(spells)
         let spellCount = filteredSpells |> Seq.length
         
+        let loadNext100Spells() =
+            match loadedSpellsCount with
+            | Some x -> setLoadedSpellsCount (Some (x + 100))
+            | None -> ()
+        let loadAllSpells() =
+            setLoadedSpellsCount(None)
+
         let onSearchUpdate (searchModel : Search) =
             SpellFiltering.filterSpells searchModel spells
             |> setFilteredSpells
@@ -117,6 +142,22 @@ module SpellList =
 
                 Daisy.divider (sprintf "Spells (%i)" spellCount)
 
-                SpellTable(filteredSpells, Some 100)
+                SpellTable(filteredSpells, loadedSpellsCount)
+
+                if loadedSpellsCount.IsSome then
+                    Daisy.button.button [
+                        button.primary
+                        prop.text "Load next 100 spells"
+                        prop.onClick (fun _ -> loadNext100Spells())
+                    ]
+
+                if loadedSpellsCount.IsSome then
+                    Daisy.button.button [
+                        button.primary
+                        prop.text "Load all spells"
+                        prop.onClick (fun _ -> loadAllSpells())
+                    ]
+
+                Footer()
             ]
         ]

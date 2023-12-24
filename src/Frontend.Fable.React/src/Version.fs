@@ -1,10 +1,9 @@
 namespace Pfsdb
 
 module Version =
-
   open Fable.Core
 
-  [<Emit("VERSION")>]
+  [<Emit("ENV.VERSION")>]
   let __VERSION__ : string = jsNative
 
 module ApiRoot =

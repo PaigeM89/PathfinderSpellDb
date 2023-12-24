@@ -1,9 +1,11 @@
 {
   "private": true,
-  "name":"pfsdb",
+  "type":"module",
+  "name": "pfsdb",
   "scripts": {
     "postinstall": "dotnet tool restore",
-    "start":"dotnet fable watch ./src -o ./public --sourceMaps --configuration DEBUG --runFast vite serve ./public --config ./vite.config.js",
+    "start": "dotnet fable watch ./src -o ./public --configuration DEBUG --runFast vite serve ./public --config ./vite.config.js",
+    "runLocal": "vite serve ./public --config ./vite.config.js",
     "build": "dotnet fable src && webpack",
     "tailwind": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch",
     "tailwindProd": "npx tailwindcss -i ./src/input.css -o ./public/output.css",
@@ -11,6 +13,7 @@
   },
   "devDependencies": {
     "daisyui": "^2.51.3",
+    "dotenv": "^16.3.1",
     "tailwindcss": "^3.2.7",
     "vite": "^5.0.10",
     "webpack": "^5.75.0",
