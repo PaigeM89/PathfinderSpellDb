@@ -10,17 +10,7 @@ open Feliz.DaisyUI
 
 module Searching =
 
-  let doSearch (spells : SpellRow seq) (search : Search) =
-      match search.SpellName with
-      | Some spellName ->
-          spells
-          |> Seq.filter (fun spell ->
-              spell.Name.ToLowerInvariant().Contains (spellName.Trim().ToLowerInvariant())
-          )
-      | None -> spells
-
   let debouncer = Debouncer("spellNameSearch", 500)
-  let advSearchDebouncer = Debouncer("advancedSearchDebouncer", 500)
 
   [<ReactComponent>]
   let AdvancedSearchInput(advancedSearch : AdvancedSearch, filterTargets: FilterTargets, onUpdate, onDeleteClick) =
@@ -45,7 +35,6 @@ module Searching =
     Html.div [
       prop.id (string advancedSearch.Id)
       prop.children [
-
         Daisy.dropdown [
           Daisy.button.button [
             button.primary
@@ -162,8 +151,6 @@ module Searching =
           { searchModel with AdvancedSearches = advSearches }
         setSearchModel updatedModel
         onSearchUpdate updatedModel
-        //advSearchDebouncer.Debounce onSearchUpdate searchModel
-
 
       Html.div [
         prop.className "grid place-content-center"

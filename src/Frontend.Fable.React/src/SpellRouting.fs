@@ -47,7 +47,6 @@ module SpellRouting =
     }
 
   let loadData = async {
-    //let url = ApiRoot.apiRoute + "/spells"
     let url = Api.Spells.root
     let! response = Fetch.fetch url [] |> Async.AwaitPromise
     let! spells = response.json<Shared.Dtos.SpellRow seq>() |> Async.AwaitPromise
