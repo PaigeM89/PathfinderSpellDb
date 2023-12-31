@@ -7,7 +7,7 @@ open Shared.Dtos
 module SpellFiltering =
 
   let distinctValues (advSearches : AdvancedSearch list) =
-    advSearches |> List.collect (fun a -> a.Values) |> List.distinct
+    advSearches |> List.collect (fun a -> a.SelectedValues) |> List.distinct
 
   let searchesMatchingType (st : SearchType) (advSearches : AdvancedSearch list) =
     advSearches
@@ -25,7 +25,7 @@ module SpellFiltering =
 
   let private filterBySchool (search : Search) (spells : SpellRow seq) =
     let schoolFilters = search.AdvancedSearches |> searchesMatchingType School
-    let schools = schoolFilters |> List.collect (fun a -> a.Values) |> List.distinct
+    let schools = schoolFilters |> List.collect (fun a -> a.SelectedValues) |> List.distinct
     match schools with
     | [] -> spells
     | schools ->
@@ -33,10 +33,10 @@ module SpellFiltering =
 
   let private filterByClassAndLevel (search : Search) (spells : SpellRow seq) =
     let casterClassFilters = search.AdvancedSearches |> searchesMatchingType CasterClass
-    let casterClasses = casterClassFilters |> List.collect (fun a -> a.Values) |> List.distinct
+    let casterClasses = casterClassFilters |> List.collect (fun a -> a.SelectedValues) |> List.distinct
     let spellLevelFilters = search.AdvancedSearches |> searchesMatchingType Level
     let spellLevels =
-      spellLevelFilters |> List.collect (fun a -> a.Values) |> List.distinct
+      spellLevelFilters |> List.collect (fun a -> a.SelectedValues) |> List.distinct
       |> List.map (fun i ->
         match Int32.TryParse i with
         | true, x -> x
@@ -67,7 +67,7 @@ module SpellFiltering =
     let castingTimeFilters = search.AdvancedSearches |> searchesMatchingType CastingTime
     let castingTimes =
       castingTimeFilters
-      |> List.collect (fun a -> a.Values)
+      |> List.collect (fun a -> a.SelectedValues)
       |> List.distinct
     match castingTimes with
     | [] -> spells
@@ -79,7 +79,7 @@ module SpellFiltering =
     let componentFilters = search.AdvancedSearches |> searchesMatchingType Components
     let components =
       componentFilters
-      |> List.collect (fun a -> a.Values)
+      |> List.collect (fun a -> a.SelectedValues)
       |> List.distinct
     match components with
     | [] -> spells

@@ -38,19 +38,19 @@ module Types =
     Id : Guid
     SearchType : SearchType option
     ValuesSearch : string option
-    Values : string list
+    SelectedValues : string list
   } with
     static member Empty() = {
       Id = Guid.NewGuid()
       SearchType = None
       ValuesSearch = None
-      Values = []
+      SelectedValues = []
     }
 
-    member this.ValuesString() = String.Join(", ", this.Values)
+    member this.SelectedValuesString() = String.Join(", ", this.SelectedValues)
 
     member this.IsEmpty() =
-      this.SearchType.IsNone || (List.isEmpty this.Values)
+      this.SearchType.IsNone || (List.isEmpty this.SelectedValues)
 
   type Search = {
     SpellName : string option
