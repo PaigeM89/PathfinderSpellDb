@@ -59,3 +59,4 @@ module Webhost =
         get "/spells" (Handlers.getAllSpells config)
       ]
     }
+

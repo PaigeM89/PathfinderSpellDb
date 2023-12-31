@@ -77,9 +77,66 @@ module DTOs =
       Duration = duration
       SavingThrowStr = if spell.SavingThrowsStr.Trim() = "" then "None" else spell.SavingThrowsStr
       SpellResistance = spell.SpellResistance
+      HasMythic = spell.MythicText.IsSome
       Source = spell.Source
     }
 
   let mapSpellsToListDto (spells : Types.Spell list) =
     spells
     |> List.map createSpellRowDto
+
+  let private toClassSpellLevelDto (csl : Types.ClassSpellLevel) : Shared.Dtos.ClassSpellLevel =
+    {
+      ClassName = csl.ToTuple() |> fst
+      Level = csl.ToTuple() |> snd
+    }
+
+  let private toComponentDto (comp : Types.CastingComponent) : Shared.Dtos.Component =
+      match comp with
+      | Types.CastingComponent.Verbal -> Shared.Dtos.Component.Create "Verbal" "V" None
+      | Types.CastingComponent.Somatic -> Shared.Dtos.Component.Create "Somatic" "S" None
+      | Types.CastingComponent.Material mat ->
+        let matStr = mat |> Option.map (fun s -> sprintf " (%s)" s) |> Option.defaultValue ""
+        Shared.Dtos.Component.Create (sprintf "Material%s" matStr) "M" None
+      | Types.CastingComponent.CostlyMaterial(mat, cost) ->
+        let matStr = sprintf " (%s, %i gp)" mat cost
+        Shared.Dtos.Component.Create (sprintf "Material%s" matStr) "M" None
+      | Types.CastingComponent.Focus focus ->
+        let focusStr = focus |> Option.map (fun s -> sprintf " (%s)" s) |> Option.defaultValue ""
+        Shared.Dtos.Component.Create (sprintf "Focus%s" focusStr) "F" None
+      | Types.CastingComponent.DivineFocus -> Shared.Dtos.Component.Create "Divine Focus" "DF" None
+
+  let castingTimeToString (ct : Types.CastingTime) =
+    match ct with
+    | Types.CastingTime.Other s when s = "" -> "Unknown or variable"
+    | Types.CastingTime.Other s -> s
+    | Types.CastingTime.StandardAction -> "1 standard action"
+
+  let toSpellDto (spell : Types.Spell) : Shared.Dtos.Spell =
+    {
+      Id = spell.Id
+      Name = spell.Name
+      School = spell.School
+      Subschool = spell.SubSchool
+      Descriptors = spell.Descriptors
+      Description = spell.Description
+      ClassSpellLevels = spell.ClassSpellLevels |> List.map toClassSpellLevelDto
+      ClassSpellLevelsString =
+        spell.ClassSpellLevels
+        |> List.map (fun csl -> 
+          let t = csl.ToTuple()
+          sprintf "%s %i" (fst t) (snd t)
+        )
+        |> String.join
+      Domains = spell.Domains |> List.map (fun d -> d.ToString()) |> String.concat ", "
+      CastingTime = spell.CastingTime |> castingTimeToString
+      Components = spell.Components |> List.map toComponentDto
+      Range = spell.Range |> rangeToString
+      Area = spell.Area |> Option.defaultValue ""
+      Duration = spell.Duration |> durationToString
+      SavingThrows = spell.SavingThrowsStr
+      SpellResistance = spell.SpellResistance
+      MythicText = spell.MythicText
+      Source = spell.Source
+    }
+

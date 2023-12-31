@@ -138,6 +138,16 @@ module SpellFiltering =
       spells
       |> Seq.filter (fun spell -> List.contains spell.SpellResistance spellRes)
 
+  let private filterByIsMythic (search : Search) (spells : SpellRow seq) =
+    let filters = search.AdvancedSearches |> searchesMatchingType HasMythic
+    let isMythic = filters |> distinctValues
+    match isMythic with
+    | [] -> spells
+    | _ ->
+      let isMythic = isMythic |> Seq.map (fun m -> if m = "Yes" then true else false) |> Seq.toList
+      spells
+      |> Seq.filter (fun spell -> List.contains spell.HasMythic isMythic)
+
   let private filterBySource (search : Search) (spells : SpellRow seq) =
     let filters = search.AdvancedSearches |> searchesMatchingType Source
     let sources = filters |> distinctValues
@@ -159,4 +169,5 @@ module SpellFiltering =
     |> filterByDuration search
     |> filterBySavingThrow search
     |> filterBySpellResistance search
+    |> filterByIsMythic search
     |> filterBySource search

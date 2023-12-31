@@ -78,7 +78,7 @@ module SearchDropdown =
         | _ -> prop.text (advSearch.SelectedValuesString())
         prop.className "mx-4 my-2"
       ]
-      dropdownContent  advSearch onAdvSearchUpdate dropdownElements
+      dropdownContent advSearch onAdvSearchUpdate dropdownElements
     ]
 
   let schoolSearch schools advSearch dispatch =
@@ -158,3 +158,8 @@ module SearchDropdown =
     |> listItems advSearch dispatch
     |> dropdown advSearch "Select Source(s)" dispatch
 
+  let hasMythicSearch mythics advSearch dispatch =
+    mythics
+    |> List.map (fun r -> r, r)
+    |> listItems advSearch dispatch
+    |> dropdown advSearch "Is Mythic" dispatch

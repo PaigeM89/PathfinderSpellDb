@@ -207,5 +207,7 @@ module Types =
     Effect : string option
     Targets: string option
 
+    MythicText : string option
+
     Source : string
   }

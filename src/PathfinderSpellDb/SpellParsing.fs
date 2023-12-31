@@ -2,7 +2,6 @@ namespace PathfinderSpellDb
 
 open System
 open System.IO
-open System.Text
 open System.Text.RegularExpressions
 open FSharp.Data
 open FsLibLog
@@ -12,9 +11,7 @@ open PathfinderSpellDb.Parsing
 module SpellParsing = 
   open Types
 
-
   let logger = LogProvider.getLoggerByName "PathfinderSpellDb.SpellParsing"
-
 
   let loadFile path = File.ReadAllLines path
 
@@ -249,6 +246,8 @@ module SpellParsing =
 
         Effect = row.["effect"] |> strValueOrNone
         Targets = row.["targets"] |> strValueOrNone
+
+        MythicText = row.["mythic_text"] |> strValueOrNone
 
         Source = row.["source"].Trim()
       }

@@ -72,6 +72,8 @@ module Searching =
           SearchDropdown.savingThrowsSearch filterTargets.SavingThrows advancedSearch dispatch
         | Some SpellResistance ->
           SearchDropdown.spellResistanceSearch filterTargets.SpellResistance advancedSearch dispatch
+        | Some HasMythic ->
+          SearchDropdown.hasMythicSearch filterTargets.IsMythic advancedSearch dispatch
         | Some Source ->
           SearchDropdown.sourcesSearch filterTargets.Sources advancedSearch dispatch
         | _ -> Html.none

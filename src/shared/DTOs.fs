@@ -37,6 +37,7 @@ module Dtos =
     Duration : string
     SavingThrowStr : string
     SpellResistance : bool
+    HasMythic : bool
     Source : string
   }
 
@@ -57,5 +58,6 @@ module Dtos =
     Duration : string
     SavingThrows : string
     SpellResistance: bool
+    MythicText : string option
     Source : string
   }

@@ -70,6 +70,18 @@ module Spell =
       prop.dangerouslySetInnerHTML spell.Description
     ]
 
+  let private mythicText (spell : Shared.Dtos.Spell) =
+    match spell.MythicText with
+    | Some mt ->
+      [
+        Daisy.divider "Mythic text"
+        Html.div [
+          prop.className "text-justify"
+          prop.text mt
+        ]
+      ]
+    | None -> []
+
   let private footer =
     Html.div [
       prop.className "pt-4"
@@ -99,6 +111,8 @@ module Spell =
         Daisy.divider "Description"
 
         description spell
+
+        yield! mythicText spell
 
         footer
       ]

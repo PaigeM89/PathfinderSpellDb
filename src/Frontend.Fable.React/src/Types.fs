@@ -17,6 +17,7 @@ module Types =
   | Duration
   | SavingThrow
   | SpellResistance
+  | HasMythic
   | Source
 
   let searchTypeNames =
@@ -31,6 +32,7 @@ module Types =
       Duration, "Duration"
       SavingThrow, "Saving Throw"
       SpellResistance, "Spell Resistance"
+      HasMythic, "Is Mythic"
       Source, "Source"
     ] |> Map.ofList
 
@@ -101,6 +103,7 @@ module Types =
     SavingThrows : string list
     SpellResistance : string list
     Sources : string list
+    IsMythic : string list
   } with
     static member Empty() = {
       Schools = []
@@ -113,4 +116,12 @@ module Types =
       SavingThrows = []
       SpellResistance = [ "Yes"; "No" ]
       Sources = []
+      IsMythic = [ "Yes"; "No" ]
     }
+
+module DynamicSearching =
+  type DynamicSearch = {
+    Id : Guid
+    EmptyValuesText : string
+    Options : string list
+  }
