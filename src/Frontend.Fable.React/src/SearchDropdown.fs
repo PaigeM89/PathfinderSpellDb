@@ -39,8 +39,6 @@ module SearchDropdown =
       ]
     )
 
-  let debouncer = Debouncer("debouncer", 1000)
-
   let private dropdownContent advSearch onAdvSearchUpdate (elements: Fable.React.ReactElement list) =
     Daisy.dropdownContent [
       prop.className "p-2 shadow menu bg-base-100 rounded-box w-60"
