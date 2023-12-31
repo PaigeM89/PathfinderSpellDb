@@ -118,10 +118,3 @@ module Types =
       Sources = []
       IsMythic = [ "Yes"; "No" ]
     }
-
-module DynamicSearching =
-  type DynamicSearch = {
-    Id : Guid
-    EmptyValuesText : string
-    Options : string list
-  }
