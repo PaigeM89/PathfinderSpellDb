@@ -18,22 +18,18 @@ module SearchDropdown =
     )
     |> List.map (fun (ddValue, ddText) ->
       Html.li [
+        let isSelected = advSearch.SelectedValues |> List.contains ddValue
+
         prop.children [
           Daisy.label [
-            Daisy.checkbox [
-              prop.isChecked (advSearch.SelectedValues |> List.contains ddValue)
-              // we handle the change on the onClick below
-              // `defaultChecked` has some buggy behavior regarding checked state,
-              // whereas this is always accurate, and `isChecked` requires an `onChange` handler
-              prop.onChange (fun (_ : bool) -> ())
-            ]
-            Daisy.labelText ddText
+            if isSelected then prop.className "border-solid border-2 rounded-md border-white"
+            prop.text ddText
           ]
         ]
         prop.className "text-right"
         prop.onClick (fun ev ->
           ev.preventDefault()
-          if List.contains ddValue advSearch.SelectedValues then
+          if isSelected then
             let advSearch = { advSearch with SelectedValues = List.filter (fun v -> v <> ddValue) advSearch.SelectedValues }
             advSearch |> dispatch
           else
@@ -47,7 +43,7 @@ module SearchDropdown =
 
   let private dropdownContent advSearch onAdvSearchUpdate (elements: Fable.React.ReactElement list) =
     Daisy.dropdownContent [
-      prop.className "p-2 shadow menu bg-base-100 rounded-box w-52"
+      prop.className "p-2 shadow menu bg-base-100 rounded-box w-60"
       prop.tabIndex 0
       prop.children [
         Daisy.input [
