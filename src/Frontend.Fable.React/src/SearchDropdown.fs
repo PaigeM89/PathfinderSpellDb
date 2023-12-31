@@ -146,7 +146,7 @@ module SearchDropdown =
     spellRes
     |> List.map (fun r -> r, r)
     |> listItems advSearch dispatch
-    |> dropdown advSearch "Select Spell Resistance(s)" dispatch
+    |> dropdown advSearch "Select Spell Resistance" dispatch
 
   let sourcesSearch sources advSearch dispatch =
     sources
@@ -158,4 +158,4 @@ module SearchDropdown =
     mythics
     |> List.map (fun r -> r, r)
     |> listItems advSearch dispatch
-    |> dropdown advSearch "Is Mythic" dispatch
+    |> dropdown advSearch "Select Is Mythic" dispatch
