@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: pfsdb-client
-        image: registry.digitalocean.com/mpaige-container-registry/pfsdb-client:v0.2.1
+        image: registry.digitalocean.com/mpaige-container-registry/pfsdb-client:v0.3.0
         ports:
         - name: http
           containerPort: 80
