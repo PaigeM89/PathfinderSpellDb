@@ -30,8 +30,6 @@ module Searching =
         ]
       )
     
-    let dispatch x = onUpdate x
-
     Html.div [
       prop.id (string advancedSearch.Id)
       prop.children [
@@ -53,29 +51,29 @@ module Searching =
 
         match advancedSearch.SearchType with
         | Some School ->
-          SearchDropdown.schoolSearch filterTargets.Schools advancedSearch dispatch
+          SearchDropdown.schoolSearch filterTargets.Schools advancedSearch onUpdate
         | Some CasterClass ->
-          SearchDropdown.casterClassSearch filterTargets.CasterClasses advancedSearch dispatch
+          SearchDropdown.casterClassSearch filterTargets.CasterClasses advancedSearch onUpdate
         | Some Level ->
-          SearchDropdown.spellLevelSearch advancedSearch dispatch
+          SearchDropdown.spellLevelSearch advancedSearch onUpdate
         | Some CastingTime ->
-          SearchDropdown.castingTimeSearch filterTargets.CastingTimes advancedSearch dispatch
+          SearchDropdown.castingTimeSearch filterTargets.CastingTimes advancedSearch onUpdate
         | Some Components ->
-          SearchDropdown.componentSearch filterTargets.Components advancedSearch dispatch
+          SearchDropdown.componentSearch filterTargets.Components advancedSearch onUpdate
         | Some Range ->
-          SearchDropdown.rangeSearch filterTargets.Ranges advancedSearch dispatch
+          SearchDropdown.rangeSearch filterTargets.Ranges advancedSearch onUpdate
         | Some Area ->
-          SearchDropdown.areaSearch filterTargets.Areas advancedSearch dispatch
+          SearchDropdown.areaSearch filterTargets.Areas advancedSearch onUpdate
         | Some Duration ->
-          SearchDropdown.durationSearch filterTargets.Durations advancedSearch dispatch
+          SearchDropdown.durationSearch filterTargets.Durations advancedSearch onUpdate
         | Some SavingThrow -> 
-          SearchDropdown.savingThrowsSearch filterTargets.SavingThrows advancedSearch dispatch
+          SearchDropdown.savingThrowsSearch filterTargets.SavingThrows advancedSearch onUpdate
         | Some SpellResistance ->
-          SearchDropdown.spellResistanceSearch filterTargets.SpellResistance advancedSearch dispatch
+          SearchDropdown.spellResistanceSearch filterTargets.SpellResistance advancedSearch onUpdate
         | Some HasMythic ->
-          SearchDropdown.hasMythicSearch filterTargets.IsMythic advancedSearch dispatch
+          SearchDropdown.hasMythicSearch filterTargets.IsMythic advancedSearch onUpdate
         | Some Source ->
-          SearchDropdown.sourcesSearch filterTargets.Sources advancedSearch dispatch
+          SearchDropdown.sourcesSearch filterTargets.Sources advancedSearch onUpdate
         | _ -> Html.none
 
         Daisy.button.button [
