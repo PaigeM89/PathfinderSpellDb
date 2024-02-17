@@ -7,13 +7,16 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Feliz
 open Feliz.DaisyUI
+open BackingModel
 
 module Searching =
 
   let debouncer = Debouncer("spellNameSearch", 500)
 
   [<ReactComponent>]
-  let AdvancedSearchInput(advancedSearch : AdvancedSearch, filterTargets: FilterTargets, onUpdate, onDeleteClick) =
+  let AdvancedSearchInput(advancedSearch : AdvancedSearch, onUpdate, onDelete) =
+    let filterTargets = BackingModel.useSelector(fun bm -> bm.FilterTargets)
+
     let dropdownElements = 
       searchTypeNames
       |> Map.toList
@@ -25,13 +28,16 @@ module Searching =
             ]
           ]
           prop.onClick (fun _ ->
-            { advancedSearch with SearchType = Some st } |> onUpdate
+            let nm = { advancedSearch with SearchType = Some st }
+            nm |> BackingModel.UpdateAdvancedSearch |> BackingModel.dispatch
+            onUpdate nm
           )
         ]
       )
     
     Html.div [
       prop.id (string advancedSearch.Id)
+      prop.key advancedSearch.Id
       prop.children [
         Daisy.dropdown [
           Daisy.button.button [
@@ -78,18 +84,35 @@ module Searching =
 
         Daisy.button.button [
           prop.text "Delete"
-          prop.onClick (fun _ -> onDeleteClick advancedSearch.Id)
+          prop.onClick (fun _ -> advancedSearch.Id |> onDelete)
           prop.className "mx-2 my-2"
         ]
       ]
     ]
 
   [<ReactComponent>]
-  let AdvancedSearchInputList(advancedSearches : AdvancedSearch list, filterTargets, onAddClick, onUpdate, onDeleteClick) =
+  let AdvancedSearchInputList(initial : AdvancedSearch list) =
+    let advancedSearches, setAdvancedSearches = React.useState initial
+
+    let onAddClick() = 
+      let newSearch = AdvancedSearch.Empty()
+      BackingModel.AddAdvancedSearch newSearch |> BackingModel.dispatch
+      setAdvancedSearches (advancedSearches @ [newSearch])
+    
+    let onUpdate advSearch =
+      BackingModel.UpdateAdvancedSearch advSearch |> BackingModel.dispatch
+      let x = advancedSearches |> List.map (fun a -> if a.Id = advSearch.Id then advSearch else a)
+      setAdvancedSearches x
+
+    let onDelete id = 
+      id |> BackingModel.DeleteAdvancedSearch |> BackingModel.dispatch
+      let newSearches = advancedSearches |> List.filter (fun a -> a.Id <> id)
+      setAdvancedSearches newSearches
+
     Html.div [
       prop.children [
         for advancedSearchInput in advancedSearches do
-          AdvancedSearchInput(advancedSearchInput, filterTargets, onUpdate, onDeleteClick)
+          AdvancedSearchInput(advancedSearchInput, onUpdate, onDelete)
 
         Daisy.button.button [
           prop.text "Add advanced search"
@@ -100,31 +123,9 @@ module Searching =
     ]
 
   [<ReactComponent>]
-  let AdvancedSearchPanel(initialList : AdvancedSearch list, filterTargets, onAdvancedSearchUpdate) =
+  let AdvancedSearchPanel() =
+    let initialList = BackingModel.useSelector (fun bm -> bm.AdvancedSearches)
     let expandAdvancedSearch, setExpandAdvancedSearch = React.useState false
-    let (advancedSearchInputs : AdvancedSearch list, setAdvancedSearchInputs) = React.useState initialList
-
-    let doUpdate (advancedSearches : AdvancedSearch list) =
-      setAdvancedSearchInputs advancedSearches
-      onAdvancedSearchUpdate advancedSearches
-
-    let onAddClick() =
-      advancedSearchInputs @ [ AdvancedSearch.Empty() ]
-      |> doUpdate
-
-    let onDeleteClick id =
-      advancedSearchInputs
-      |> List.filter (fun a -> a.Id <> id)
-      |> doUpdate
-
-    let onUpdate (newModel : AdvancedSearch) =
-      advancedSearchInputs
-      |> List.map (fun a ->
-        if a.Id = newModel.Id then 
-          newModel 
-        else a
-      )
-      |> doUpdate
 
     Html.div [
       prop.className "mt-8 cursor-pointer"
@@ -138,42 +139,44 @@ module Searching =
           else 
             prop.text "Expand Advanced Search"
         ]
-        if expandAdvancedSearch then AdvancedSearchInputList(advancedSearchInputs, filterTargets, onAddClick, onUpdate, onDeleteClick)
+        if expandAdvancedSearch then AdvancedSearchInputList(initialList)
       ]
     ]
 
   [<ReactComponent>]
-  let SearchRoot(filterTargets, onSearchUpdate) =
-      let searchModel, setSearchModel = React.useState(Search.Empty())
+  let SpellNameSearch() =
+    let initialState = BackingModel.useSelector(fun m -> m.SpellName)
+    let textInput, setTextInput = React.useState(initialState |> Option.defaultValue "")
 
-      let onAdvancedSearchUpdate advSearches = 
-        let updatedModel = 
-          { searchModel with AdvancedSearches = advSearches }
-        setSearchModel updatedModel
-        onSearchUpdate updatedModel
-
-      Html.div [
-        prop.className "grid place-content-center"
-        prop.children [
-          Daisy.label [
-              Daisy.labelText "Search by name"
-          ]
-          Daisy.input [
-            input.bordered
-            input.lg
-            prop.placeholder "Spell name"
-            match searchModel.SpellName with
-            | Some s -> prop.value s
-            | None -> prop.value ""
-            prop.onInput(fun (e: Browser.Types.Event) ->
-              let text = e.target?value
-              let searchModel = Search.maybeSetSpellName text searchModel
-              setSearchModel searchModel
-              debouncer.Debounce onSearchUpdate searchModel
-            )
-          ]
-
-          AdvancedSearchPanel (searchModel.AdvancedSearches, filterTargets, onAdvancedSearchUpdate)
-
+    Html.div [
+      prop.className "grid place-content-center"
+      prop.children [
+        Daisy.label [
+          Daisy.labelText "Search by name"
+        ]
+        Daisy.input [
+          input.bordered
+          input.lg
+          prop.placeholder "Spell name"
+          prop.value textInput
+          prop.onInput(fun (e: Browser.Types.Event) ->
+            let text = e.target?value
+            setTextInput text
+            let onSearchUpdate = 
+              fun t -> SetSearchName t |> BackingModel.dispatch
+            debouncer.Debounce onSearchUpdate text
+          )
         ]
       ]
+    ]
+
+  [<ReactComponent>]
+  let SearchRoot() =
+    Html.div [
+      prop.className "grid place-content-center"
+      prop.children [
+        SpellNameSearch()
+
+        AdvancedSearchPanel()
+      ]
+    ]

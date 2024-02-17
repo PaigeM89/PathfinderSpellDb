@@ -110,21 +110,9 @@ module SpellList =
       ]
 
     [<ReactComponent>]
-    let SpellList(spells : SpellRow seq, filterTargets) =
-        let loadedSpellsCount, setLoadedSpellsCount = React.useState (Some 100)
-        let filteredSpells, setFilteredSpells = React.useState(spells)
-        let spellCount = filteredSpells |> Seq.length
-        
-        let loadNext100Spells() =
-            match loadedSpellsCount with
-            | Some x -> setLoadedSpellsCount (Some (x + 100))
-            | None -> ()
-        let loadAllSpells() =
-            setLoadedSpellsCount(None)
-
-        let onSearchUpdate (searchModel : Search) =
-            SpellFiltering.filterSpells searchModel spells
-            |> setFilteredSpells
+    let SpellList() =
+        let spellCount = BackingModel.useSelector(fun x -> x.SpellCount())
+        let spellRows = BackingModel.useSelector(fun bm -> bm.Spells())
 
         Html.div [
             theme.dark
@@ -138,25 +126,11 @@ module SpellList =
                     prop.text "A searchable database of all the spells in Pathfinder 1E"
                 ]
 
-                SearchRoot(filterTargets, onSearchUpdate)
+                SearchRoot()
 
                 Daisy.divider (sprintf "Spells (%i)" spellCount)
 
-                SpellTable(filteredSpells, loadedSpellsCount)
-
-                if loadedSpellsCount.IsSome then
-                    Daisy.button.button [
-                        button.primary
-                        prop.text "Load next 100 spells"
-                        prop.onClick (fun _ -> loadNext100Spells())
-                    ]
-
-                if loadedSpellsCount.IsSome then
-                    Daisy.button.button [
-                        button.primary
-                        prop.text "Load all spells"
-                        prop.onClick (fun _ -> loadAllSpells())
-                    ]
+                SpellTable(spellRows, Some 100)
 
                 Footer()
             ]

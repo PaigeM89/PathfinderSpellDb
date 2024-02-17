@@ -51,19 +51,20 @@ module SpellRouting =
     let! response = Fetch.fetch url [] |> Async.AwaitPromise
     let! spells = response.json<Shared.Dtos.SpellRow seq>() |> Async.AwaitPromise
     let filterTargets = createFilterTargets spells
+
     return (spells, filterTargets)
   }
 
   [<ReactComponent>]
-  let SpellsRouter(spells : SpellRow seq, filterTargets) =
+  let SpellsRouter() =
     let (currentUrl, updateUrl) = React.useState(Router.currentUrl())
     React.router [
       router.onUrlChanged updateUrl
       router.children [
         match currentUrl with
-        | [] -> SpellList.SpellList(spells, filterTargets)
+        | [] -> SpellList.SpellList()
         | ["spells"; Route.Int spellId ] -> SpellLoader spellId
-        | _ -> SpellList.SpellList(spells, filterTargets)
+        | _ -> SpellList.SpellList()
       ]
     ]
 
@@ -76,5 +77,8 @@ module SpellRouting =
     | Deferred.Failed e -> 
       Html.p "Errored"
     | Deferred.Resolved (spells, filterTargets) ->
-      SpellsRouter(spells, filterTargets)
+      BackingModel.SetFullSpellList spells |> BackingModel.dispatch
+      BackingModel.SetFilterTargets filterTargets |> BackingModel.dispatch
+      SpellsRouter()
+
 

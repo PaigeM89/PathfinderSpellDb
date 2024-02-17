@@ -36,15 +36,34 @@ module Types =
       Source, "Source"
     ] |> Map.ofList
 
+  let searchTypePrompts =
+    [
+      School, "Select School(s)"
+      CasterClass, "Select Class(es)"
+      Level, "Select Spell Level(s)"
+      CastingTime, "Select Casting Time(s)"
+      Components, "Select Component(s)"
+      Range, "Select Range(s)"
+      Area, "Select Area(s)"
+      Duration, "Select Duration(s)"
+      SavingThrow, "Select Saving Throw(s)"
+      SpellResistance, "Select Spell Resistance"
+      HasMythic, "Is Mythic"
+      Source, "Source"
+    ]
+    |> Map.ofList
+
   type AdvancedSearch = {
     Id : Guid
     SearchType : SearchType option
+    EmptySearchText : string
     ValuesSearch : string option
     SelectedValues : string list
   } with
     static member Empty() = {
       Id = Guid.NewGuid()
       SearchType = None
+      EmptySearchText = ""
       ValuesSearch = None
       SelectedValues = []
     }
@@ -63,6 +82,11 @@ module Types =
       // start with an advanced search option, but empty,
       // so the user has something to interact with immediately
       AdvancedSearches = [ AdvancedSearch.Empty() ]
+    }
+
+    static member Create name advSearches = {
+      SpellName = name
+      AdvancedSearches = advSearches
     }
 
     member this.IsEmpty() = 
